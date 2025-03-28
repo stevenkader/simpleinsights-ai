@@ -47,11 +47,6 @@ const Footer = () => {
                   Blog
                 </Link>
               </li>
-              <li>
-                <Link to="/api" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  API
-                </Link>
-              </li>
             </ul>
           </div>
           
