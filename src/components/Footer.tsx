@@ -22,11 +22,6 @@ const Footer = () => {
             <h4 className="text-sm font-semibold mb-4">Product</h4>
             <ul className="space-y-3">
               <li>
-                <Link to="/features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Features
-                </Link>
-              </li>
-              <li>
                 <Link to="/testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Testimonials
                 </Link>

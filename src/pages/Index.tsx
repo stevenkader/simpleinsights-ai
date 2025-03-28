@@ -1,3 +1,4 @@
+
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,7 @@ const Index = () => {
                 <Link to="/demo">Try It Now <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
-                <Link to="/features">See How It Works</Link>
+                <Link to="/demo">See How It Works</Link>
               </Button>
             </div>
             <div className="text-sm text-muted-foreground">
@@ -238,7 +239,7 @@ const Index = () => {
                   <Link to="/demo">Try It Now <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <Button variant="outline" size="lg" className="bg-transparent border-white hover:bg-white/10" asChild>
-                  <Link to="/features">See How It Works</Link>
+                  <Link to="/demo">See How It Works</Link>
                 </Button>
               </div>
             </div>

@@ -28,9 +28,6 @@ const Navigation = () => {
           <Link to="/" className="text-sm font-medium hover:text-insights-blue transition-colors">
             Home
           </Link>
-          <Link to="/features" className="text-sm font-medium hover:text-insights-blue transition-colors">
-            Features
-          </Link>
           <Link to="/privacy" className="text-sm font-medium hover:text-insights-blue transition-colors">
             Privacy
           </Link>
@@ -63,13 +60,6 @@ const Navigation = () => {
               onClick={() => setIsOpen(false)}
             >
               Home
-            </Link>
-            <Link 
-              to="/features" 
-              className="block py-2 text-sm font-medium hover:text-insights-blue"
-              onClick={() => setIsOpen(false)}
-            >
-              Features
             </Link>
             <Link 
               to="/privacy" 
