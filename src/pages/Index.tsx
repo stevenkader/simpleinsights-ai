@@ -1,9 +1,8 @@
-
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, BarChart3, Brain, LineChart, Lock, PieChart, Zap } from "lucide-react";
+import { ArrowRight, Brain, FileText, FileType, Globe, Lock, Zap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const Index = () => {
@@ -14,49 +13,32 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-background to-muted py-20 md:py-32">
         <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-            <div className="flex flex-col justify-center space-y-4">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                  Understand Complex Documents with 
-                  <span className="gradient-text"> AI Simplicity</span>
-                </h1>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  SimpleInsights.ai helps you comprehend complex documents by breaking them down into clear, easy-to-understand concepts - completely free to start.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button size="lg" asChild>
-                  <Link to="/demo">Try It Now <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                </Button>
-                <Button variant="outline" size="lg" asChild>
-                  <Link to="/features">See How It Works</Link>
-                </Button>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                <span className="font-bold">No credit card required</span> to get started.
-              </div>
+          <div className="flex flex-col justify-center space-y-4 mx-auto text-center max-w-3xl">
+            <div className="space-y-2">
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                Understand Complex Documents with 
+                <span className="gradient-text"> AI Simplicity</span>
+              </h1>
+              <p className="max-w-[600px] mx-auto text-muted-foreground md:text-xl">
+                SimpleInsights.ai helps you comprehend complex documents by breaking them down into clear, easy-to-understand concepts - completely free to start.
+              </p>
             </div>
-            <div className="flex items-center justify-center">
-              <div className="relative h-full w-full">
-                <div className="absolute top-0 -left-4 h-72 w-72 bg-insights-blue/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 -right-4 h-72 w-72 bg-insights-navy/10 rounded-full blur-3xl" />
-                <div className="relative z-10 overflow-hidden rounded-xl border bg-card p-2 shadow-xl">
-                  <img
-                    src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Document Analysis Preview"
-                    className="rounded-lg w-full object-cover"
-                    width={600}
-                    height={400}
-                  />
-                </div>
-              </div>
+            <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center">
+              <Button size="lg" asChild>
+                <Link to="/demo">Try It Now <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <Link to="/features">See How It Works</Link>
+              </Button>
+            </div>
+            <div className="text-sm text-muted-foreground">
+              <span className="font-bold">No credit card required</span> to get started.
             </div>
           </div>
         </div>
       </section>
 
-      {/* Tools Section */}
+      {/* Tools Section - Now moved up and using the provided descriptions */}
       <section className="section-padding">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -74,33 +56,33 @@ const Index = () => {
             <Card className="hover-card">
               <CardContent className="flex flex-col items-start p-6">
                 <div className="feature-icon mb-4">
-                  <Brain className="h-6 w-6" />
+                  <FileText className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">Document Summarizer</h3>
+                <h3 className="text-xl font-bold">Legal Assistant</h3>
                 <p className="text-muted-foreground mt-2">
-                  Extract key points and generate clear summaries from lengthy documents, reports, contracts, or research papers.
+                  Upload PDF of legal contract to get detailed laymen explanation.
                 </p>
               </CardContent>
             </Card>
             <Card className="hover-card">
               <CardContent className="flex flex-col items-start p-6">
                 <div className="feature-icon mb-4">
-                  <Zap className="h-6 w-6" />
+                  <FileType className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">Concept Explainer</h3>
+                <h3 className="text-xl font-bold">Medical Assistant</h3>
                 <p className="text-muted-foreground mt-2">
-                  Break down complex concepts into simple explanations that anyone can understand, with relevant examples and analogies.
+                  Upload PDF of test results to understand them.
                 </p>
               </CardContent>
             </Card>
             <Card className="hover-card">
               <CardContent className="flex flex-col items-start p-6">
                 <div className="feature-icon mb-4">
-                  <LineChart className="h-6 w-6" />
+                  <Globe className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">Interactive Q&A</h3>
+                <h3 className="text-xl font-bold">Expert Translator</h3>
                 <p className="text-muted-foreground mt-2">
-                  Ask specific questions about your document and get clear, accurate answers based on the content.
+                  Upload PDF in any language and get it translated to English.
                 </p>
               </CardContent>
             </Card>
@@ -141,7 +123,7 @@ const Index = () => {
                 </div>
                 <h3 className="text-xl font-bold">Choose Your Tool</h3>
                 <p className="text-muted-foreground mt-2">
-                  Select whether you want a summary, concept explanations, or interactive Q&A.
+                  Select whether you want a legal explanation, medical interpretation, or translation.
                 </p>
               </CardContent>
             </Card>
@@ -152,7 +134,7 @@ const Index = () => {
                 </div>
                 <h3 className="text-xl font-bold">Get Clear Insights</h3>
                 <p className="text-muted-foreground mt-2">
-                  Receive easy-to-understand explanations, summaries, and answers tailored to your needs.
+                  Receive easy-to-understand explanations, interpretations, and translations tailored to your needs.
                 </p>
               </CardContent>
             </Card>
