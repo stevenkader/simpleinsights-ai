@@ -1,4 +1,3 @@
-
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -33,7 +32,7 @@ const Index = () => {
               </Button>
             </div>
             <div className="text-sm text-muted-foreground">
-              <span className="font-bold">No credit card required</span> to get started.
+              <span className="font-bold">100% Free</span> to get started.
             </div>
           </div>
         </div>
