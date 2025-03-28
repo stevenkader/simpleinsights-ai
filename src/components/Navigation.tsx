@@ -39,15 +39,6 @@ const Navigation = () => {
           </Link>
         </nav>
 
-        <div className="hidden md:flex items-center gap-4">
-          <Button variant="outline" size="sm" asChild>
-            <Link to="/login">Log In</Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link to="/signup">Sign Up</Link>
-          </Button>
-        </div>
-
         {/* Mobile menu button */}
         <button
           className="md:hidden p-2 rounded-md focus:outline-none"
@@ -94,14 +85,6 @@ const Navigation = () => {
             >
               Contact
             </Link>
-            <div className="flex flex-col gap-2 pt-2">
-              <Button variant="outline" asChild>
-                <Link to="/login" onClick={() => setIsOpen(false)}>Log In</Link>
-              </Button>
-              <Button asChild>
-                <Link to="/signup" onClick={() => setIsOpen(false)}>Sign Up</Link>
-              </Button>
-            </div>
           </div>
         </div>
       )}

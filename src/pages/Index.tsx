@@ -1,3 +1,4 @@
+
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -17,19 +18,19 @@ const Index = () => {
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                  Transform Your Personal Data Into 
-                  <span className="gradient-text"> Meaningful Insights</span>
+                  Understand Complex Documents with 
+                  <span className="gradient-text"> AI Simplicity</span>
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Our user-friendly analytics platform helps you understand your personal data, identify patterns, and make better decisions - completely free to start.
+                  SimpleInsights.ai helps you comprehend complex documents by breaking them down into clear, easy-to-understand concepts - completely free to start.
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Button size="lg" asChild>
-                  <Link to="/signup">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link to="/demo">Try It Now <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <Link to="/demo">See How It Works</Link>
+                  <Link to="/features">See How It Works</Link>
                 </Button>
               </div>
               <div className="text-sm text-muted-foreground">
@@ -43,7 +44,7 @@ const Index = () => {
                 <div className="relative z-10 overflow-hidden rounded-xl border bg-card p-2 shadow-xl">
                   <img
                     src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Analytics Dashboard Preview"
+                    alt="Document Analysis Preview"
                     className="rounded-lg w-full object-cover"
                     width={600}
                     height={400}
@@ -55,86 +56,29 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Social Proof Section */}
-      <section className="border-y bg-muted/40 py-8">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-            <div className="text-center">
-              <div className="text-2xl font-bold">25,000+</div>
-              <div className="text-sm text-muted-foreground">Happy Users</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">150M+</div>
-              <div className="text-sm text-muted-foreground">Data Points Analyzed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">98%</div>
-              <div className="text-sm text-muted-foreground">User Satisfaction</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">100%</div>
-              <div className="text-sm text-muted-foreground">Free to Start</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
+      {/* Tools Section */}
       <section className="section-padding">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Features</div>
+              <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Our Tools</div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Everything you need to understand your data
+                Three powerful ways to understand documents
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                SimpleInsights.ai provides powerful analytics tools that are easy to use and completely free for everyone.
+                SimpleInsights.ai provides three specialized tools designed to make complex documents approachable for everyone.
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-6 pt-12 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 pt-12 md:grid-cols-3">
             <Card className="hover-card">
               <CardContent className="flex flex-col items-start p-6">
                 <div className="feature-icon mb-4">
                   <Brain className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">Smart Analysis</h3>
-                <p className="text-muted-foreground">
-                  Our algorithms automatically detect patterns in your personal data, highlighting what's important to you.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="hover-card">
-              <CardContent className="flex flex-col items-start p-6">
-                <div className="feature-icon mb-4">
-                  <LineChart className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold">Interactive Dashboards</h3>
-                <p className="text-muted-foreground">
-                  Create custom dashboards with drag-and-drop simplicity. No technical skills required.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="hover-card">
-              <CardContent className="flex flex-col items-start p-6">
-                <div className="feature-icon mb-4">
-                  <BarChart3 className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold">Personal Insights</h3>
-                <p className="text-muted-foreground">
-                  Track trends in your spending, fitness, productivity, or any personal data to make better decisions.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="hover-card">
-              <CardContent className="flex flex-col items-start p-6">
-                <div className="feature-icon mb-4">
-                  <Lock className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold">Privacy First</h3>
-                <p className="text-muted-foreground">
-                  Your data stays private with strong encryption and user-focused privacy controls.
+                <h3 className="text-xl font-bold">Document Summarizer</h3>
+                <p className="text-muted-foreground mt-2">
+                  Extract key points and generate clear summaries from lengthy documents, reports, contracts, or research papers.
                 </p>
               </CardContent>
             </Card>
@@ -143,20 +87,20 @@ const Index = () => {
                 <div className="feature-icon mb-4">
                   <Zap className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">Real-time Updates</h3>
-                <p className="text-muted-foreground">
-                  Get instant insights as your data changes, helping you track progress toward personal goals.
+                <h3 className="text-xl font-bold">Concept Explainer</h3>
+                <p className="text-muted-foreground mt-2">
+                  Break down complex concepts into simple explanations that anyone can understand, with relevant examples and analogies.
                 </p>
               </CardContent>
             </Card>
             <Card className="hover-card">
               <CardContent className="flex flex-col items-start p-6">
                 <div className="feature-icon mb-4">
-                  <PieChart className="h-6 w-6" />
+                  <LineChart className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">Beautiful Visuals</h3>
-                <p className="text-muted-foreground">
-                  Transform complex data into clear, beautiful visualizations that are easy to understand.
+                <h3 className="text-xl font-bold">Interactive Q&A</h3>
+                <p className="text-muted-foreground mt-2">
+                  Ask specific questions about your document and get clear, accurate answers based on the content.
                 </p>
               </CardContent>
             </Card>
@@ -164,91 +108,130 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* How It Works Section */}
       <section className="section-padding bg-muted">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm">Testimonials</div>
+              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm">How It Works</div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Loved by people like you
+                Simple process, powerful results
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                See what our users are saying about how SimpleInsights.ai has transformed their personal data analysis.
+                Our AI-powered platform makes understanding complex documents easier than ever.
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-6 pt-12 md:grid-cols-4">
+            <Card className="overflow-hidden">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary mb-4">
+                  <span className="text-xl font-bold">1</span>
+                </div>
+                <h3 className="text-xl font-bold">Upload Your Document</h3>
+                <p className="text-muted-foreground mt-2">
+                  Simply upload the PDF, Word document, or text file you need help understanding.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="overflow-hidden">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary mb-4">
+                  <span className="text-xl font-bold">2</span>
+                </div>
+                <h3 className="text-xl font-bold">Choose Your Tool</h3>
+                <p className="text-muted-foreground mt-2">
+                  Select whether you want a summary, concept explanations, or interactive Q&A.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="overflow-hidden">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary mb-4">
+                  <span className="text-xl font-bold">3</span>
+                </div>
+                <h3 className="text-xl font-bold">Get Clear Insights</h3>
+                <p className="text-muted-foreground mt-2">
+                  Receive easy-to-understand explanations, summaries, and answers tailored to your needs.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="overflow-hidden">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary mb-4">
+                  <span className="text-xl font-bold">4</span>
+                </div>
+                <h3 className="text-xl font-bold">Save & Share</h3>
+                <p className="text-muted-foreground mt-2">
+                  Save your insights for future reference or easily share them with others who need to understand the document.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Use Cases Section */}
+      <section className="section-padding">
+        <div className="container px-4 md:px-6">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="space-y-2">
+              <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Use Cases</div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                Who can benefit?
+              </h2>
+              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                SimpleInsights.ai helps people from all walks of life understand complex information.
               </p>
             </div>
           </div>
           <div className="grid grid-cols-1 gap-6 pt-12 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="overflow-hidden">
+            <Card className="hover-card">
               <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <img
-                    alt="Testimonial author"
-                    className="rounded-full border object-cover"
-                    height="64"
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
-                    style={{
-                      aspectRatio: "64/64",
-                      objectFit: "cover",
-                    }}
-                    width="64"
-                  />
-                  <div className="grid gap-1">
-                    <h4 className="font-semibold">Sarah Johnson</h4>
-                    <p className="text-sm text-muted-foreground">Fitness Enthusiast</p>
-                  </div>
-                </div>
-                <blockquote className="mt-4 border-l-2 pl-4 italic">
-                  "SimpleInsights.ai has revolutionized how I track my fitness progress. I can actually see patterns in my workouts and nutrition that I never noticed before!"
-                </blockquote>
+                <h3 className="text-xl font-bold">Students</h3>
+                <p className="text-muted-foreground mt-2">
+                  Break down complex academic papers, textbooks, and study materials into understandable concepts.
+                </p>
               </CardContent>
             </Card>
-            <Card className="overflow-hidden">
+            <Card className="hover-card">
               <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <img
-                    alt="Testimonial author"
-                    className="rounded-full border object-cover"
-                    height="64"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
-                    style={{
-                      aspectRatio: "64/64",
-                      objectFit: "cover",
-                    }}
-                    width="64"
-                  />
-                  <div className="grid gap-1">
-                    <h4 className="font-semibold">David Chen</h4>
-                    <p className="text-sm text-muted-foreground">Budget Planner</p>
-                  </div>
-                </div>
-                <blockquote className="mt-4 border-l-2 pl-4 italic">
-                  "The budgeting insights have been a game-changer for my personal finances. I've cut unnecessary spending by 25% in just three months."
-                </blockquote>
+                <h3 className="text-xl font-bold">Researchers</h3>
+                <p className="text-muted-foreground mt-2">
+                  Quickly understand key findings from research papers outside your immediate field of expertise.
+                </p>
               </CardContent>
             </Card>
-            <Card className="overflow-hidden">
+            <Card className="hover-card">
               <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <img
-                    alt="Testimonial author"
-                    className="rounded-full border object-cover"
-                    height="64"
-                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80"
-                    style={{
-                      aspectRatio: "64/64",
-                      objectFit: "cover",
-                    }}
-                    width="64"
-                  />
-                  <div className="grid gap-1">
-                    <h4 className="font-semibold">Amara Patel</h4>
-                    <p className="text-sm text-muted-foreground">Student</p>
-                  </div>
-                </div>
-                <blockquote className="mt-4 border-l-2 pl-4 italic">
-                  "As a student tracking my study habits, this tool has been invaluable. The simplicity and affordability make it perfect for my budget!"
-                </blockquote>
+                <h3 className="text-xl font-bold">General Public</h3>
+                <p className="text-muted-foreground mt-2">
+                  Make sense of legal documents, terms of service, insurance policies, and more without the jargon.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="hover-card">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold">Professionals</h3>
+                <p className="text-muted-foreground mt-2">
+                  Quickly grasp the essentials of industry reports, technical documentation, and specialized content.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="hover-card">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold">Non-Native Speakers</h3>
+                <p className="text-muted-foreground mt-2">
+                  Get help understanding complex documents in languages you're still mastering.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="hover-card">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold">Busy Individuals</h3>
+                <p className="text-muted-foreground mt-2">
+                  Save time by quickly extracting key information from lengthy documents when you're short on time.
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -261,19 +244,19 @@ const Index = () => {
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
             <div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Ready to understand your data better?
+                Ready to understand complex documents better?
               </h2>
             </div>
             <div className="flex flex-col items-start gap-4">
               <p className="text-lg/relaxed lg:text-xl/relaxed">
-                Join thousands of people who use SimpleInsights.ai to make better personal decisions. Start today.
+                Join thousands of people who use SimpleInsights.ai to make sense of complex information. Start today.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Button size="lg" variant="secondary" asChild>
-                  <Link to="/signup">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link to="/demo">Try It Now <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <Button variant="outline" size="lg" className="bg-transparent border-white hover:bg-white/10" asChild>
-                  <Link to="/demo">See How It Works</Link>
+                  <Link to="/features">See How It Works</Link>
                 </Button>
               </div>
             </div>
@@ -281,76 +264,58 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Blog Preview Section */}
+      {/* Privacy Promise Section */}
       <section className="section-padding">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Blog</div>
+              <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Privacy</div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Latest insights
+                Your documents stay private
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Discover tips, strategies, and helpful guides to make the most of your personal data.
+                We're committed to protecting your information and the privacy of your documents.
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-6 pt-12 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="overflow-hidden hover-card">
-              <img
-                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Data Visualization Trends"
-                className="aspect-[16/9] w-full object-cover"
-              />
+          <div className="grid grid-cols-1 gap-6 pt-12 md:grid-cols-3">
+            <Card className="overflow-hidden">
               <CardContent className="p-6">
-                <div className="text-sm text-muted-foreground">June 12, 2023</div>
-                <h3 className="text-xl font-bold mt-2">5 Simple Ways to Visualize Your Personal Data</h3>
-                <p className="text-muted-foreground mt-2">
-                  Learn how to create beautiful visualizations that make your personal data more meaningful.
+                <div className="flex justify-center mb-4">
+                  <Lock className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold text-center">Secure Processing</h3>
+                <p className="text-muted-foreground mt-2 text-center">
+                  Your documents are processed in a secure environment and never stored longer than necessary.
                 </p>
-                <Button variant="link" className="px-0 mt-4" asChild>
-                  <Link to="/blog/data-visualization-tips">Read More <ArrowRight className="ml-1 h-4 w-4" /></Link>
-                </Button>
               </CardContent>
             </Card>
-            <Card className="overflow-hidden hover-card">
-              <img
-                src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Personal Finance Tracking"
-                className="aspect-[16/9] w-full object-cover"
-              />
+            <Card className="overflow-hidden">
               <CardContent className="p-6">
-                <div className="text-sm text-muted-foreground">May 28, 2023</div>
-                <h3 className="text-xl font-bold mt-2">How to Track Your Finances Like a Pro</h3>
-                <p className="text-muted-foreground mt-2">
-                  Discover how to use simple data analysis to improve your personal budgeting and savings.
+                <div className="flex justify-center mb-4">
+                  <Lock className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold text-center">No Data Selling</h3>
+                <p className="text-muted-foreground mt-2 text-center">
+                  We will never sell your data or documents to third parties. Your information stays yours.
                 </p>
-                <Button variant="link" className="px-0 mt-4" asChild>
-                  <Link to="/blog/personal-finance-tracking">Read More <ArrowRight className="ml-1 h-4 w-4" /></Link>
-                </Button>
               </CardContent>
             </Card>
-            <Card className="overflow-hidden hover-card">
-              <img
-                src="https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Privacy Tips"
-                className="aspect-[16/9] w-full object-cover"
-              />
+            <Card className="overflow-hidden">
               <CardContent className="p-6">
-                <div className="text-sm text-muted-foreground">April 15, 2023</div>
-                <h3 className="text-xl font-bold mt-2">Protecting Your Personal Data: What You Need to Know</h3>
-                <p className="text-muted-foreground mt-2">
-                  Simple steps you can take to keep your personal information safe while still getting valuable insights.
+                <div className="flex justify-center mb-4">
+                  <Lock className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold text-center">User Control</h3>
+                <p className="text-muted-foreground mt-2 text-center">
+                  You can delete your documents and any generated insights at any time.
                 </p>
-                <Button variant="link" className="px-0 mt-4" asChild>
-                  <Link to="/blog/personal-data-protection">Read More <ArrowRight className="ml-1 h-4 w-4" /></Link>
-                </Button>
               </CardContent>
             </Card>
           </div>
           <div className="mt-10 flex justify-center">
             <Button variant="outline" asChild>
-              <Link to="/blog">View All Articles</Link>
+              <Link to="/privacy">Learn More About Our Privacy Policy</Link>
             </Button>
           </div>
         </div>
