@@ -1,3 +1,4 @@
+
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -110,9 +111,9 @@ const Index = () => {
                 <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary mb-4">
                   <span className="text-xl font-bold">1</span>
                 </div>
-                <h3 className="text-xl font-bold">Upload Your Document</h3>
+                <h3 className="text-xl font-bold">Choose Your Tool</h3>
                 <p className="text-muted-foreground mt-2">
-                  Simply upload the PDF, Word document, or text file you need help understanding.
+                  Select whether you want a legal explanation, medical interpretation, or translation.
                 </p>
               </CardContent>
             </Card>
@@ -121,9 +122,9 @@ const Index = () => {
                 <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary mb-4">
                   <span className="text-xl font-bold">2</span>
                 </div>
-                <h3 className="text-xl font-bold">Choose Your Tool</h3>
+                <h3 className="text-xl font-bold">Upload Your Document</h3>
                 <p className="text-muted-foreground mt-2">
-                  Select whether you want a legal explanation, medical interpretation, or translation.
+                  Simply upload the PDF, Word document, or text file you need help understanding.
                 </p>
               </CardContent>
             </Card>
