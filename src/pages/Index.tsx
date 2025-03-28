@@ -1,4 +1,3 @@
-
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -22,19 +21,19 @@ const Index = () => {
                   <span className="gradient-text"> Meaningful Insights</span>
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Our user-friendly analytics platform helps you understand your personal data, identify patterns, and make better decisions - completely free.
+                  Our user-friendly analytics platform helps you understand your personal data, identify patterns, and make better decisions - completely free to start.
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Button size="lg" asChild>
-                  <Link to="/signup">Get Started - It's Free <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link to="/signup">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
                   <Link to="/demo">See How It Works</Link>
                 </Button>
               </div>
               <div className="text-sm text-muted-foreground">
-                <span className="font-bold">100% Free</span> - No credit card required, no hidden fees.
+                <span className="font-bold">No credit card required</span> to get started.
               </div>
             </div>
             <div className="flex items-center justify-center">
@@ -74,7 +73,7 @@ const Index = () => {
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold">100%</div>
-              <div className="text-sm text-muted-foreground">Free Forever</div>
+              <div className="text-sm text-muted-foreground">Free to Start</div>
             </div>
           </div>
         </div>
@@ -248,7 +247,7 @@ const Index = () => {
                   </div>
                 </div>
                 <blockquote className="mt-4 border-l-2 pl-4 italic">
-                  "As a student tracking my study habits, this tool has been invaluable. The best part? It's completely free, which is perfect for my budget!"
+                  "As a student tracking my study habits, this tool has been invaluable. The simplicity and affordability make it perfect for my budget!"
                 </blockquote>
               </CardContent>
             </Card>
@@ -267,11 +266,11 @@ const Index = () => {
             </div>
             <div className="flex flex-col items-start gap-4">
               <p className="text-lg/relaxed lg:text-xl/relaxed">
-                Join thousands of people who use SimpleInsights.ai to make better personal decisions. Start for free today.
+                Join thousands of people who use SimpleInsights.ai to make better personal decisions. Start today.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Button size="lg" variant="secondary" asChild>
-                  <Link to="/signup">Get Started For Free <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link to="/signup">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <Button variant="outline" size="lg" className="bg-transparent border-white hover:bg-white/10" asChild>
                   <Link to="/demo">See How It Works</Link>
