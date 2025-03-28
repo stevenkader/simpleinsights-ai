@@ -18,23 +18,23 @@ const Index = () => {
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                  Transform Your Business Data Into 
-                  <span className="gradient-text"> Actionable Insights</span>
+                  Transform Your Personal Data Into 
+                  <span className="gradient-text"> Meaningful Insights</span>
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Our AI-powered analytics platform helps you understand your data, identify trends, and make better business decisions without the complexity.
+                  Our user-friendly analytics platform helps you understand your personal data, identify patterns, and make better decisions - completely free.
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Button size="lg" asChild>
-                  <Link to="/signup">Start Free Trial <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link to="/signup">Get Started - It's Free <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <Link to="/demo">Request Demo</Link>
+                  <Link to="/demo">See How It Works</Link>
                 </Button>
               </div>
               <div className="text-sm text-muted-foreground">
-                No credit card required. Free 14-day trial.
+                <span className="font-bold">100% Free</span> - No credit card required, no hidden fees.
               </div>
             </div>
             <div className="flex items-center justify-center">
@@ -61,8 +61,8 @@ const Index = () => {
         <div className="container px-4 md:px-6">
           <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
             <div className="text-center">
-              <div className="text-2xl font-bold">2,500+</div>
-              <div className="text-sm text-muted-foreground">Active Users</div>
+              <div className="text-2xl font-bold">25,000+</div>
+              <div className="text-sm text-muted-foreground">Happy Users</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold">150M+</div>
@@ -70,11 +70,11 @@ const Index = () => {
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold">98%</div>
-              <div className="text-sm text-muted-foreground">Customer Satisfaction</div>
+              <div className="text-sm text-muted-foreground">User Satisfaction</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold">30%</div>
-              <div className="text-sm text-muted-foreground">Avg. Time Saved</div>
+              <div className="text-2xl font-bold">100%</div>
+              <div className="text-sm text-muted-foreground">Free Forever</div>
             </div>
           </div>
         </div>
@@ -90,7 +90,7 @@ const Index = () => {
                 Everything you need to understand your data
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                SimpleInsights.ai provides powerful analytics tools that are easy to use and help you make data-driven decisions.
+                SimpleInsights.ai provides powerful analytics tools that are easy to use and completely free for everyone.
               </p>
             </div>
           </div>
@@ -100,9 +100,9 @@ const Index = () => {
                 <div className="feature-icon mb-4">
                   <Brain className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">AI-Powered Analysis</h3>
+                <h3 className="text-xl font-bold">Smart Analysis</h3>
                 <p className="text-muted-foreground">
-                  Our AI algorithms automatically detect patterns and anomalies in your data, highlighting what's important.
+                  Our algorithms automatically detect patterns in your personal data, highlighting what's important to you.
                 </p>
               </CardContent>
             </Card>
@@ -122,9 +122,9 @@ const Index = () => {
                 <div className="feature-icon mb-4">
                   <BarChart3 className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">Predictive Analytics</h3>
+                <h3 className="text-xl font-bold">Personal Insights</h3>
                 <p className="text-muted-foreground">
-                  Forecast future trends based on historical data to make proactive business decisions.
+                  Track trends in your spending, fitness, productivity, or any personal data to make better decisions.
                 </p>
               </CardContent>
             </Card>
@@ -133,9 +133,9 @@ const Index = () => {
                 <div className="feature-icon mb-4">
                   <Lock className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">Enterprise Security</h3>
+                <h3 className="text-xl font-bold">Privacy First</h3>
                 <p className="text-muted-foreground">
-                  Bank-level encryption and compliance with major data protection regulations.
+                  Your data stays private with strong encryption and user-focused privacy controls.
                 </p>
               </CardContent>
             </Card>
@@ -144,9 +144,9 @@ const Index = () => {
                 <div className="feature-icon mb-4">
                   <Zap className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">Real-time Insights</h3>
+                <h3 className="text-xl font-bold">Real-time Updates</h3>
                 <p className="text-muted-foreground">
-                  Get instant updates as your data changes, enabling quick decision-making.
+                  Get instant insights as your data changes, helping you track progress toward personal goals.
                 </p>
               </CardContent>
             </Card>
@@ -155,9 +155,9 @@ const Index = () => {
                 <div className="feature-icon mb-4">
                   <PieChart className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">Data Visualization</h3>
+                <h3 className="text-xl font-bold">Beautiful Visuals</h3>
                 <p className="text-muted-foreground">
-                  Transform complex data into clear, compelling visualizations that tell a story.
+                  Transform complex data into clear, beautiful visualizations that are easy to understand.
                 </p>
               </CardContent>
             </Card>
@@ -172,10 +172,10 @@ const Index = () => {
             <div className="space-y-2">
               <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm">Testimonials</div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Trusted by businesses worldwide
+                Loved by people like you
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                See what our customers are saying about how SimpleInsights.ai has transformed their business analytics.
+                See what our users are saying about how SimpleInsights.ai has transformed their personal data analysis.
               </p>
             </div>
           </div>
@@ -196,11 +196,11 @@ const Index = () => {
                   />
                   <div className="grid gap-1">
                     <h4 className="font-semibold">Sarah Johnson</h4>
-                    <p className="text-sm text-muted-foreground">CMO, TechStart Inc.</p>
+                    <p className="text-sm text-muted-foreground">Fitness Enthusiast</p>
                   </div>
                 </div>
                 <blockquote className="mt-4 border-l-2 pl-4 italic">
-                  "SimpleInsights.ai has revolutionized how we approach marketing analytics. We've increased our ROI by 40% since implementing the platform."
+                  "SimpleInsights.ai has revolutionized how I track my fitness progress. I can actually see patterns in my workouts and nutrition that I never noticed before!"
                 </blockquote>
               </CardContent>
             </Card>
@@ -220,11 +220,11 @@ const Index = () => {
                   />
                   <div className="grid gap-1">
                     <h4 className="font-semibold">David Chen</h4>
-                    <p className="text-sm text-muted-foreground">Head of Operations, GlobalRetail</p>
+                    <p className="text-sm text-muted-foreground">Budget Planner</p>
                   </div>
                 </div>
                 <blockquote className="mt-4 border-l-2 pl-4 italic">
-                  "The predictive analytics feature has been a game-changer for our inventory management. We've reduced wastage by 25% in just three months."
+                  "The budgeting insights have been a game-changer for my personal finances. I've cut unnecessary spending by 25% in just three months."
                 </blockquote>
               </CardContent>
             </Card>
@@ -244,11 +244,11 @@ const Index = () => {
                   />
                   <div className="grid gap-1">
                     <h4 className="font-semibold">Amara Patel</h4>
-                    <p className="text-sm text-muted-foreground">CEO, FinSolve Partners</p>
+                    <p className="text-sm text-muted-foreground">Student</p>
                   </div>
                 </div>
                 <blockquote className="mt-4 border-l-2 pl-4 italic">
-                  "As a financial services provider, data security is paramount. SimpleInsights.ai provides the robust protection we need while delivering powerful analytics."
+                  "As a student tracking my study habits, this tool has been invaluable. The best part? It's completely free, which is perfect for my budget!"
                 </blockquote>
               </CardContent>
             </Card>
@@ -262,19 +262,19 @@ const Index = () => {
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
             <div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Ready to transform your data into insights?
+                Ready to understand your data better?
               </h2>
             </div>
             <div className="flex flex-col items-start gap-4">
               <p className="text-lg/relaxed lg:text-xl/relaxed">
-                Join thousands of businesses that use SimpleInsights.ai to make better decisions, faster. Start your free trial today.
+                Join thousands of people who use SimpleInsights.ai to make better personal decisions. Start for free today.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Button size="lg" variant="secondary" asChild>
-                  <Link to="/signup">Start Free Trial <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link to="/signup">Get Started For Free <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <Button variant="outline" size="lg" className="bg-transparent border-white hover:bg-white/10" asChild>
-                  <Link to="/demo">Schedule a Demo</Link>
+                  <Link to="/demo">See How It Works</Link>
                 </Button>
               </div>
             </div>
@@ -292,7 +292,7 @@ const Index = () => {
                 Latest insights
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Discover tips, strategies, and industry trends to maximize your data's potential.
+                Discover tips, strategies, and helpful guides to make the most of your personal data.
               </p>
             </div>
           </div>
@@ -305,46 +305,46 @@ const Index = () => {
               />
               <CardContent className="p-6">
                 <div className="text-sm text-muted-foreground">June 12, 2023</div>
-                <h3 className="text-xl font-bold mt-2">5 Data Visualization Trends to Watch in 2023</h3>
+                <h3 className="text-xl font-bold mt-2">5 Simple Ways to Visualize Your Personal Data</h3>
                 <p className="text-muted-foreground mt-2">
-                  Learn about the latest trends in data visualization and how they can enhance your business analytics.
+                  Learn how to create beautiful visualizations that make your personal data more meaningful.
                 </p>
                 <Button variant="link" className="px-0 mt-4" asChild>
-                  <Link to="/blog/data-visualization-trends">Read More <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                  <Link to="/blog/data-visualization-tips">Read More <ArrowRight className="ml-1 h-4 w-4" /></Link>
                 </Button>
               </CardContent>
             </Card>
             <Card className="overflow-hidden hover-card">
               <img
                 src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="AI in Business Analytics"
+                alt="Personal Finance Tracking"
                 className="aspect-[16/9] w-full object-cover"
               />
               <CardContent className="p-6">
                 <div className="text-sm text-muted-foreground">May 28, 2023</div>
-                <h3 className="text-xl font-bold mt-2">How AI is Revolutionizing Business Analytics</h3>
+                <h3 className="text-xl font-bold mt-2">How to Track Your Finances Like a Pro</h3>
                 <p className="text-muted-foreground mt-2">
-                  Discover how artificial intelligence is transforming data analysis and decision-making processes.
+                  Discover how to use simple data analysis to improve your personal budgeting and savings.
                 </p>
                 <Button variant="link" className="px-0 mt-4" asChild>
-                  <Link to="/blog/ai-business-analytics">Read More <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                  <Link to="/blog/personal-finance-tracking">Read More <ArrowRight className="ml-1 h-4 w-4" /></Link>
                 </Button>
               </CardContent>
             </Card>
             <Card className="overflow-hidden hover-card">
               <img
                 src="https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Data Privacy Compliance"
+                alt="Privacy Tips"
                 className="aspect-[16/9] w-full object-cover"
               />
               <CardContent className="p-6">
                 <div className="text-sm text-muted-foreground">April 15, 2023</div>
-                <h3 className="text-xl font-bold mt-2">Data Privacy Compliance: What You Need to Know</h3>
+                <h3 className="text-xl font-bold mt-2">Protecting Your Personal Data: What You Need to Know</h3>
                 <p className="text-muted-foreground mt-2">
-                  Stay compliant with evolving data privacy regulations while still leveraging your data effectively.
+                  Simple steps you can take to keep your personal information safe while still getting valuable insights.
                 </p>
                 <Button variant="link" className="px-0 mt-4" asChild>
-                  <Link to="/blog/data-privacy-compliance">Read More <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                  <Link to="/blog/personal-data-protection">Read More <ArrowRight className="ml-1 h-4 w-4" /></Link>
                 </Button>
               </CardContent>
             </Card>

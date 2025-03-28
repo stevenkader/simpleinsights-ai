@@ -17,7 +17,7 @@ const Privacy = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
               <p>
-                SimpleInsights.ai ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.
+                SimpleInsights.ai ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our free services.
               </p>
               <p>
                 Please read this Privacy Policy carefully. By accessing or using our services, you acknowledge that you have read, understood, and agree to be bound by all the terms of this Privacy Policy.
@@ -29,12 +29,12 @@ const Privacy = () => {
               
               <h3 className="text-xl font-medium mb-2">Personal Information</h3>
               <p>
-                We may collect personally identifiable information, such as your name, email address, company name, and payment information when you register for an account or subscribe to our services.
+                We may collect personally identifiable information, such as your name and email address when you register for an account to use our free services.
               </p>
               
-              <h3 className="text-xl font-medium mb-2 mt-4">Data Insights</h3>
+              <h3 className="text-xl font-medium mb-2 mt-4">Personal Data Insights</h3>
               <p>
-                When you use our analytics services, we collect and process the data you provide to generate insights. This data may include business metrics, user behavior statistics, and other information you choose to analyze.
+                When you use our analytics services, we collect and process the data you provide to generate insights. This data may include personal spending, fitness metrics, productivity statistics, and other information you choose to analyze.
               </p>
               
               <h3 className="text-xl font-medium mb-2 mt-4">Usage Information</h3>
@@ -53,17 +53,27 @@ const Privacy = () => {
               <h2 className="text-2xl font-semibold mb-4">How We Use Your Information</h2>
               <p>We may use the information we collect for various purposes, including to:</p>
               <ul className="list-disc pl-6 mt-2">
-                <li>Provide, maintain, and improve our services</li>
-                <li>Process transactions and send related information</li>
+                <li>Provide, maintain, and improve our free services</li>
+                <li>Process your data to generate personal insights</li>
                 <li>Send administrative information, such as updates, security alerts, and support messages</li>
                 <li>Respond to your comments, questions, and requests</li>
                 <li>Understand how users interact with our services</li>
                 <li>Personalize your experience and provide content recommendations</li>
-                <li>Deliver targeted marketing, service updates, and promotional offers</li>
+                <li>Deliver service updates and important notifications</li>
                 <li>Monitor and analyze trends, usage, and activities</li>
                 <li>Detect, investigate, and prevent fraudulent transactions and other illegal activities</li>
                 <li>Comply with legal obligations</li>
               </ul>
+            </section>
+            
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold mb-4">Our Free Service Commitment</h2>
+              <p>
+                SimpleInsights.ai is committed to providing our service completely free of charge to individual users. We do not sell your personal data to third parties to monetize our service.
+              </p>
+              <p>
+                To maintain our free service, we may display non-personalized ads or seek voluntary donations from users who find our service valuable, but these are completely optional and do not affect your access to our core features.
+              </p>
             </section>
             
             <section className="mb-8">
