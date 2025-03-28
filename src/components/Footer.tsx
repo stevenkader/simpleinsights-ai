@@ -9,9 +9,9 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="relative h-7 w-7 rounded-md bg-gradient-to-br from-insights-blue to-insights-navy flex items-center justify-center">
-                <span className="text-white font-bold text-sm">TV</span>
+                <span className="text-white font-bold text-sm">SI</span>
               </div>
-              <span className="font-bold text-xl">Trusted Visions</span>
+              <span className="font-bold text-xl">SimpleInsights.ai</span>
             </div>
             <p className="text-sm text-muted-foreground max-w-xs">
               Transform your business data into actionable insights with our AI-powered analytics platform.
@@ -99,7 +99,7 @@ const Footer = () => {
         
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Trusted Visions. All rights reserved.
+            © {new Date().getFullYear()} SimpleInsights.ai. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <a href="#" className="text-muted-foreground hover:text-foreground">
