@@ -1,24 +1,11 @@
-
 import { useState, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Form, FormField, FormItem, FormControl, FormMessage } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { Send, Loader2, Upload, FileText, ArrowRight } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, Upload, FileText, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-interface TextQueryFormValues {
-  legalQuery: string;
-}
-
-interface FileUploadFormValues {
-  file: FileList | null;
-}
 
 const LegalAssistant = () => {
   const [response, setResponse] = useState<string>("");
@@ -27,40 +14,7 @@ const LegalAssistant = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  // Text query form
-  const textForm = useForm<TextQueryFormValues>({
-    defaultValues: {
-      legalQuery: "",
-    },
-  });
-
-  // File upload form
-  const fileForm = useForm<FileUploadFormValues>({
-    defaultValues: {
-      file: null,
-    },
-  });
-
-  const onSubmitText = async (data: TextQueryFormValues) => {
-    setIsLoading(true);
-    setResponse("");
-    
-    try {
-      // This is a placeholder for the actual API call
-      // We'll replace this with the real backend call once you provide the API details
-      setTimeout(() => {
-        setResponse("This is a simulated response from the legal assistant. This will be replaced with actual API responses once integrated with your backend.");
-        setIsLoading(false);
-      }, 1500);
-      
-    } catch (error) {
-      console.error("Error querying legal assistant:", error);
-      setResponse("Sorry, there was an error processing your request. Please try again.");
-      setIsLoading(false);
-    }
-  };
-
-  const onSubmitFile = async () => {
+  const processFile = async () => {
     if (!fileInputRef.current?.files?.length) {
       toast({
         title: "No file selected",
@@ -86,7 +40,7 @@ const LegalAssistant = () => {
     
     try {
       // This is a placeholder for the actual file upload API call
-      // We'll replace this with the real backend call once you provide the API details
+      // We'll replace this with the real backend call once API details are provided
       setTimeout(() => {
         setResponse(`Analysis of "${file.name}": This is a simulated response from processing your PDF. This will be replaced with actual API responses once integrated with your backend.`);
         setIsLoading(false);
@@ -107,14 +61,6 @@ const LegalAssistant = () => {
     }
   };
 
-  const handleDemoView = () => {
-    setResponse("Loading demo document...");
-    setTimeout(() => {
-      setResponse("This is a sample legal analysis that would be provided for a typical legal document. It includes key points, potential issues, and recommended actions.");
-      setIsLoading(false);
-    }, 1000);
-  };
-
   const handleDemoProcess = () => {
     setIsLoading(true);
     setResponse("");
@@ -132,180 +78,82 @@ const LegalAssistant = () => {
           <div className="mb-8 text-center">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Legal Document Assistant</h1>
             <p className="text-lg text-muted-foreground">
-              Get instant analysis of legal documents and answers to your legal questions
+              Upload your legal documents for instant AI-powered analysis
             </p>
           </div>
 
-          <Tabs defaultValue="text" className="w-full mb-8">
-            <TabsList className="grid grid-cols-2 w-full mb-6">
-              <TabsTrigger value="text">Ask a Question</TabsTrigger>
-              <TabsTrigger value="file">Upload Document</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="text">
-              <div className="grid md:grid-cols-2 gap-8">
-                <Card className="h-full">
-                  <CardHeader>
-                    <CardTitle>Try Free Demo</CardTitle>
-                    <CardDescription>
-                      See how our legal assistant works with sample documents and questions
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button 
-                      onClick={handleDemoView}
-                      className="w-full justify-start"
-                      variant="outline"
-                    >
-                      <FileText className="mr-2" />
-                      View Demo PDF
-                    </Button>
-                    <Button 
-                      onClick={handleDemoProcess}
-                      className="w-full justify-start"
-                    >
-                      <ArrowRight className="mr-2" />
-                      Process Demo PDF
-                    </Button>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Ask Your Question</CardTitle>
-                    <CardDescription>
-                      Describe your legal situation or ask a specific question
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Form {...textForm}>
-                      <form onSubmit={textForm.handleSubmit(onSubmitText)} className="space-y-4">
-                        <FormField
-                          control={textForm.control}
-                          name="legalQuery"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Textarea
-                                  placeholder="Describe your legal situation or ask a legal question..."
-                                  className="min-h-[150px] resize-none"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <div className="flex justify-end">
-                          <Button 
-                            type="submit" 
-                            className="flex items-center gap-2"
-                            disabled={isLoading || !textForm.watch("legalQuery")}
-                          >
-                            {isLoading ? (
-                              <>
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                                Processing...
-                              </>
-                            ) : (
-                              <>
-                                <Send className="h-4 w-4" />
-                                Submit
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                      </form>
-                    </Form>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="file">
-              <div className="grid md:grid-cols-2 gap-8">
-                <Card className="h-full">
-                  <CardHeader>
-                    <CardTitle>Try Free Demo</CardTitle>
-                    <CardDescription>
-                      See how our legal assistant works with sample documents and questions
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button 
-                      onClick={handleDemoView}
-                      className="w-full justify-start"
-                      variant="outline"
-                    >
-                      <FileText className="mr-2" />
-                      View Demo PDF
-                    </Button>
-                    <Button 
-                      onClick={handleDemoProcess}
-                      className="w-full justify-start"
-                    >
-                      <ArrowRight className="mr-2" />
-                      Process Demo PDF
-                    </Button>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Upload and Process File</CardTitle>
-                    <CardDescription>
-                      Upload your legal document for AI analysis
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="grid w-full max-w-sm items-center gap-1.5">
-                        <label htmlFor="file-upload" className="text-sm font-medium">
-                          Select a PDF file:
-                        </label>
-                        <div className="flex items-center gap-2">
-                          <Input
-                            id="file-upload"
-                            type="file"
-                            ref={fileInputRef}
-                            accept="application/pdf"
-                            className="cursor-pointer"
-                            onChange={handleFileChange}
-                          />
-                        </div>
-                        {fileName && (
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Selected: {fileName}
-                          </p>
-                        )}
-                      </div>
-                      
-                      <div className="flex justify-end">
-                        <Button 
-                          onClick={onSubmitFile}
-                          className="flex items-center gap-2"
-                          disabled={isLoading || !fileName}
-                        >
-                          {isLoading ? (
-                            <>
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                              Processing...
-                            </>
-                          ) : (
-                            <>
-                              <Upload className="h-4 w-4" />
-                              Process
-                            </>
-                          )}
-                        </Button>
-                      </div>
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <Card className="h-full">
+              <CardHeader>
+                <CardTitle>Try Free Demo</CardTitle>
+                <CardDescription>
+                  See how our document analysis works with a sample legal document
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Button 
+                  onClick={handleDemoProcess}
+                  className="w-full justify-start"
+                >
+                  <ArrowRight className="mr-2" />
+                  Process Demo Document
+                </Button>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Upload Document</CardTitle>
+                <CardDescription>
+                  Upload your legal document for AI analysis
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid w-full max-w-sm items-center gap-1.5">
+                    <label htmlFor="file-upload" className="text-sm font-medium">
+                      Select a PDF file:
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        id="file-upload"
+                        type="file"
+                        ref={fileInputRef}
+                        accept="application/pdf"
+                        className="cursor-pointer"
+                        onChange={handleFileChange}
+                      />
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
+                    {fileName && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Selected: {fileName}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="flex justify-end">
+                    <Button 
+                      onClick={processFile}
+                      className="flex items-center gap-2"
+                      disabled={isLoading || !fileName}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="h-4 w-4" />
+                          Process Document
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
           
           {response && (
             <Card className="bg-slate-50 dark:bg-slate-900 mb-8 animate-fade-in">
