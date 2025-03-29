@@ -4,13 +4,21 @@ import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, Upload, FileText, ArrowRight } from "lucide-react";
+import { Loader2, Upload, FileText, ArrowRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const LegalAssistant = () => {
   const [response, setResponse] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>("");
+  const [showDemoDialog, setShowDemoDialog] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -91,6 +99,14 @@ const LegalAssistant = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                <Button 
+                  onClick={() => setShowDemoDialog(true)}
+                  variant="outline"
+                  className="w-full justify-start"
+                >
+                  <Eye className="mr-2" />
+                  View Demo PDF
+                </Button>
                 <Button 
                   onClick={handleDemoProcess}
                   className="w-full justify-start"
@@ -180,6 +196,24 @@ const LegalAssistant = () => {
         </div>
       </main>
       <Footer />
+
+      <Dialog open={showDemoDialog} onOpenChange={setShowDemoDialog}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Sample Rental Agreement</DialogTitle>
+            <DialogDescription>
+              This is an example document used to demonstrate our AI analysis capabilities
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex-1 overflow-auto">
+            <iframe 
+              src="https://drive.google.com/viewerng/viewer?embedded=true&url=https://www.courts.ca.gov/documents/California-Residential-Lease-Agreement.pdf" 
+              className="w-full h-[70vh]"
+              title="Demo PDF"
+            ></iframe>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
