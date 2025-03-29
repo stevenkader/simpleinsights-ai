@@ -1,4 +1,3 @@
-
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -63,6 +62,11 @@ const Index = () => {
                 <p className="text-muted-foreground mt-2">
                   Upload PDF of legal contract to get detailed laymen explanation.
                 </p>
+                <div className="mt-4">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/legal-assistant">Try It Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
             <Card className="hover-card">
@@ -74,6 +78,11 @@ const Index = () => {
                 <p className="text-muted-foreground mt-2">
                   Upload PDF of test results to understand them.
                 </p>
+                <div className="mt-4">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/demo">Try It Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
             <Card className="hover-card">
@@ -85,6 +94,11 @@ const Index = () => {
                 <p className="text-muted-foreground mt-2">
                   Upload PDF in any language and get it translated to English.
                 </p>
+                <div className="mt-4">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/demo">Try It Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -236,10 +250,10 @@ const Index = () => {
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Button size="lg" variant="secondary" asChild>
-                  <Link to="/demo">Try It Now <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link to="/legal-assistant">Try It Now <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <Button variant="outline" size="lg" className="bg-transparent border-white hover:bg-white/10" asChild>
-                  <Link to="/demo">See How It Works</Link>
+                  <Link to="/legal-assistant">See How It Works</Link>
                 </Button>
               </div>
             </div>
