@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -201,16 +200,16 @@ const LegalAssistant = () => {
       <Dialog open={showDemoDialog} onOpenChange={setShowDemoDialog}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle>Sample Rental Agreement</DialogTitle>
+            <DialogTitle>Sample Contract Document</DialogTitle>
             <DialogDescription>
               This is an example document used to demonstrate our AI analysis capabilities
             </DialogDescription>
           </DialogHeader>
           <div className="flex-1 overflow-auto">
             <iframe 
-              src="/sample-rental-agreement.pdf" 
+              src="/demo-contract.pdf" 
               className="w-full h-[70vh]"
-              title="Demo PDF"
+              title="Demo Contract"
             ></iframe>
           </div>
         </DialogContent>
