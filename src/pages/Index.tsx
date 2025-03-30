@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Brain, FileText, FileType, Globe, Lock, Zap } from "lucide-react";
+import { ArrowRight, FileText, FileType, Globe, Lock, Zap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const Index = () => {
@@ -10,8 +10,8 @@ const Index = () => {
     <div className="flex min-h-screen flex-col">
       <Navigation />
       
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-background to-muted py-20 md:py-32">
+      {/* Hero Section - Simplified */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-background to-muted py-20">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col justify-center space-y-4 mx-auto text-center max-w-3xl">
             <div className="space-y-2">
@@ -19,31 +19,17 @@ const Index = () => {
                 Understand Complex Documents with 
                 <span className="gradient-text"> AI Simplicity</span>
               </h1>
-              <p className="max-w-[600px] mx-auto text-muted-foreground md:text-xl">
-                SimpleInsights.ai helps you comprehend complex documents by breaking them down into clear, easy-to-understand concepts - completely free to start.
-              </p>
-            </div>
-            <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center">
-              <Button size="lg" asChild>
-                <Link to="/demo">Try It Now <ArrowRight className="ml-2 h-4 w-4" /></Link>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <Link to="/demo">See How It Works</Link>
-              </Button>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              <span className="font-bold">100% Free</span> to get started.
             </div>
           </div>
         </div>
       </section>
 
-      {/* Tools Section - Now moved up and using the provided descriptions */}
-      <section className="section-padding">
+      {/* Tools Section - Moved up and with background color */}
+      <section className="section-padding bg-slate-50">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Our Tools</div>
+              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm">Our Tools</div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
                 Three powerful ways to understand documents
               </h2>
