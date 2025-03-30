@@ -1,3 +1,4 @@
+
 import { useState, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -207,7 +208,7 @@ const LegalAssistant = () => {
           </DialogHeader>
           <div className="flex-1 overflow-auto">
             <iframe 
-              src="https://drive.google.com/viewerng/viewer?embedded=true&url=https://www.courts.ca.gov/documents/California-Residential-Lease-Agreement.pdf" 
+              src="/sample-rental-agreement.pdf" 
               className="w-full h-[70vh]"
               title="Demo PDF"
             ></iframe>
