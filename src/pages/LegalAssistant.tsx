@@ -1,17 +1,19 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { Card } from "@/components/ui/card";
 import DemoSection from "@/components/legal-assistant/DemoSection";
 import DocumentUploader from "@/components/legal-assistant/DocumentUploader";
 import ResultsDisplay from "@/components/legal-assistant/ResultsDisplay";
 import PrivacyNotice from "@/components/legal-assistant/PrivacyNotice";
+import { useToast } from "@/hooks/use-toast";
 
 const LegalAssistant = () => {
   const [response, setResponse] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
   const [showDemoDialog, setShowDemoDialog] = useState<boolean>(false);
+  const { toast } = useToast();
   
   // Demo analysis HTML content
   const demoLegalHTML =
@@ -20,32 +22,131 @@ const LegalAssistant = () => {
   const demoTranslateHTML = 
   '<title>Salvador Dalís Hideout, a Hut Turned into a Sensational Palace</title>    <h1>Salvador Dalís Hideout, a Hut Turned into a Sensational Palace</h1>        <p>By Clément Ghys</p>    <p>Published on January 27, 2024 at 7:00 PM, modified on January 28, 2024 at 11:31 AM</p>    <p>Reading time: 3 min. Read in English</p>    <p>Article reserved for subscribers</p>    <p>In images, from the fishermans shack bought with his wife Gala, in Portlligat, Catalonia, Salvador Dalí had made an extraordinary dwelling. Today it is a museum that photographer Coco Capitán had the leisure to explore, immersing herself in the thought of the surrealist painter, to whom Quentin Dupieux dedicates a film, in theaters on February 7.</p>    <p>In a Parisian palace, a French journalist interviews Salvador Dalí, her idol. The interview goes badly. The young woman decides to go see him at his home, in Catalonia, to snatch a little more time. She then discovers the daily eccentricity of the master, the Rolls, the same as Elvis, which rolls on the sand, the gastronomic whims, the incomprehensible aphorisms.</p>    <p>In Daaaaaalí!, in theaters on February 7, French director Quentin Dupieux shows less the intimacy of the man born in 1904 and died in 1989 than the mythology of the artist who was, with Andy Warhol and Pablo Picasso, one of the most known of his time. The one whose flights delighted the viewers of talk shows, this tie-wearing character whose mustache defied gravity, the oddball who, in a famous advertisement, said he was "crazy about Lanvin chocolate". It is not about the man who composed canvases of complexity still studied today, the intellectual who dreamed of mixing science, philosophy, and art, nor the one who was a fervent supporter of General Franco regime...</p>    <p>Daaaaaalí!, with Anaïs Demoustier in the role of the journalist, and a myriad of actors (Gilles Lellouche, Jonathan Cohen, Pio Marmaï, Edouard Baer, and Didier Flamand) in that of the painter, was partly shot in Spain, in Catalonia, where the artist lived for decades. The astonishing atmosphere of his hideout in Portlligat, now one of the most visited museums in the country, is recreated on screen.</p>    <p>That is where Coco Capitán, a Spanish photographer based in London, went in the summer of 2023. At the request of the Barcelona publisher Apartamento, she, for several days, early in the morning, before the onslaught of visitors, walked through the different spaces. Her images are gathered in a book, published in November. "What strikes me is the light that bathes the places, the sun envelops everything," she describes. "We understand that he also loved the places for that. The place is ideal for a painter." He himself was proud to be the first Spaniard to see the sun rise, Portlligat being located in the easternmost part of the Iberian Peninsula.</p>    <p>"A true biological structure"</p>    <p>This part of Catalonia, the artist frequented well before he was "Daaaaaalí". His father, a notary (as was that of Marcel Duchamp, surrealism owing much to the profession), is a bourgeois from Figueras, a few kilometers away. As a child, he roams these beaches of the Costa Brava. As an adult, he leaves for Madrid, then Paris, without ever forgetting his native region. In France, he meets Elena Ivanovna Diakonova (1894-1982), whom everyone calls Gala. Ten years his senior, she is the wife of the poet Paul Eluard and the mistress of the painter Max Ernst. They fall in love and want to settle in Cadaqués. But the Dalí family refuses for their son to show off with a divorced woman and already a mother.</p>    <p>You have 45% of this article left to read. The rest is reserved for subscribers.</p>';
 
+  const resetProgress = () => {
+    setProgress(0);
+  };
+
+  const simulateProgress = () => {
+    resetProgress();
+    const interval = setInterval(() => {
+      setProgress(prevProgress => {
+        const newProgress = prevProgress + 5;
+        if (newProgress >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return newProgress;
+      });
+    }, 200);
+    
+    return () => clearInterval(interval);
+  };
+
   const processFile = async (file: File) => {
     setIsLoading(true);
     setResponse("");
     
     try {
-      // This is a placeholder for the actual file upload API call
-      setTimeout(() => {
-        setResponse(`Analysis of "${file.name}": ${demoLegalHTML}`);
+      // Create a FormData object to upload the file
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      // Start progress simulation
+      simulateProgress();
+      
+      // Upload to server's temporary storage
+      const uploadResponse = await fetch("/upload-temp-file", {
+        method: "POST",
+        body: formData
+      });
+      
+      if (!uploadResponse.ok) {
+        throw new Error(`HTTP error! Status: ${uploadResponse.status}`);
+      }
+      
+      const fileReference = await uploadResponse.text();
+      
+      if (fileReference === "max_tokens") {
+        toast({
+          title: "File too large",
+          description: "The file is too large to process. Please try a smaller file.",
+          variant: "destructive",
+        });
         setIsLoading(false);
-      }, 2000);
+        resetProgress();
+        return;
+      }
+      
+      if (fileReference === "error") {
+        toast({
+          title: "Upload failed",
+          description: "The file could not be uploaded.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        resetProgress();
+        return;
+      }
+      
+      // Process the uploaded file
+      const processResponse = await fetch("/upload-legal01", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ fileReference: fileReference }),
+      });
+      
+      if (!processResponse.ok) {
+        throw new Error(`HTTP error! Status: ${processResponse.status}`);
+      }
+      
+      const resultHtml = await processResponse.text();
+      setProgress(100);
+      
+      // Small delay to ensure progress bar reaches 100% before showing results
+      setTimeout(() => {
+        setResponse(resultHtml);
+        setIsLoading(false);
+      }, 500);
       
     } catch (error) {
       console.error("Error processing file:", error);
-      setResponse("Sorry, there was an error processing your file. Please try again.");
+      toast({
+        title: "Processing failed",
+        description: "There was an error processing your file. Please try again.",
+        variant: "destructive",
+      });
       setIsLoading(false);
+      resetProgress();
     }
   };
 
   const handleDemoProcess = () => {
     setIsLoading(true);
     setResponse("");
+    
+    // Start progress simulation
+    simulateProgress();
+    
+    // Simulate API call with timeout
     setTimeout(() => {
-      setResponse(demoLegalHTML);
-      setIsLoading(false);
+      setProgress(100);
+      // Small delay to ensure progress bar reaches 100% before showing results
+      setTimeout(() => {
+        setResponse(demoLegalHTML);
+        setIsLoading(false);
+      }, 500);
     }, 1500);
   };
+
+  // Initialize event listeners for form submission
+  useEffect(() => {
+    // This will be automatically handled by the document uploader component
+    return () => {
+      // Cleanup
+    };
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -72,7 +173,11 @@ const LegalAssistant = () => {
             />
           </div>
           
-          <ResultsDisplay response={response} />
+          <ResultsDisplay 
+            response={response} 
+            isLoading={isLoading} 
+            progress={progress} 
+          />
           <PrivacyNotice />
         </div>
       </main>

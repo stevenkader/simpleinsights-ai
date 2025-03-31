@@ -60,7 +60,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <form id="uploadFormLegal01" className="space-y-4">
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <label htmlFor="file-upload" className="text-sm font-medium">
               Select a PDF file:
@@ -68,6 +68,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
             <div className="flex items-center gap-2">
               <Input
                 id="file-upload"
+                name="file"
                 type="file"
                 ref={fileInputRef}
                 accept="application/pdf"
@@ -84,6 +85,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
           
           <div className="flex justify-end">
             <Button 
+              id="processBtn"
               onClick={handleProcessFile}
               className="flex items-center gap-2"
               disabled={isLoading || !fileName}
@@ -101,7 +103,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
               )}
             </Button>
           </div>
-        </div>
+        </form>
       </CardContent>
     </Card>
   );
