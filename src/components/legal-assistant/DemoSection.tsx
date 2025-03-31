@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Eye } from "lucide-react";
+import { ArrowRight, Eye, Download } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
@@ -9,6 +9,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 
 interface DemoSectionProps {
@@ -65,6 +66,14 @@ const DemoSection: React.FC<DemoSectionProps> = ({
               title="Demo Contract"
             ></iframe>
           </div>
+          <DialogFooter className="sm:justify-start mt-2">
+            <Button variant="outline" asChild>
+              <a href="/demo-contract.pdf" download="demo-contract.pdf">
+                <Download className="mr-2" />
+                Download PDF
+              </a>
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
