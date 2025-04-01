@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -13,6 +14,7 @@ const LegalAssistant = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [showDemoDialog, setShowDemoDialog] = useState<boolean>(false);
+  const [fileReference, setFileReference] = useState<string>("");
   const { toast } = useToast();
   
   const demoLegalHTML =
@@ -27,18 +29,16 @@ const LegalAssistant = () => {
 
   const simulateProgress = () => {
     resetProgress();
+    let i = 0;
     const interval = setInterval(() => {
-      setProgress(prevProgress => {
-        const newProgress = prevProgress + 5;
-        if (newProgress >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return newProgress;
-      });
+      i += 5;
+      setProgress(i);
+      if (i >= 100) {
+        clearInterval(interval);
+      }
     }, 200);
     
-    return () => clearInterval(interval);
+    return interval;
   };
 
   const processFile = async (file: File) => {
@@ -49,7 +49,7 @@ const LegalAssistant = () => {
       const formData = new FormData();
       formData.append("file", file);
       
-      simulateProgress();
+      const progressInterval = simulateProgress();
       
       const uploadResponse = await fetch(`${API_BASE_URL}/upload-temp-file`, {
         method: "POST",
@@ -60,9 +60,10 @@ const LegalAssistant = () => {
         throw new Error(`HTTP error! Status: ${uploadResponse.status}`);
       }
       
-      const fileReference = await uploadResponse.text();
+      const fileRef = await uploadResponse.text();
       
-      if (fileReference === "max_tokens") {
+      if (fileRef === "max_tokens") {
+        clearInterval(progressInterval);
         toast({
           title: "File too large",
           description: "The file is too large to process. Please try a smaller file.",
@@ -73,7 +74,8 @@ const LegalAssistant = () => {
         return;
       }
       
-      if (fileReference === "error") {
+      if (fileRef === "error") {
+        clearInterval(progressInterval);
         toast({
           title: "Upload failed",
           description: "The file could not be uploaded.",
@@ -84,12 +86,16 @@ const LegalAssistant = () => {
         return;
       }
       
+      // Store the file reference for later use
+      setFileReference(fileRef);
+      localStorage.setItem("fileReference", fileRef);
+      
       const processResponse = await fetch(`${API_BASE_URL}/upload-legal01`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ fileReference: fileReference }),
+        body: JSON.stringify({ fileReference: fileRef }),
       });
       
       if (!processResponse.ok) {
@@ -120,9 +126,10 @@ const LegalAssistant = () => {
     setIsLoading(true);
     setResponse("");
     
-    simulateProgress();
+    const progressInterval = simulateProgress();
     
     setTimeout(() => {
+      clearInterval(progressInterval);
       setProgress(100);
       setTimeout(() => {
         setResponse(demoLegalHTML);
@@ -131,8 +138,19 @@ const LegalAssistant = () => {
     }, 1500);
   };
 
+  // Function to handle exporting the results as PDF
+  const exportPDF = () => {
+    // This would typically be implemented with a PDF library
+    toast({
+      title: "Export PDF",
+      description: "PDF export functionality would be implemented here",
+    });
+  };
+
   useEffect(() => {
+    // Clean up function
     return () => {
+      // Any cleanup code here
     };
   }, []);
 
@@ -164,7 +182,8 @@ const LegalAssistant = () => {
           <ResultsDisplay 
             response={response} 
             isLoading={isLoading} 
-            progress={progress} 
+            progress={progress}
+            onExportPDF={exportPDF}
           />
           <PrivacyNotice />
         </div>

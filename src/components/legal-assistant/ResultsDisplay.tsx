@@ -1,17 +1,21 @@
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
 interface ResultsDisplayProps {
   response: string;
   isLoading: boolean;
   progress: number;
+  onExportPDF?: () => void;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ 
   response, 
   isLoading, 
-  progress 
+  progress,
+  onExportPDF
 }) => {
   return (
     <>
@@ -38,8 +42,14 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {response && (
         <div id="resultSection">
           <Card className="bg-slate-50 dark:bg-slate-900 mb-8 animate-fade-in">
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl">Analysis Results</CardTitle>
+              {onExportPDF && (
+                <Button variant="outline" className="ml-auto" onClick={onExportPDF}>
+                  <Download className="mr-2 h-4 w-4" />
+                  Save as PDF
+                </Button>
+              )}
             </CardHeader>
             <CardContent>
               <div 
