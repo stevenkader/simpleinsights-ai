@@ -25,9 +25,14 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     if (response && !isLoading && resultSectionRef.current) {
       // Ensure we scroll after the component is fully rendered
       const timer = setTimeout(() => {
-        resultSectionRef.current?.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
+        // Add an offset to ensure the header is visible (scroll a bit higher)
+        const yOffset = -80; // Negative value to scroll less (show more above)
+        const element = resultSectionRef.current;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        
+        window.scrollTo({ 
+          top: y, 
+          behavior: 'smooth'
         });
       }, 500); // Use a longer delay to ensure DOM has updated completely
       
