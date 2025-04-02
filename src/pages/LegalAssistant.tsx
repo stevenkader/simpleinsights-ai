@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -29,13 +30,16 @@ const LegalAssistant = () => {
   const simulateProgress = () => {
     resetProgress();
     let i = 0;
+    // Adjust the interval to complete in ~1 minute (60 seconds)
+    // 100 increments / 60 seconds = ~1.67 increments per second
+    // So we'll do an increment every 600ms
     const interval = setInterval(() => {
-      i += 5;
+      i += 1;
       setProgress(i);
       if (i >= 100) {
         clearInterval(interval);
       }
-    }, 200);
+    }, 600);
     
     return interval;
   };

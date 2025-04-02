@@ -3,6 +3,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 interface ResultsDisplayProps {
   response: string;
@@ -26,14 +27,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               <CardTitle className="text-xl">Processing Document</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700">
-                <div 
-                  className="bg-blue-600 h-4 rounded-full progress-bar transition-all duration-500"
-                  style={{ width: `${progress}%` }}
-                >
-                  {progress > 0 && `${progress}%`}
-                </div>
-              </div>
+              <Progress value={progress} className="w-full h-4" />
+              <p className="text-sm text-center mt-2">{progress}% complete</p>
             </CardContent>
           </Card>
         </div>
