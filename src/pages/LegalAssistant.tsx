@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -86,7 +85,6 @@ const LegalAssistant = () => {
         return;
       }
       
-      // Store the file reference for later use
       setFileReference(fileRef);
       localStorage.setItem("fileReference", fileRef);
       
@@ -138,9 +136,7 @@ const LegalAssistant = () => {
     }, 1500);
   };
 
-  // Function to handle exporting the results as PDF
   const exportPDF = () => {
-    // This would typically be implemented with a PDF library
     toast({
       title: "Export PDF",
       description: "PDF export functionality would be implemented here",
@@ -148,9 +144,7 @@ const LegalAssistant = () => {
   };
 
   useEffect(() => {
-    // Clean up function
     return () => {
-      // Any cleanup code here
     };
   }, []);
 
