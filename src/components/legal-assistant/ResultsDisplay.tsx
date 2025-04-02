@@ -28,30 +28,36 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           behavior: 'smooth',
           block: 'start'
         });
-      }, 100);
+      }, 200); // Increased delay to ensure DOM is ready
     }
   }, [response, isLoading]);
 
+  // Only render the progress section when actually loading
+  const renderProgressSection = () => {
+    if (!isLoading) return null;
+    
+    return (
+      <div id="progressSection" className="mb-4">
+        <Card className="bg-slate-50 dark:bg-slate-900 mb-4">
+          <CardHeader>
+            <CardTitle className="text-xl">Processing Document</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Progress value={progress} className="w-full h-4" />
+            <p className="text-sm text-center mt-2">{progress}% complete</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   return (
     <>
-      {/* Show progress bar only when loading */}
-      {isLoading && (
-        <div id="progressSection" className="mb-4">
-          <Card className="bg-slate-50 dark:bg-slate-900 mb-4">
-            <CardHeader>
-              <CardTitle className="text-xl">Processing Document</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Progress value={progress} className="w-full h-4" />
-              <p className="text-sm text-center mt-2">{progress}% complete</p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      {renderProgressSection()}
 
       {response && (
-        <div id="resultSection" ref={resultSectionRef}>
-          <Card className="bg-slate-50 dark:bg-slate-900 mb-8 animate-fade-in">
+        <div id="resultSection" ref={resultSectionRef} className="animate-fade-in">
+          <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl">Analysis Results</CardTitle>
               {onExportPDF && (

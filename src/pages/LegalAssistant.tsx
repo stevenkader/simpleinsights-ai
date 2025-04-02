@@ -107,6 +107,10 @@ const LegalAssistant = () => {
       const resultHtml = await processResponse.text();
       setProgress(100);
       
+      // Important: Clear the interval when we're done
+      clearInterval(progressInterval);
+      
+      // Set response and turn off loading state with a slight delay
       setTimeout(() => {
         setResponse(resultHtml);
         setIsLoading(false);
@@ -149,6 +153,7 @@ const LegalAssistant = () => {
 
   useEffect(() => {
     return () => {
+      // Component cleanup
     };
   }, []);
 
