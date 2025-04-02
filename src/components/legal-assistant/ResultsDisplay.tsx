@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
@@ -18,9 +18,24 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   progress,
   onExportPDF
 }) => {
+  const resultSectionRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    // Scroll to results when response is available and loading is complete
+    if (response && !isLoading && resultSectionRef.current) {
+      setTimeout(() => {
+        resultSectionRef.current?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+    }
+  }, [response, isLoading]);
+
   return (
     <>
-      {(isLoading || response) && (
+      {/* Show progress bar only when loading */}
+      {isLoading && (
         <div id="progressSection" className="mb-4">
           <Card className="bg-slate-50 dark:bg-slate-900 mb-4">
             <CardHeader>
@@ -35,7 +50,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       )}
 
       {response && (
-        <div id="resultSection">
+        <div id="resultSection" ref={resultSectionRef}>
           <Card className="bg-slate-50 dark:bg-slate-900 mb-8 animate-fade-in">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl">Analysis Results</CardTitle>
