@@ -23,37 +23,34 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   useEffect(() => {
     // Scroll to results when response is available and loading is complete
     if (response && !isLoading && resultSectionRef.current) {
-      setTimeout(() => {
+      // Ensure we scroll after the component is fully rendered
+      const timer = setTimeout(() => {
         resultSectionRef.current?.scrollIntoView({ 
           behavior: 'smooth',
           block: 'start'
         });
-      }, 200); // Increased delay to ensure DOM is ready
+      }, 500); // Use a longer delay to ensure DOM has updated completely
+      
+      return () => clearTimeout(timer); // Clean up timer on unmount
     }
   }, [response, isLoading]);
 
-  // Only render the progress section when actually loading
-  const renderProgressSection = () => {
-    if (!isLoading) return null;
-    
-    return (
-      <div id="progressSection" className="mb-4">
-        <Card className="bg-slate-50 dark:bg-slate-900 mb-4">
-          <CardHeader>
-            <CardTitle className="text-xl">Processing Document</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Progress value={progress} className="w-full h-4" />
-            <p className="text-sm text-center mt-2">{progress}% complete</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
-
   return (
     <>
-      {renderProgressSection()}
+      {/* Only render progress section when actually loading */}
+      {isLoading && (
+        <div id="progressSection" className="mb-4">
+          <Card className="bg-slate-50 dark:bg-slate-900 mb-4">
+            <CardHeader>
+              <CardTitle className="text-xl">Processing Document</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Progress value={progress} className="w-full h-4" />
+              <p className="text-sm text-center mt-2">{progress}% complete</p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {response && (
         <div id="resultSection" ref={resultSectionRef} className="animate-fade-in">
