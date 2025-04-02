@@ -26,7 +26,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       // Ensure we scroll after the component is fully rendered
       const timer = setTimeout(() => {
         // Add an offset to ensure the header is visible (scroll a bit higher)
-        const yOffset = -160; // Increased from -80 to -160 to scroll less (show more above)
+        const yOffset = -240; // Increased from -160 to -240 to scroll less (show more above)
         const element = resultSectionRef.current;
         const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
         
