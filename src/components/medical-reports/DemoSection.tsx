@@ -20,12 +20,12 @@ const DemoSection: React.FC<DemoSectionProps> = ({
       <CardHeader>
         <CardTitle>Try a Demo</CardTitle>
         <CardDescription>
-          See how the Medical Report Assistant works with a sample report
+          See how the Medical Report Assistant works with a sample MRI report
         </CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground mb-4">
-          Experience our AI-powered medical report analysis without uploading your own documents.
+          Experience our AI-powered medical report analysis using a sample left foot MRI report.
         </p>
       </CardContent>
       <CardFooter>

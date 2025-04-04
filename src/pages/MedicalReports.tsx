@@ -19,79 +19,46 @@ const MedicalReports = () => {
   const progressIntervalRef = useRef<number | null>(null);
   
   const demoMedicalHTML = `
-    <h2>Medical Report Analysis</h2>
+    <h2>MRI Report Analysis</h2>
+    
     <div class="report-section">
-      <h3>Patient Information</h3>
+      <h3>Sections</h3>
       <ul>
-        <li><strong>Name:</strong> John Doe</li>
-        <li><strong>Age:</strong> 45 years</li>
-        <li><strong>Gender:</strong> Male</li>
-        <li><strong>Date of Birth:</strong> January 15, 1978</li>
-        <li><strong>Medical Record Number:</strong> MRN12345678</li>
+        <li>Clinical Information</li>
+        <li>Technique</li>
+        <li>Findings</li>
+        <li>Impression</li>
       </ul>
     </div>
     
     <div class="report-section">
-      <h3>Clinical Summary</h3>
-      <p>Patient presented with complaints of chest pain, shortness of breath, and fatigue lasting for the past 3 weeks. Symptoms worsen with physical exertion and improve with rest. Patient has a history of hypertension and type 2 diabetes mellitus diagnosed 5 years ago.</p>
+      <h3>Section Summaries</h3>
+      
+      <h4>1. Clinical Information</h4>
+      <p><strong>Medical Summary:</strong> The patient has been experiencing pain and swelling in the left medial foot and ankle, as well as plantar metatarsal pain for 5 weeks. There is no known trauma.</p>
+      <p><strong>Layman's Summary:</strong> The patient has been having pain and swelling in the inside of the left foot and ankle, and pain in the ball of the foot for 5 weeks. There is no known injury that caused this.</p>
+      
+      <h4>2. Technique</h4>
+      <p><strong>Medical Summary:</strong> The MRI was performed on the left midfoot and forefoot without contrast, using Sagittal T1 and STIR, short axis PD and STIR, long axis PD FS imaging.</p>
+      <p><strong>Layman's Summary:</strong> The MRI scan was done on the middle and front part of the left foot without using any dye. Different types of imaging techniques were used to get detailed pictures of the foot.</p>
+      
+      <h4>3. Findings</h4>
+      <p><strong>Medical Summary:</strong> The MRI shows swelling in the bone of the second toe and soft tissue swelling along the bottom of the second toe and joint. There is also a partial tear in the plantar plate of the second toe joint. Other parts of the foot appear normal.</p>
+      <p><strong>Layman's Summary:</strong> The MRI shows swelling in the bone of the second toe and soft tissue swelling along the bottom of the second toe and joint. There is also a small tear in the tissue that supports the second toe joint. Other parts of the foot appear normal.</p>
+      
+      <h4>4. Impression</h4>
+      <p><strong>Medical Summary:</strong> The MRI findings suggest a partial tear or sprain in the plantar plate of the second toe joint, along with swelling. There is also swelling within the bone of the second toe, which could be due to a bone bruise or stress-related swelling. Infection seems less likely.</p>
+      <p><strong>Layman's Summary:</strong> The MRI suggests a small tear or sprain in the tissue that supports the second toe joint, along with swelling. There is also swelling within the bone of the second toe, which could be due to a bone bruise or stress-related swelling. Infection seems less likely.</p>
     </div>
     
     <div class="report-section">
-      <h3>Key Findings</h3>
-      <ul>
-        <li>Blood pressure elevated at 145/95 mmHg</li>
-        <li>Electrocardiogram (ECG) shows ST-segment depression in leads V3-V5</li>
-        <li>Cardiac enzyme levels: Troponin I slightly elevated at 0.08 ng/mL (reference range: &lt;0.04 ng/mL)</li>
-        <li>Lipid panel: Total cholesterol 245 mg/dL, LDL 160 mg/dL, HDL 38 mg/dL, Triglycerides 180 mg/dL</li>
-        <li>HbA1c: 7.8% (indicates suboptimal diabetes control)</li>
-      </ul>
+      <h3>Report</h3>
+      <p>The patient has been experiencing pain and swelling in the left foot and ankle, and pain in the ball of the foot for 5 weeks. An MRI scan was performed on the foot, which showed swelling in the bone of the second toe and soft tissue swelling along the bottom of the second toe and joint. There is also a small tear in the tissue that supports the second toe joint. Other parts of the foot appear normal. The swelling within the bone of the second toe could be due to a bone bruise or stress-related swelling. Infection seems less likely.</p>
     </div>
     
     <div class="report-section">
-      <h3>Diagnosis</h3>
-      <p>Based on the patient's symptoms, medical history, and diagnostic test results, the diagnosis is <strong>Stable Angina</strong> most likely due to underlying coronary artery disease.</p>
-    </div>
-    
-    <div class="report-section">
-      <h3>Treatment Plan</h3>
-      <ul>
-        <li>Medication:
-          <ul>
-            <li>Aspirin 81mg daily</li>
-            <li>Metoprolol 25mg twice daily</li>
-            <li>Atorvastatin 40mg at bedtime</li>
-            <li>Continue current diabetes and hypertension medications</li>
-          </ul>
-        </li>
-        <li>Lifestyle modifications:
-          <ul>
-            <li>Low sodium, low fat diet</li>
-            <li>Regular moderate exercise program (starting with 20-minute walks daily)</li>
-            <li>Smoking cessation</li>
-            <li>Weight reduction goal of 15 pounds over 3 months</li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    
-    <div class="report-section">
-      <h3>Follow-up</h3>
-      <ul>
-        <li>Cardiology consultation within 2 weeks</li>
-        <li>Stress echocardiogram scheduled for next week</li>
-        <li>Return to clinic in 4 weeks for medication adjustment and progress evaluation</li>
-        <li>Emergency department if chest pain becomes severe, prolonged, or unrelieved by rest</li>
-      </ul>
-    </div>
-    
-    <div class="report-section">
-      <h3>Medical Terminology Explained</h3>
-      <ul>
-        <li><strong>Angina:</strong> Chest pain caused by reduced blood flow to the heart muscles</li>
-        <li><strong>ST-segment depression:</strong> An ECG finding that suggests inadequate blood supply to the heart</li>
-        <li><strong>Troponin:</strong> A protein released into the bloodstream when the heart muscle is damaged</li>
-        <li><strong>HbA1c:</strong> A blood test that measures average blood sugar levels over the past 2-3 months</li>
-      </ul>
+      <h3>Possible Treatments</h3>
+      <p>Based on the MRI findings, possible treatments may include rest, ice, compression, and elevation (RICE) to reduce swelling and pain. Physical therapy may also be recommended to strengthen the foot and improve flexibility. In some cases, surgery may be required to repair the tear in the plantar plate. However, the exact treatment will depend on the patient's overall health and the severity of the symptoms.</p>
     </div>
   `;
 
@@ -207,8 +174,15 @@ const MedicalReports = () => {
     setIsLoading(true);
     setResponse("");
     
+    // Simulate using the demo-contract-medical001.pdf file
     const progressInterval = simulateProgress();
     progressIntervalRef.current = progressInterval as unknown as number;
+    
+    // Show a toast notification indicating we're using a demo file
+    toast({
+      title: "Using demo file",
+      description: "Processing demo-contract-medical001.pdf",
+    });
     
     setTimeout(() => {
       resetProgress();
