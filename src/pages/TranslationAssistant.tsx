@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { API_BASE_URL } from "@/config/api";
@@ -122,7 +123,7 @@ const TranslationAssistant = () => {
       <div className="container mx-auto px-4 py-8 flex-grow">
         <h1 className="text-3xl font-bold mb-2">Translation Assistant</h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          Upload a document in any language and get it translated and explained in English
+          Upload a document in any language and get it translated to English
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
