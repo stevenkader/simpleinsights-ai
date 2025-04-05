@@ -40,6 +40,15 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
+  // Add custom styles to ensure consistent formatting
+  const enhanceHtmlContent = (htmlContent: string) => {
+    return `
+      <div class="prose dark:prose-invert max-w-none">
+        ${htmlContent}
+      </div>
+    `;
+  };
+
   return (
     <>
       {/* Only render progress section when actually loading */}
@@ -72,9 +81,15 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <CardContent>
               <div 
                 id="output"
-                className="prose dark:prose-invert max-w-none"
+                className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                  prose-p:text-slate-700 dark:prose-p:text-slate-300
+                  prose-li:text-slate-700 dark:prose-li:text-slate-300
+                  prose-strong:text-slate-900 dark:prose-strong:text-white
+                  prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5
+                  prose-h2:text-xl prose-h3:text-lg
+                  max-w-none dark:prose-invert"
                 dangerouslySetInnerHTML={{ __html: response }}
-              ></div>
+              />
             </CardContent>
           </Card>
         </div>
