@@ -26,6 +26,7 @@ const TranslationAssistant = () => {
       const formData = new FormData();
       formData.append("file", uploadedFile);
 
+      // Upload the file first
       const uploadResponse = await fetch(`${API_BASE_URL}/upload-temp-file`, {
         method: "POST",
         body: formData,
@@ -37,6 +38,7 @@ const TranslationAssistant = () => {
 
       const { filePath } = await uploadResponse.json();
 
+      // Show progress animation
       const progressInterval = setInterval(() => {
         setProgress((prevProgress) => {
           const newProgress = prevProgress + Math.random() * 10;
@@ -44,6 +46,7 @@ const TranslationAssistant = () => {
         });
       }, 500);
 
+      // Process the file
       const processResponse = await fetch(`${API_BASE_URL}/upload-translation01`, {
         method: "POST",
         headers: {
@@ -91,11 +94,13 @@ const TranslationAssistant = () => {
       });
     }, 500);
 
+    // Simulate processing delay
     setTimeout(() => {
       clearInterval(progressInterval);
       setProgress(100);
       setIsProcessing(false);
       
+      // Set demo content
       setResponse("demo-content");
 
       toast({
