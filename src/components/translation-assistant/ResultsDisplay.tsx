@@ -40,6 +40,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
+  // Check if the response contains an error message
+  const hasError = response.includes('<!DOCTYPE html>') || 
+                  response.includes('<pre>Cannot') || 
+                  response.includes('Error:');
+
   return (
     <>
       {/* Only render progress section when actually loading */}
@@ -62,7 +67,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl">Translation Result</CardTitle>
-              {onExportPDF && (
+              {!hasError && onExportPDF && (
                 <Button variant="outline" className="ml-auto" onClick={onExportPDF}>
                   <Download className="mr-2 h-4 w-4" />
                   Save as PDF
@@ -70,10 +75,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               )}
             </CardHeader>
             <CardContent>
-              {response.includes('<!DOCTYPE html>') || response.includes('<pre>Cannot') ? (
+              {hasError ? (
                 <div className="flex items-center text-destructive gap-2 p-4 border border-destructive/20 rounded-md bg-destructive/10">
                   <AlertCircle className="h-5 w-5" />
-                  <p>Backend service is currently unavailable. Please try the demo or try again later.</p>
+                  <p>Backend service is currently unavailable. Please try the demo instead.</p>
                 </div>
               ) : (
                 <div 

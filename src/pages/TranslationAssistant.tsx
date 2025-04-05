@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { API_BASE_URL } from "@/config/api";
+import { API_BASE_URL, API_ENDPOINTS } from "@/config/api";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import PrivacyNotice from "@/components/translation-assistant/PrivacyNotice";
-import DocumentUploader from "@/components/legal-assistant/DocumentUploader";
+import DocumentUploader from "@/components/translation-assistant/DocumentUploader";
 import DemoSection from "@/components/translation-assistant/DemoSection";
 import ResultsDisplay from "@/components/translation-assistant/ResultsDisplay";
 
@@ -76,7 +76,7 @@ const TranslationAssistant = () => {
       
       const progressInterval = simulateProgress();
       
-      const uploadResponse = await fetch(`${API_BASE_URL}/upload-temp-file`, {
+      const uploadResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.UPLOAD_FILE}`, {
         method: "POST",
         body: formData
       });
@@ -111,7 +111,8 @@ const TranslationAssistant = () => {
       
       setFileReference(fileRef);
       
-      const processResponse = await fetch(`${API_BASE_URL}/process-document`, {
+      console.log(`Processing document with: ${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`);
+      const processResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,6 +124,7 @@ const TranslationAssistant = () => {
       });
       
       if (!processResponse.ok) {
+        console.error("Process response not OK:", processResponse.status);
         throw new Error(`HTTP error! Status: ${processResponse.status}`);
       }
       
@@ -141,7 +143,7 @@ const TranslationAssistant = () => {
       resetProgress();
       toast({
         title: "Processing failed",
-        description: "There was an error processing your file. Please try again.",
+        description: "There was an error processing your file. Please try the demo instead.",
         variant: "destructive",
       });
       setIsLoading(false);
