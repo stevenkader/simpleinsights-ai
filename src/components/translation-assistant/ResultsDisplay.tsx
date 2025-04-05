@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
@@ -40,25 +40,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
-  // Format the HTML string to a properly styled output
-  const formatResponseContent = () => {
-    if (!response) return null;
-    
-    // Parse the HTML into a DOM element
-    const container = document.createElement('div');
-    container.innerHTML = response;
-    
-    // Return the formatted content
-    return (
-      <div className="prose dark:prose-invert max-w-none">
-        <div className="mb-8">
-          {/* This will be replaced by the actual translation content */}
-          <div dangerouslySetInnerHTML={{ __html: response }} className="article-translation" />
-        </div>
-      </div>
-    );
-  };
-
   return (
     <>
       {/* Only render progress section when actually loading */}
@@ -77,22 +58,18 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       )}
 
       {response && (
-        <div id="resultSection" ref={resultSectionRef} className="animate-fade-in">
-          <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-xl">Translation Results</CardTitle>
-              {onExportPDF && (
-                <Button variant="outline" className="ml-auto" onClick={onExportPDF}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Save as PDF
-                </Button>
-              )}
-            </CardHeader>
-            <CardContent>
-              {formatResponseContent()}
-            </CardContent>
-          </Card>
-        </div>
+        <section className="col-12 col-lg-8" id="resultSection" ref={resultSectionRef}>
+          <div className="section-title flex justify-between items-center mb-4">
+            <h2>Report Area</h2>
+            {onExportPDF && (
+              <Button variant="outline" className="click_savepdf" onClick={onExportPDF}>
+                <Download className="mr-2 h-4 w-4" />
+                Save as PDF
+              </Button>
+            )}
+          </div>
+          <div id="output" dangerouslySetInnerHTML={{ __html: response }}></div>
+        </section>
       )}
     </>
   );
