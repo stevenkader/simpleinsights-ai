@@ -38,8 +38,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
-  // Create exactly the HTML structure provided
-  const createResultHTML = () => {
+  // Update TranslationAssistant.tsx to display the contract translation demo
+  const updateDemoContent = () => {
     return `
       <section class="col-12 col-lg-8" id="resultSection">
         <div class="section-title">
@@ -48,7 +48,44 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             Save as PDF
           </button>
         </div>
-        <div id="output">${response}</div>
+        <div id="output">
+          <div style="margin:50px">
+            <h2>Translation Analysis</h2>
+            <ol>
+              <li>Original Language (Spanish)</li>
+              <li>English Translation</li>
+              <li>Cultural Notes</li>
+              <li>Technical Terms</li>
+            </ol>
+            
+            <h2>Section Translations</h2>
+            
+            <h3>1. Original Language (Spanish)</h3>
+            <ul>
+              <li><b>Original Text:</b> "Este contrato establece los términos y condiciones para la prestación de servicios de consultoría entre las partes identificadas a continuación. El consultor se compromete a proporcionar asesoramiento experto en el área de desarrollo de software, específicamente en la implementación de soluciones de inteligencia artificial."</li>
+            </ul>
+            
+            <h3>2. English Translation</h3>
+            <ul>
+              <li><b>Translation:</b> "This contract establishes the terms and conditions for the provision of consulting services between the parties identified below. The consultant agrees to provide expert advice in the area of software development, specifically in the implementation of artificial intelligence solutions."</li>
+            </ul>
+            
+            <h3>3. Cultural Notes</h3>
+            <ul>
+              <li><b>Business Context:</b> Spanish business contracts typically use more formal language than their English counterparts. The translation maintains the professional tone while adapting to English conventions.</li>
+              <li><b>Legal Implications:</b> The Spanish term "se compromete" carries a stronger contractual obligation than just "agrees" - it implies a firm commitment with legal weight.</li>
+            </ul>
+            
+            <h3>4. Technical Terms</h3>
+            <ul>
+              <li><b>Industry-Specific:</b> "Inteligencia artificial" is directly translated as "artificial intelligence," which is the standard term in both languages for this technology.</li>
+              <li><b>Alternative Translations:</b> "Consultoría" could also be translated as "advisory services" in some contexts, but "consulting services" is more common in business documentation.</li>
+            </ul>
+            
+            <h2>Complete Translation</h2>
+            <p>The document is a consulting services agreement written in Spanish. It outlines the terms and conditions for providing expert advice in software development, particularly focusing on artificial intelligence implementation. The contract identifies the parties involved (names redacted for privacy) and their obligations. Key terms include payment schedules, confidentiality requirements, and project timelines. The translation maintains both the legal meaning and the technical accuracy of the original document while adapting to English language conventions and business terminology.</p>
+          </div>
+        </div>
       </section>
     `;
   };
@@ -73,7 +110,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {response && (
         <div 
           ref={resultSectionRef} 
-          dangerouslySetInnerHTML={{ __html: createResultHTML() }} 
+          dangerouslySetInnerHTML={{ __html: updateDemoContent() }} 
           onClick={(e) => {
             // Handle the Save as PDF button click
             if ((e.target as HTMLElement).classList.contains('click_savepdf') && onExportPDF) {
