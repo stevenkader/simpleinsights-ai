@@ -101,7 +101,7 @@ const TranslationAssistant = () => {
         title: "Demo translation complete",
         description: "Your document has been successfully translated.",
       });
-    }, 5000);
+    }, 3000);
   };
 
   const handleUpload = async (uploadedFile: File) => {

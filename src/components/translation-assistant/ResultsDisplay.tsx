@@ -38,8 +38,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
-  // Update TranslationAssistant.tsx to display the contract translation demo
-  const updateDemoContent = () => {
+  const getDemoContent = () => {
     return `
       <section class="col-12 col-lg-8" id="resultSection">
         <div class="section-title">
@@ -110,7 +109,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {response && (
         <div 
           ref={resultSectionRef} 
-          dangerouslySetInnerHTML={{ __html: updateDemoContent() }} 
+          dangerouslySetInnerHTML={{ __html: getDemoContent() }} 
           onClick={(e) => {
             // Handle the Save as PDF button click
             if ((e.target as HTMLElement).classList.contains('click_savepdf') && onExportPDF) {
@@ -118,6 +117,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               onExportPDF();
             }
           }}
+          className="results-container"
         />
       )}
     </>
