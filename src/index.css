@@ -94,5 +94,18 @@
   .feature-icon {
     @apply p-3 rounded-lg bg-insights-lightBlue text-insights-blue;
   }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
