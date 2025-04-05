@@ -1,8 +1,6 @@
 
 import React, { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 interface ResultsDisplayProps {
@@ -40,6 +38,21 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
+  // Create exactly the HTML structure provided
+  const createResultHTML = () => {
+    return `
+      <section class="col-12 col-lg-8" id="resultSection">
+        <div class="section-title">
+          <h2>Report Area</h2>
+          <button id="button" type="button" class="btn btn-primary click_savepdf">
+            Save as PDF
+          </button>
+        </div>
+        <div id="output">${response}</div>
+      </section>
+    `;
+  };
+
   return (
     <>
       {/* Only render progress section when actually loading */}
@@ -58,18 +71,17 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       )}
 
       {response && (
-        <section className="col-12 col-lg-8" id="resultSection" ref={resultSectionRef}>
-          <div className="section-title flex justify-between items-center mb-4">
-            <h2>Report Area</h2>
-            {onExportPDF && (
-              <Button variant="outline" className="click_savepdf" onClick={onExportPDF}>
-                <Download className="mr-2 h-4 w-4" />
-                Save as PDF
-              </Button>
-            )}
-          </div>
-          <div id="output" dangerouslySetInnerHTML={{ __html: response }}></div>
-        </section>
+        <div 
+          ref={resultSectionRef} 
+          dangerouslySetInnerHTML={{ __html: createResultHTML() }} 
+          onClick={(e) => {
+            // Handle the Save as PDF button click
+            if ((e.target as HTMLElement).classList.contains('click_savepdf') && onExportPDF) {
+              e.preventDefault();
+              onExportPDF();
+            }
+          }}
+        />
       )}
     </>
   );

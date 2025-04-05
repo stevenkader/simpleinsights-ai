@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { API_BASE_URL } from "@/config/api";
@@ -23,7 +22,6 @@ const TranslationAssistant = () => {
     setResponse("");
 
     try {
-      // First upload the file to a temporary location
       const formData = new FormData();
       formData.append("file", uploadedFile);
 
@@ -38,7 +36,6 @@ const TranslationAssistant = () => {
 
       const { filePath } = await uploadResponse.json();
 
-      // Simulate progress
       const progressInterval = setInterval(() => {
         setProgress((prevProgress) => {
           const newProgress = prevProgress + Math.random() * 10;
@@ -46,7 +43,6 @@ const TranslationAssistant = () => {
         });
       }, 500);
 
-      // Then process the file for translation
       const processResponse = await fetch(`${API_BASE_URL}/upload-translation01`, {
         method: "POST",
         headers: {
@@ -87,7 +83,6 @@ const TranslationAssistant = () => {
     setProgress(0);
     setResponse("");
 
-    // Simulate progress
     const progressInterval = setInterval(() => {
       setProgress((prevProgress) => {
         const newProgress = prevProgress + Math.random() * 10;
@@ -95,13 +90,11 @@ const TranslationAssistant = () => {
       });
     }, 500);
 
-    // Simulate processing time
     setTimeout(() => {
       clearInterval(progressInterval);
       setProgress(100);
       setIsProcessing(false);
       
-      // Example translation result
       setResponse(`
         <div style="margin:50px">
           <h2>Translation Analysis</h2>
