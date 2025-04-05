@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { FileText, Upload, X } from "lucide-react";
 
 interface DocumentUploaderProps {
-  onUpload: (file: File) => void;
+  onProcessFile: (file: File) => void;
+  isLoading?: boolean;
   acceptedFileTypes?: string[];
 }
 
 const DocumentUploader: React.FC<DocumentUploaderProps> = ({
-  onUpload,
+  onProcessFile,
+  isLoading = false,
   acceptedFileTypes = [".pdf"],
 }) => {
   const [dragActive, setDragActive] = useState(false);
@@ -58,7 +60,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
 
   const handleUpload = () => {
     if (selectedFile) {
-      onUpload(selectedFile);
+      onProcessFile(selectedFile);
     }
   };
 
@@ -97,6 +99,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
             className="hidden"
             onChange={handleChange}
             accept={acceptedFileTypes.join(",")}
+            disabled={isLoading}
           />
 
           {!selectedFile ? (
@@ -110,7 +113,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
               <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
                 {acceptedFileTypes.join(", ")} (Max 10MB)
               </p>
-              <Button onClick={handleButtonClick} variant="outline">
+              <Button onClick={handleButtonClick} variant="outline" disabled={isLoading}>
                 <Upload className="mr-2 h-4 w-4" />
                 Select Document
               </Button>
@@ -125,11 +128,12 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
                   size="sm"
                   className="ml-2 h-8 w-8 p-0"
                   onClick={clearFile}
+                  disabled={isLoading}
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
-              <Button onClick={handleUpload}>
+              <Button onClick={handleUpload} disabled={isLoading}>
                 <Upload className="mr-2 h-4 w-4" />
                 Translate Document
               </Button>
