@@ -40,15 +40,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
-  // Add custom styles to ensure consistent formatting
-  const enhanceHtmlContent = (htmlContent: string) => {
-    return `
-      <div class="prose dark:prose-invert max-w-none">
-        ${htmlContent}
-      </div>
-    `;
-  };
-
   return (
     <>
       {/* Only render progress section when actually loading */}
