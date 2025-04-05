@@ -42,8 +42,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
   // Check if the response contains an error message
   const hasError = response.includes('<!DOCTYPE html>') || 
-                  response.includes('<pre>Cannot') || 
-                  response.includes('Error:');
+                  response.includes('<pre>') || 
+                  response.includes('Error:') ||
+                  response.includes('unavailable');
 
   return (
     <>
@@ -78,7 +79,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               {hasError ? (
                 <div className="flex items-center text-destructive gap-2 p-4 border border-destructive/20 rounded-md bg-destructive/10">
                   <AlertCircle className="h-5 w-5" />
-                  <p>Backend service is currently unavailable. Please try the demo instead.</p>
+                  <p>Translation service is currently unavailable. Please try the demo instead.</p>
                 </div>
               ) : (
                 <div 

@@ -112,35 +112,44 @@ const TranslationAssistant = () => {
       setFileReference(fileRef);
       
       console.log(`Processing document with: ${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`);
-      const processResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          fileReference: fileRef,
-          documentType: "translation"
-        }),
-      });
       
-      if (!processResponse.ok) {
-        console.error("Process response not OK:", processResponse.status);
-        throw new Error(`HTTP error! Status: ${processResponse.status}`);
+      try {
+        const processResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ 
+            fileReference: fileRef,
+            documentType: "translation"
+          }),
+        });
+        
+        if (!processResponse.ok) {
+          console.error("Process response not OK:", processResponse.status);
+          throw new Error(`HTTP error! Status: ${processResponse.status}`);
+        }
+        
+        const resultHtml = await processResponse.text();
+        setProgress(100);
+        
+        resetProgress();
+        
+        setTimeout(() => {
+          setResponse(resultHtml);
+          setIsLoading(false);
+        }, 500);
+      } catch (error) {
+        console.error("Translation API error:", error);
+        throw new Error("Translation service unavailable. Please try the demo instead.");
       }
-      
-      const resultHtml = await processResponse.text();
-      setProgress(100);
-      
-      resetProgress();
-      
-      setTimeout(() => {
-        setResponse(resultHtml);
-        setIsLoading(false);
-      }, 500);
       
     } catch (error) {
       console.error("Error processing file:", error);
       resetProgress();
+      
+      setResponse("<!DOCTYPE html><html><body><pre>Translation service unavailable</pre></body></html>");
+      
       toast({
         title: "Processing failed",
         description: "There was an error processing your file. Please try the demo instead.",

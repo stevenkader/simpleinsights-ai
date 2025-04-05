@@ -5,5 +5,5 @@ export const API_BASE_URL = "https://simpleinsights-ai-backend.onrender.com";
 // API endpoints
 export const API_ENDPOINTS = {
   UPLOAD_FILE: "/upload-temp-file",
-  PROCESS_DOCUMENT: "/process-document" 
+  PROCESS_DOCUMENT: "/translation" // Changed from "/process-document" to "/translation"
 };
