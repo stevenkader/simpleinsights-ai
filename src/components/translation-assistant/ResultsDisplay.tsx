@@ -49,7 +49,14 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     container.innerHTML = response;
     
     // Return the formatted content
-    return <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: response }} />;
+    return (
+      <div className="prose dark:prose-invert max-w-none">
+        <div className="mb-8">
+          {/* This will be replaced by the actual translation content */}
+          <div dangerouslySetInnerHTML={{ __html: response }} className="article-translation" />
+        </div>
+      </div>
+    );
   };
 
   return (
