@@ -83,7 +83,7 @@ const Index = () => {
                 </p>
                 <div className="mt-4">
                   <Button variant="outline" size="sm" asChild>
-                    <Link to="/demo">Try It Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                    <Link to="/translation-assistant">Try It Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
                   </Button>
                 </div>
               </CardContent>
