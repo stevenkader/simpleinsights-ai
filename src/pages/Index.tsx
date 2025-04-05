@@ -1,3 +1,4 @@
+
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -66,7 +67,7 @@ const Index = () => {
                 </p>
                 <div className="mt-4">
                   <Button variant="outline" size="sm" asChild>
-                    <Link to="/demo">Try It Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                    <Link to="/medical-reports">Try It Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
                   </Button>
                 </div>
               </CardContent>
