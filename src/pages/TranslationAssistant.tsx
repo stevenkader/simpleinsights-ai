@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { API_BASE_URL } from "@/config/api";
@@ -19,7 +18,7 @@ const TranslationAssistant = () => {
   const progressIntervalRef = useRef<number | null>(null);
   
   const demoTranslationContent = `
-    <div id="translation-result" class="p-6">
+    <div class="p-6">
       <h2 class="text-2xl font-bold mb-4">Salvador Dalís Hideout, a Hut Turned into a Sensational Palace</h2>
       <p class="text-sm text-gray-500 mb-4">By Clément Ghys</p>
       <p class="text-sm text-gray-500 mb-6">Published on January 27, 2024 at 7:00 PM, modified on January 28, 2024 at 11:31 AM</p>
@@ -112,12 +111,15 @@ const TranslationAssistant = () => {
       
       setFileReference(fileRef);
       
-      const processResponse = await fetch(`${API_BASE_URL}/upload-translation01`, {
+      const processResponse = await fetch(`${API_BASE_URL}/process-document`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ fileReference: fileRef }),
+        body: JSON.stringify({ 
+          fileReference: fileRef,
+          documentType: "translation"
+        }),
       });
       
       if (!processResponse.ok) {

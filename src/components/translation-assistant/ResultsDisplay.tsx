@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, AlertCircle } from "lucide-react";
 
 interface ResultsDisplayProps {
   response: string;
@@ -70,12 +70,19 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               )}
             </CardHeader>
             <CardContent>
-              <div 
-                className="prose prose-p:text-slate-700 dark:prose-p:text-slate-300
-                  prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
-                  max-w-none dark:prose-invert"
-                dangerouslySetInnerHTML={{ __html: response }}
-              />
+              {response.includes('<!DOCTYPE html>') || response.includes('<pre>Cannot') ? (
+                <div className="flex items-center text-destructive gap-2 p-4 border border-destructive/20 rounded-md bg-destructive/10">
+                  <AlertCircle className="h-5 w-5" />
+                  <p>Backend service is currently unavailable. Please try the demo or try again later.</p>
+                </div>
+              ) : (
+                <div 
+                  className="prose prose-p:text-slate-700 dark:prose-p:text-slate-300
+                    prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                    max-w-none dark:prose-invert"
+                  dangerouslySetInnerHTML={{ __html: response }}
+                />
+              )}
             </CardContent>
           </Card>
         </div>
