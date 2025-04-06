@@ -11,6 +11,7 @@ import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
 import FAQ from "./pages/FAQ";
+import Testimonials from "./pages/Testimonials";
 import LegalAssistant from "./pages/LegalAssistant";
 import MedicalReports from "./pages/MedicalReports";
 import TranslationAssistant from "./pages/TranslationAssistant";
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/legal-assistant" element={<LegalAssistant />} />
           <Route path="/medical-reports" element={<MedicalReports />} />
           <Route path="/translation-assistant" element={<TranslationAssistant />} />
