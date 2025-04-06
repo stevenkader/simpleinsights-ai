@@ -84,8 +84,8 @@ const FAQ = () => {
                 What file formats are supported?
               </AccordionTrigger>
               <AccordionContent>
-                Currently, we support PDF documents, Word files (.docx), and plain text (.txt) files. We're working to expand 
-                support for additional file formats in the future. For best results, we recommend using PDF files with searchable text.
+                Currently, we only support PDF documents. For best results, we recommend using PDF files with searchable text. 
+                We're working to expand support for additional file formats in the future.
               </AccordionContent>
             </AccordionItem>
             
