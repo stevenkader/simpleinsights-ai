@@ -9,7 +9,7 @@ interface DocumentUploaderProps {
   isLoading?: boolean;
   acceptedFileTypes?: string[];
   title: string;
-  description: string;
+  description?: string; // Make description optional
 }
 
 const DocumentUploader: React.FC<DocumentUploaderProps> = ({
@@ -94,9 +94,11 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
     <Card>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
-        <CardDescription>
-          {description}
-        </CardDescription>
+        {description && (
+          <CardDescription>
+            {description}
+          </CardDescription>
+        )}
       </CardHeader>
       <CardContent>
         <div

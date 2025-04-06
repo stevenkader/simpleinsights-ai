@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -177,7 +176,6 @@ const LegalAssistant = () => {
               isLoading={isLoading}
               onProcessFile={processFile}
               title="Upload Document for Analysis"
-              description="Upload your legal document for AI analysis"
               acceptedFileTypes={[".pdf"]}
             />
           </div>
