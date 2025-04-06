@@ -222,32 +222,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="section-padding bg-primary text-primary-foreground">
-        <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Ready to understand complex documents better?
-              </h2>
-            </div>
-            <div className="flex flex-col items-start gap-4">
-              <p className="text-lg/relaxed lg:text-xl/relaxed">
-                Join thousands of people who use SimpleInsights.ai to make sense of complex information. Start today.
-              </p>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button size="lg" variant="secondary" asChild>
-                  <Link to="/legal-assistant">Try It Now <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                </Button>
-                <Button variant="outline" size="lg" className="bg-transparent border-white hover:bg-white/10" asChild>
-                  <Link to="/legal-assistant">See How It Works</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Privacy Promise Section */}
       <section className="section-padding">
         <div className="container px-4 md:px-6">
