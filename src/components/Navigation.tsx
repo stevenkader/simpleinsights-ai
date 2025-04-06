@@ -38,12 +38,6 @@ const Navigation = () => {
             <Globe className="h-4 w-4" />
             Translator
           </Link>
-          <Link to="/privacy" className="text-sm font-medium hover:text-insights-blue transition-colors">
-            Privacy
-          </Link>
-          <Link to="/contact" className="text-sm font-medium hover:text-insights-blue transition-colors">
-            Contact
-          </Link>
         </nav>
 
         {/* Mobile menu button */}
@@ -92,20 +86,6 @@ const Navigation = () => {
             >
               <Globe className="h-4 w-4 mr-1" />
               Translator
-            </Link>
-            <Link 
-              to="/privacy" 
-              className="block py-2 text-sm font-medium hover:text-insights-blue"
-              onClick={() => setIsOpen(false)}
-            >
-              Privacy
-            </Link>
-            <Link 
-              to="/contact" 
-              className="block py-2 text-sm font-medium hover:text-insights-blue"
-              onClick={() => setIsOpen(false)}
-            >
-              Contact
             </Link>
           </div>
         </div>
