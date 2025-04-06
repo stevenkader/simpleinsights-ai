@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, MessageSquare, Send } from "lucide-react";
+import { Mail, Send } from "lucide-react";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -20,6 +20,7 @@ const Contact = () => {
     setSending(true);
     
     // Simulate sending - in a real app, this would be an API call
+    // The email would be sent to support@simpleinsights.ai
     setTimeout(() => {
       setSending(false);
       setName("");
@@ -54,14 +55,7 @@ const Contact = () => {
                   <div className="bg-primary/10 p-2 rounded-full">
                     <Mail className="h-5 w-5 text-primary" />
                   </div>
-                  <span>hello@simpleinsights.ai</span>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary/10 p-2 rounded-full">
-                    <MessageSquare className="h-5 w-5 text-primary" />
-                  </div>
-                  <span>Live chat available weekdays 9am-5pm EST</span>
+                  <span>support@simpleinsights.ai</span>
                 </div>
               </div>
               
@@ -188,3 +182,4 @@ const Contact = () => {
 };
 
 export default Contact;
+
