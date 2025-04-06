@@ -55,7 +55,12 @@ const Contact = () => {
                   <div className="bg-primary/10 p-2 rounded-full">
                     <Mail className="h-5 w-5 text-primary" />
                   </div>
-                  <span>support@simpleinsights.ai</span>
+                  <a 
+                    href="mailto:support@simpleinsights.ai?subject=re:%20SimpleInsights.ai" 
+                    className="text-primary hover:underline"
+                  >
+                    support@simpleinsights.ai
+                  </a>
                 </div>
               </div>
               
