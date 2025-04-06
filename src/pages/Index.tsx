@@ -11,31 +11,56 @@ const Index = () => {
     <div className="flex min-h-screen flex-col">
       <Navigation />
       
-      {/* Hero Section - Simplified */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-background to-muted py-20">
+      {/* Hero Section with Cleaner Layout */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-background to-muted py-20 md:py-28">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-col justify-center space-y-4 mx-auto text-center max-w-3xl">
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+          <div className="flex flex-col justify-center space-y-8 mx-auto text-center max-w-3xl">
+            <div className="space-y-4">
+              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                 Understand Complex Documents with 
                 <span className="gradient-text"> AI Simplicity</span>
               </h1>
+              <p className="text-xl text-muted-foreground mx-auto max-w-[700px]">
+                SimpleInsights.ai provides specialized tools designed to make complex documents approachable for everyone.
+              </p>
+            </div>
+            
+            {/* Tool Links - Directly Below Hero */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 pt-4">
+              <Button size="lg" className="w-full" asChild>
+                <Link to="/legal-assistant" className="flex items-center justify-center">
+                  <FileText className="mr-2 h-5 w-5" />
+                  Legal Assistant
+                </Link>
+              </Button>
+              <Button size="lg" className="w-full" asChild>
+                <Link to="/medical-reports" className="flex items-center justify-center">
+                  <FileType className="mr-2 h-5 w-5" />
+                  Medical Assistant
+                </Link>
+              </Button>
+              <Button size="lg" className="w-full" asChild>
+                <Link to="/translation-assistant" className="flex items-center justify-center">
+                  <Globe className="mr-2 h-5 w-5" />
+                  Expert Translator
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Tools Section - Moved up and with background color */}
+      {/* Tools Section - Now shows detailed info about each tool */}
       <section className="section-padding bg-slate-50">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm">Our Tools</div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Three powerful ways to understand documents
+                How our tools help you
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                SimpleInsights.ai provides three specialized tools designed to make complex documents approachable for everyone.
+                Each of our specialized tools is designed to tackle specific document challenges.
               </p>
             </div>
           </div>
