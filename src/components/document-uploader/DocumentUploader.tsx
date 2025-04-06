@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,12 +8,16 @@ interface DocumentUploaderProps {
   onProcessFile: (file: File) => void;
   isLoading?: boolean;
   acceptedFileTypes?: string[];
+  title: string;
+  description: string;
 }
 
 const DocumentUploader: React.FC<DocumentUploaderProps> = ({
   onProcessFile,
   isLoading = false,
   acceptedFileTypes = [".pdf"],
+  title,
+  description,
 }) => {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -74,12 +79,23 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
     fileInputRef.current?.click();
   };
 
+  const getButtonLabel = () => {
+    switch (title.toLowerCase()) {
+      case "upload document for translation":
+        return "Translate Document";
+      case "upload document for analysis":
+        return "Process Document";
+      default:
+        return "Process Document";
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Upload Document for Translation</CardTitle>
+        <CardTitle>{title}</CardTitle>
         <CardDescription>
-          Select a document in any language to translate to English
+          {description}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -134,7 +150,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
               </div>
               <Button onClick={handleUpload} disabled={isLoading}>
                 <Upload className="mr-2 h-4 w-4" />
-                Translate Document
+                {getButtonLabel()}
               </Button>
             </div>
           )}

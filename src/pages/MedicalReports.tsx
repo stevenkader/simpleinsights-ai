@@ -1,8 +1,9 @@
+
 import { useState, useEffect, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import ResultsDisplay from "@/components/medical-reports/ResultsDisplay";
-import DocumentUploader from "@/components/legal-assistant/DocumentUploader";
+import DocumentUploader from "@/components/document-uploader/DocumentUploader";
 import PrivacyNotice from "@/components/legal-assistant/PrivacyNotice";
 import DemoSection from "@/components/medical-reports/DemoSection";
 import { useToast } from "@/hooks/use-toast";
@@ -220,6 +221,9 @@ const MedicalReports = () => {
             <DocumentUploader 
               isLoading={isLoading}
               onProcessFile={processFile}
+              title="Upload Document for Analysis"
+              description="Upload your medical report for AI analysis"
+              acceptedFileTypes={[".pdf"]}
             />
           </div>
           

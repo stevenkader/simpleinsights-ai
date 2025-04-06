@@ -1,8 +1,9 @@
+
 import { useState, useEffect, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import DemoSection from "@/components/legal-assistant/DemoSection";
-import DocumentUploader from "@/components/legal-assistant/DocumentUploader";
+import DocumentUploader from "@/components/document-uploader/DocumentUploader";
 import ResultsDisplay from "@/components/legal-assistant/ResultsDisplay";
 import PrivacyNotice from "@/components/legal-assistant/PrivacyNotice";
 import { useToast } from "@/hooks/use-toast";
@@ -175,6 +176,9 @@ const LegalAssistant = () => {
             <DocumentUploader 
               isLoading={isLoading}
               onProcessFile={processFile}
+              title="Upload Document for Analysis"
+              description="Upload your legal document for AI analysis"
+              acceptedFileTypes={[".pdf"]}
             />
           </div>
           

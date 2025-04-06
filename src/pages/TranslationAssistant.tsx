@@ -5,7 +5,7 @@ import { API_BASE_URL, API_ENDPOINTS } from "@/config/api";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import PrivacyNotice from "@/components/translation-assistant/PrivacyNotice";
-import DocumentUploader from "@/components/translation-assistant/DocumentUploader";
+import DocumentUploader from "@/components/document-uploader/DocumentUploader";
 import DemoSection from "@/components/translation-assistant/DemoSection";
 import ResultsDisplay from "@/components/translation-assistant/ResultsDisplay";
 
@@ -241,6 +241,9 @@ const TranslationAssistant = () => {
             <DocumentUploader 
               isLoading={isLoading}
               onProcessFile={processFile}
+              title="Upload Document for Translation"
+              description="Select a document in any language to translate to English"
+              acceptedFileTypes={[".pdf"]}
             />
           </div>
           
