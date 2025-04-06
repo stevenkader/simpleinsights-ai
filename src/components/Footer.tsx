@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="border-t border-border/40 bg-background">
       <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="relative h-7 w-7 rounded-md bg-gradient-to-br from-insights-blue to-insights-navy flex items-center justify-center">
@@ -31,13 +31,6 @@ const Footer = () => {
                   FAQ
                 </Link>
               </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="text-sm font-semibold mb-4">Resources</h4>
-            <ul className="space-y-3">
-              {/* Blog link removed as requested */}
             </ul>
           </div>
           
