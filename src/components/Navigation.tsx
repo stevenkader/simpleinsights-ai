@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Globe } from 'lucide-react';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +33,10 @@ const Navigation = () => {
           </Link>
           <Link to="/medical-reports" className="text-sm font-medium hover:text-insights-blue transition-colors">
             Medical Reports
+          </Link>
+          <Link to="/translation-assistant" className="text-sm font-medium hover:text-insights-blue transition-colors flex items-center gap-1">
+            <Globe className="h-4 w-4" />
+            Translator
           </Link>
           <Link to="/privacy" className="text-sm font-medium hover:text-insights-blue transition-colors">
             Privacy
@@ -80,6 +84,14 @@ const Navigation = () => {
               onClick={() => setIsOpen(false)}
             >
               Medical Reports
+            </Link>
+            <Link 
+              to="/translation-assistant" 
+              className="flex items-center py-2 text-sm font-medium hover:text-insights-blue"
+              onClick={() => setIsOpen(false)}
+            >
+              <Globe className="h-4 w-4 mr-1" />
+              Translator
             </Link>
             <Link 
               to="/privacy" 
