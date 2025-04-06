@@ -40,11 +40,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
-  // Check if the response contains an error message
-  const hasError = response.includes('<!DOCTYPE html>') || 
-                  response.includes('<pre>') || 
-                  response.includes('Error:') ||
-                  response.includes('unavailable');
+  // Check if the response contains an error message - be more specific with error detection
+  const hasError = response.includes('Translation service unavailable') || 
+                  response.includes('<!DOCTYPE html>') || 
+                  response.includes('<pre>Error') || 
+                  response.includes('Error:');
 
   return (
     <>
