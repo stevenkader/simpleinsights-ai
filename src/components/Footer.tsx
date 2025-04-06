@@ -37,11 +37,7 @@ const Footer = () => {
           <div>
             <h4 className="text-sm font-semibold mb-4">Resources</h4>
             <ul className="space-y-3">
-              <li>
-                <Link to="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Blog
-                </Link>
-              </li>
+              {/* Blog link removed as requested */}
             </ul>
           </div>
           
