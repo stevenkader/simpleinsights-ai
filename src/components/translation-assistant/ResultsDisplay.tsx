@@ -48,6 +48,19 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     response.trim() === ''
   );
 
+  // Function to remove "Translation of PDF" text from the response
+  const cleanResponse = (html: string): string => {
+    // Check if the response is a string and not empty
+    if (typeof html !== 'string' || html.trim() === '') {
+      return html;
+    }
+    
+    // Remove any "Translation of PDF" headings or text
+    return html.replace(/<h[1-6][^>]*>Translation of PDF<\/h[1-6]>/gi, '')
+               .replace(/<p[^>]*>Translation of PDF<\/p>/gi, '')
+               .replace(/Translation of PDF/g, '');
+  };
+
   return (
     <>
       {/* Only render progress section when actually loading */}
@@ -88,7 +101,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                   className="prose prose-p:text-slate-700 dark:prose-p:text-slate-300
                     prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
                     max-w-none dark:prose-invert"
-                  dangerouslySetInnerHTML={{ __html: response }}
+                  dangerouslySetInnerHTML={{ __html: cleanResponse(response) }}
                 />
               )}
             </CardContent>
