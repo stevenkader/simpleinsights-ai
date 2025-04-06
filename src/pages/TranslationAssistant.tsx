@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { API_BASE_URL, API_ENDPOINTS } from "@/config/api";
@@ -242,7 +241,6 @@ const TranslationAssistant = () => {
               isLoading={isLoading}
               onProcessFile={processFile}
               title="Upload Document for Translation"
-              description="Select a document in any language to translate to English"
               acceptedFileTypes={[".pdf"]}
             />
           </div>

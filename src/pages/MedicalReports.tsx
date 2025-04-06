@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -222,7 +221,6 @@ const MedicalReports = () => {
               isLoading={isLoading}
               onProcessFile={processFile}
               title="Upload Document for Analysis"
-              description="Upload your medical report for AI analysis"
               acceptedFileTypes={[".pdf"]}
             />
           </div>
