@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -80,7 +79,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
       <CardHeader>
         <CardTitle>Upload Document for Translation</CardTitle>
         <CardDescription>
-          Select a document in any language to translate and explain in English
+          Select a document in any language to translate to English
         </CardDescription>
       </CardHeader>
       <CardContent>
