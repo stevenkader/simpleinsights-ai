@@ -1,4 +1,3 @@
-
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -25,94 +24,65 @@ const Index = () => {
               </p>
             </div>
             
-            {/* Tool Links - Directly Below Hero */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 pt-4">
-              <Button size="lg" className="w-full" asChild>
-                <Link to="/legal-assistant" className="flex items-center justify-center">
-                  <FileText className="mr-2 h-5 w-5" />
-                  Legal Assistant
-                </Link>
-              </Button>
-              <Button size="lg" className="w-full" asChild>
-                <Link to="/medical-reports" className="flex items-center justify-center">
-                  <FileType className="mr-2 h-5 w-5" />
-                  Medical Assistant
-                </Link>
-              </Button>
-              <Button size="lg" className="w-full" asChild>
-                <Link to="/translation-assistant" className="flex items-center justify-center">
-                  <Globe className="mr-2 h-5 w-5" />
-                  Expert Translator
-                </Link>
-              </Button>
+            {/* Tool Cards - Replacing the buttons with cards */}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3 pt-4">
+              <Card className="hover-card">
+                <CardContent className="p-6">
+                  <div className="flex justify-center mb-4">
+                    <div className="bg-blue-100 p-4 rounded-lg">
+                      <FileText className="h-8 w-8 text-insights-blue" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">Legal Assistant</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Upload PDF of legal contract to get detailed laymen explanation.
+                  </p>
+                  <Button variant="outline" size="sm" className="w-full" asChild>
+                    <Link to="/legal-assistant" className="flex items-center justify-center">
+                      Try It Now <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-card">
+                <CardContent className="p-6">
+                  <div className="flex justify-center mb-4">
+                    <div className="bg-blue-100 p-4 rounded-lg">
+                      <FileType className="h-8 w-8 text-insights-blue" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">Medical Assistant</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Upload PDF of test results to understand them.
+                  </p>
+                  <Button variant="outline" size="sm" className="w-full" asChild>
+                    <Link to="/medical-reports" className="flex items-center justify-center">
+                      Try It Now <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-card">
+                <CardContent className="p-6">
+                  <div className="flex justify-center mb-4">
+                    <div className="bg-blue-100 p-4 rounded-lg">
+                      <Globe className="h-8 w-8 text-insights-blue" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">Expert Translator</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Upload PDF in any language and get it translated to English.
+                  </p>
+                  <Button variant="outline" size="sm" className="w-full" asChild>
+                    <Link to="/translation-assistant" className="flex items-center justify-center">
+                      Try It Now <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Tools Section - Now shows detailed info about each tool */}
-      <section className="section-padding bg-slate-50">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-background px-3 py-1 text-sm">Our Tools</div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                How our tools help you
-              </h2>
-              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Each of our specialized tools is designed to tackle specific document challenges.
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-6 pt-12 md:grid-cols-3">
-            <Card className="hover-card">
-              <CardContent className="flex flex-col items-start p-6">
-                <div className="feature-icon mb-4">
-                  <FileText className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold">Legal Assistant</h3>
-                <p className="text-muted-foreground mt-2">
-                  Upload PDF of legal contract to get detailed laymen explanation.
-                </p>
-                <div className="mt-4">
-                  <Button variant="outline" size="sm" asChild>
-                    <Link to="/legal-assistant">Try It Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="hover-card">
-              <CardContent className="flex flex-col items-start p-6">
-                <div className="feature-icon mb-4">
-                  <FileType className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold">Medical Assistant</h3>
-                <p className="text-muted-foreground mt-2">
-                  Upload PDF of test results to understand them.
-                </p>
-                <div className="mt-4">
-                  <Button variant="outline" size="sm" asChild>
-                    <Link to="/medical-reports">Try It Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="hover-card">
-              <CardContent className="flex flex-col items-start p-6">
-                <div className="feature-icon mb-4">
-                  <Globe className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold">Expert Translator</h3>
-                <p className="text-muted-foreground mt-2">
-                  Upload PDF in any language and get it translated to English.
-                </p>
-                <div className="mt-4">
-                  <Button variant="outline" size="sm" asChild>
-                    <Link to="/translation-assistant">Try It Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
