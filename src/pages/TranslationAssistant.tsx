@@ -77,9 +77,12 @@ const TranslationAssistant = () => {
       
       const progressInterval = simulateProgress();
       
+      // Step 1: Upload the file
       const uploadResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.UPLOAD_FILE}`, {
         method: "POST",
-        body: formData
+        body: formData,
+        // Add mode: "cors" to explicitly enable CORS
+        mode: "cors"
       });
       
       if (!uploadResponse.ok) {
@@ -115,11 +118,14 @@ const TranslationAssistant = () => {
       console.log(`Processing document with: ${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`);
       
       try {
+        // Step 2: Process the document
         const processResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          // Add mode: "cors" to explicitly enable CORS
+          mode: "cors",
           body: JSON.stringify({ 
             fileReference: fileRef,
             documentType: "translation"
@@ -133,16 +139,20 @@ const TranslationAssistant = () => {
         
         const resultText = await processResponse.text();
         
-        // Check if the response is valid HTML/content
-        if (resultText.trim() === "" || 
-            resultText.includes("error") || 
-            resultText.includes("unavailable")) {
+        // Improved validation of the response
+        if (!resultText || 
+            resultText.trim() === "" || 
+            resultText.toLowerCase().includes("error") || 
+            resultText.toLowerCase().includes("unavailable")) {
+          console.error("Invalid response:", resultText);
           throw new Error("Translation service returned an empty or error response");
         }
         
+        // Complete the progress simulation
         setProgress(100);
         resetProgress();
         
+        // Set response with a slight delay to ensure UI updates properly
         setTimeout(() => {
           setResponse(resultText);
           setIsLoading(false);
