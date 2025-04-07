@@ -16,8 +16,14 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+# Disallow certain paths
+User-agent: *
+Disallow: /api/
+Disallow: /admin/
+Disallow: /internal/
+
 # Sitemap Location
 Sitemap: https://simpleinsights.ai/sitemap.xml
 
 # Crawl Delay (in seconds)
-Crawl-delay: 10
+Crawl-delay: 5
