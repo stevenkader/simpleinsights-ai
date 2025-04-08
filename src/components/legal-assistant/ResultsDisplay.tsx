@@ -1,10 +1,9 @@
-
 import React, { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 
 interface ResultsDisplayProps {
@@ -24,12 +23,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const contentRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    // Scroll to results when response is available and loading is complete
     if (response && !isLoading && resultSectionRef.current) {
-      // Ensure we scroll after the component is fully rendered
       const timer = setTimeout(() => {
-        // Add an offset to ensure the header is visible (scroll a bit higher)
-        const yOffset = -240; // Increased from -160 to -240 to scroll less (show more above)
+        const yOffset = -240;
         const element = resultSectionRef.current;
         const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
         
@@ -37,9 +33,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           top: y, 
           behavior: 'smooth'
         });
-      }, 500); // Use a longer delay to ensure DOM has updated completely
+      }, 500);
       
-      return () => clearTimeout(timer); // Clean up timer on unmount
+      return () => clearTimeout(timer);
     }
   }, [response, isLoading]);
 
@@ -47,45 +43,35 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     if (!contentRef.current) return;
 
     try {
-      // Create the filename with current date
       const today = new Date();
-      const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+      const formattedDate = today.toISOString().split('T')[0];
       const fileName = `LegalDocReport-${formattedDate}.pdf`;
 
-      // Create a new jsPDF instance
       const pdf = new jsPDF('p', 'mm', 'a4');
       
-      // Set title
       pdf.setFontSize(18);
       pdf.text("Legal Document Analysis Report", 20, 20);
       
-      // Add date
       pdf.setFontSize(12);
       pdf.text(`Generated on: ${formattedDate}`, 20, 30);
       
-      // Add horizontal line
       pdf.setLineWidth(0.5);
       pdf.line(20, 35, 190, 35);
       
-      // Capture the HTML content using html2canvas
       const canvas = await html2canvas(contentRef.current, {
-        scale: 2, // Higher scale for better quality
+        scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: "#ffffff",
       });
       
-      // Calculate the width to fit the PDF page
       const imgWidth = 170;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       
-      // Convert canvas to image
       const imgData = canvas.toDataURL('image/png');
       
-      // Add the image to PDF
       pdf.addImage(imgData, 'PNG', 20, 40, imgWidth, imgHeight);
       
-      // Save the PDF and trigger download automatically
       pdf.save(fileName);
     } catch (error) {
       console.error("Error generating PDF:", error);
@@ -94,7 +80,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
   return (
     <>
-      {/* Only render progress section when actually loading */}
       {isLoading && (
         <div id="progressSection" className="mb-4">
           <Card className="bg-slate-50 dark:bg-slate-900 mb-4">
