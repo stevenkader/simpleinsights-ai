@@ -27,7 +27,7 @@ const DemoSection: React.FC<DemoSectionProps> = ({
     <>
       <Card className="h-full">
         <CardHeader>
-          <CardTitle>Try Demo</CardTitle>
+          <CardTitle>Example Report</CardTitle>
           <CardDescription>
             See how our document analysis works with a sample medical document
           </CardDescription>
