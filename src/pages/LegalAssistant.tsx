@@ -43,6 +43,11 @@ const LegalAssistant = () => {
     return interval;
   };
 
+  const handleFileChange = () => {
+    setResponse("");
+    resetProgress();
+  };
+
   const processFile = async (file: File) => {
     setIsLoading(true);
     setResponse("");
@@ -168,6 +173,7 @@ const LegalAssistant = () => {
             <DocumentUploader 
               isLoading={isLoading}
               onProcessFile={processFile}
+              onFileChange={handleFileChange}
               title="Upload Document for Analysis"
               acceptedFileTypes={[".pdf"]}
             />

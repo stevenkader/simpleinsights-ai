@@ -83,6 +83,11 @@ const MedicalReports = () => {
     return interval;
   };
 
+  const handleFileChange = () => {
+    setResponse("");
+    resetProgress();
+  };
+
   const processFile = async (file: File) => {
     setIsLoading(true);
     setResponse("");
@@ -220,6 +225,7 @@ const MedicalReports = () => {
             <DocumentUploader 
               isLoading={isLoading}
               onProcessFile={processFile}
+              onFileChange={handleFileChange}
               title="Upload Document for Analysis"
               acceptedFileTypes={[".pdf"]}
             />

@@ -66,6 +66,11 @@ const TranslationAssistant = () => {
     return interval;
   };
 
+  const handleFileChange = () => {
+    setResponse("");
+    resetProgress();
+  };
+
   const processFile = async (file: File) => {
     setIsLoading(true);
     setResponse("");
@@ -76,11 +81,9 @@ const TranslationAssistant = () => {
       
       const progressInterval = simulateProgress();
       
-      // Step 1: Upload the file
       const uploadResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.UPLOAD_FILE}`, {
         method: "POST",
         body: formData,
-        // Add mode: "cors" to explicitly enable CORS
         mode: "cors"
       });
       
@@ -117,13 +120,11 @@ const TranslationAssistant = () => {
       console.log(`Processing document with: ${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`);
       
       try {
-        // Step 2: Process the document
         const processResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          // Add mode: "cors" to explicitly enable CORS
           mode: "cors",
           body: JSON.stringify({ 
             fileReference: fileRef,
@@ -138,7 +139,6 @@ const TranslationAssistant = () => {
         
         const resultText = await processResponse.text();
         
-        // Improved validation of the response
         if (!resultText || 
             resultText.trim() === "" || 
             resultText.toLowerCase().includes("error") || 
@@ -147,11 +147,9 @@ const TranslationAssistant = () => {
           throw new Error("Translation service returned an empty or error response");
         }
         
-        // Complete the progress simulation
         setProgress(100);
         resetProgress();
         
-        // Set response with a slight delay to ensure UI updates properly
         setTimeout(() => {
           setResponse(resultText);
           setIsLoading(false);
@@ -240,6 +238,7 @@ const TranslationAssistant = () => {
             <DocumentUploader 
               isLoading={isLoading}
               onProcessFile={processFile}
+              onFileChange={handleFileChange}
               title="Upload Document for Translation"
               acceptedFileTypes={[".pdf"]}
             />

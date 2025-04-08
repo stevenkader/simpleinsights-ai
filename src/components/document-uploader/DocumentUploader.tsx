@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,14 +5,16 @@ import { FileText, Upload, X } from "lucide-react";
 
 interface DocumentUploaderProps {
   onProcessFile: (file: File) => void;
+  onFileChange?: () => void;
   isLoading?: boolean;
   acceptedFileTypes?: string[];
   title: string;
-  description?: string; // Make description optional
+  description?: string;
 }
 
 const DocumentUploader: React.FC<DocumentUploaderProps> = ({
   onProcessFile,
+  onFileChange,
   isLoading = false,
   acceptedFileTypes = [".pdf"],
   title,
@@ -40,6 +41,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       validateAndSetFile(file);
+      if (onFileChange) onFileChange();
     }
   };
 
@@ -48,6 +50,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       validateAndSetFile(file);
+      if (onFileChange) onFileChange();
     }
   };
 
@@ -73,6 +76,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+    if (onFileChange) onFileChange();
   };
 
   const handleButtonClick = () => {
