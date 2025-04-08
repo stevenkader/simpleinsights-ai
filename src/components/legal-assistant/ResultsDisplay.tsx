@@ -1,8 +1,8 @@
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Loader } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
@@ -22,6 +22,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 }) => {
   const resultSectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
   
   useEffect(() => {
     if (response && !isLoading && resultSectionRef.current) {
@@ -44,6 +45,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     if (!contentRef.current) return;
 
     try {
+      setIsPdfGenerating(true);
+      
       const today = new Date();
       const formattedDate = today.toISOString().split('T')[0];
       const fileName = `LegalDocReport-${formattedDate}.pdf`;
@@ -76,6 +79,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       pdf.save(fileName);
     } catch (error) {
       console.error("Error generating PDF:", error);
+    } finally {
+      setIsPdfGenerating(false);
     }
   };
 
@@ -104,9 +109,19 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 variant="outline" 
                 className="ml-auto" 
                 onClick={generatePDF}
+                disabled={isPdfGenerating}
               >
-                <Download className="mr-2 h-4 w-4" />
-                Save as PDF
+                {isPdfGenerating ? (
+                  <>
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Save as PDF
+                  </>
+                )}
               </Button>
             </CardHeader>
             <CardContent>

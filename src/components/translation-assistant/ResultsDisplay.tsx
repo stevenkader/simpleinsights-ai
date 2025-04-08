@@ -1,9 +1,9 @@
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Download, AlertCircle } from "lucide-react";
+import { Download, AlertCircle, Loader } from "lucide-react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -22,6 +22,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 }) => {
   const resultSectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
   
   useEffect(() => {
     // Scroll to results when response is available and loading is complete
@@ -68,6 +69,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     if (!contentRef.current) return;
 
     try {
+      setIsPdfGenerating(true);
+      
       // Create the filename with current date
       const today = new Date();
       const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
@@ -110,6 +113,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       pdf.save(fileName);
     } catch (error) {
       console.error("Error generating PDF:", error);
+    } finally {
+      setIsPdfGenerating(false);
     }
   };
 
@@ -136,9 +141,23 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl">Translation Result</CardTitle>
               {!hasError && (
-                <Button variant="outline" className="ml-auto" onClick={generatePDF}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Save as PDF
+                <Button 
+                  variant="outline" 
+                  className="ml-auto" 
+                  onClick={generatePDF}
+                  disabled={isPdfGenerating}
+                >
+                  {isPdfGenerating ? (
+                    <>
+                      <Loader className="mr-2 h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-4 w-4" />
+                      Save as PDF
+                    </>
+                  )}
                 </Button>
               )}
             </CardHeader>
