@@ -27,7 +27,7 @@ const DemoSection: React.FC<DemoSectionProps> = ({
     <>
       <Card className="h-full">
         <CardHeader>
-          <CardTitle>Try Free Demo</CardTitle>
+          <CardTitle>Try Demo</CardTitle>
           <CardDescription>
             See how our translation service works with a sample document
           </CardDescription>
