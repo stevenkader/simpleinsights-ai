@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 interface ResultsDisplayProps {
   response: string;
@@ -19,6 +21,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   onExportPDF
 }) => {
   const resultSectionRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     // Scroll to results when response is available and loading is complete
@@ -39,6 +42,55 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       return () => clearTimeout(timer); // Clean up timer on unmount
     }
   }, [response, isLoading]);
+
+  const generatePDF = async () => {
+    if (!contentRef.current) return;
+
+    try {
+      // Create the filename with current date
+      const today = new Date();
+      const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+      const fileName = `LegalDocReport-${formattedDate}.pdf`;
+
+      // Create a new jsPDF instance
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      // Set title
+      pdf.setFontSize(18);
+      pdf.text("Legal Document Analysis Report", 20, 20);
+      
+      // Add date
+      pdf.setFontSize(12);
+      pdf.text(`Generated on: ${formattedDate}`, 20, 30);
+      
+      // Add horizontal line
+      pdf.setLineWidth(0.5);
+      pdf.line(20, 35, 190, 35);
+      
+      // Capture the HTML content using html2canvas
+      const canvas = await html2canvas(contentRef.current, {
+        scale: 2, // Higher scale for better quality
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+      });
+      
+      // Calculate the width to fit the PDF page
+      const imgWidth = 170;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      // Convert canvas to image
+      const imgData = canvas.toDataURL('image/png');
+      
+      // Add the image to PDF
+      pdf.addImage(imgData, 'PNG', 20, 40, imgWidth, imgHeight);
+      
+      // Save the PDF and trigger download automatically
+      pdf.save(fileName);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
 
   return (
     <>
@@ -62,16 +114,19 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl">Analysis Results</CardTitle>
-              {onExportPDF && (
-                <Button variant="outline" className="ml-auto" onClick={onExportPDF}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Save as PDF
-                </Button>
-              )}
+              <Button 
+                variant="outline" 
+                className="ml-auto" 
+                onClick={generatePDF}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Save as PDF
+              </Button>
             </CardHeader>
             <CardContent>
               <div 
                 id="output"
+                ref={contentRef}
                 className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
                   prose-p:text-slate-700 dark:prose-p:text-slate-300
                   prose-li:text-slate-700 dark:prose-li:text-slate-300

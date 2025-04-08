@@ -140,13 +140,6 @@ const LegalAssistant = () => {
     }, 1500);
   };
 
-  const exportPDF = () => {
-    toast({
-      title: "Export PDF",
-      description: "PDF export functionality would be implemented here",
-    });
-  };
-
   useEffect(() => {
     return () => {
       resetProgress();
@@ -184,7 +177,6 @@ const LegalAssistant = () => {
             response={response} 
             isLoading={isLoading} 
             progress={progress}
-            onExportPDF={exportPDF}
           />
           <PrivacyNotice />
         </div>
