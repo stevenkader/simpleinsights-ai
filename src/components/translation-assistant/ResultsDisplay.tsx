@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Download, AlertCircle } from "lucide-react";
-import { jsPDF } from "jspdf"; // Fixed import with correct capitalization
+import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 
 interface ResultsDisplayProps {
