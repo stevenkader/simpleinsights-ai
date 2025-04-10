@@ -85,6 +85,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       const headerLineHeight = 7; // Keep headers a bit more spaced
       const listItemLineHeight = 5; // Reduced line height for list items
       const paragraphSpacing = 2; // Less space between paragraphs
+      const sectionSpacing = 10; // Space between sections (before headings)
       
       // Helper function to add text with proper formatting and page breaks
       const addFormattedText = (text: string, fontSize: number, isBold: boolean, indent: number = 0) => {
@@ -113,6 +114,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       const processHeadings = (tagName: string, fontSize: number) => {
         const headings = htmlDoc.querySelectorAll(tagName);
         headings.forEach((heading) => {
+          // Add extra space before headings
+          yPosition += sectionSpacing;
+          
           const headingText = heading.textContent?.trim() || "";
           if (headingText) {
             addFormattedText(headingText, fontSize, true);
@@ -153,6 +157,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                   // Reduce space between list items
                   yPosition -= 2;
                 });
+                
+                // Add a bit of extra space after a list
+                yPosition += 5;
               }
               
               nextElement = nextElement.nextElementSibling;
@@ -236,7 +243,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                   prose-li:text-slate-700 dark:prose-li:text-slate-300
                   prose-strong:text-slate-900 dark:prose-strong:text-white
                   prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5
-                  prose-h2:text-xl prose-h3:text-lg
+                  prose-h2:text-xl prose-h3:text-lg prose-h2:mt-6 prose-h3:mt-4
                   max-w-none dark:prose-invert"
                 dangerouslySetInnerHTML={{ __html: response }}
               />
