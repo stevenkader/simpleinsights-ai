@@ -46,8 +46,8 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     const lineHeight = 5; // Reduced line height for paragraphs
     const headerLineHeight = 7; // Keep headers a bit more spaced
     const paragraphSpacing = 2; // Less space between paragraphs
-    const sectionSpacing = 6; // Reduced space between sections (before headings)
-    const listMargin = 8; // Reduced space after a list
+    const sectionSpacing = 2; // Significantly reduced space between sections (before headings)
+    const listMargin = 4; // Reduced space after a list
     
     // Helper function to add text with proper formatting and page breaks
     const addFormattedText = (text: string, fontSize: number, isBold: boolean, indent: number = 0) => {

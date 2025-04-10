@@ -154,8 +154,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                     prose-p:leading-tight prose-p:my-2
                     prose-li:text-slate-700 dark:prose-li:text-slate-300
                     prose-strong:text-slate-900 dark:prose-strong:text-white
-                    prose-ul:my-3 prose-ol:my-3 prose-li:my-1
-                    prose-h2:text-xl prose-h3:text-lg prose-h2:mt-6 prose-h3:mt-4
+                    prose-ul:my-2 prose-ol:my-2 prose-li:my-1
+                    prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
                     max-w-none dark:prose-invert"
                   dangerouslySetInnerHTML={{ __html: cleanResponse(response) }}
                 />
