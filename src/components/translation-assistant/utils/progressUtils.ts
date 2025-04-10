@@ -9,8 +9,8 @@
  */
 export const simulateProgress = (
   setProgress: (value: number) => void,
-  progressIntervalRef: React.MutableRefObject<number | null>
-): number => {
+  progressIntervalRef: React.MutableRefObject<NodeJS.Timeout | null>
+): NodeJS.Timeout => {
   if (progressIntervalRef.current) {
     clearInterval(progressIntervalRef.current);
     progressIntervalRef.current = null;
@@ -27,7 +27,7 @@ export const simulateProgress = (
     }
   }, 1200); // Increased from original 600ms to 1200ms for slower progress
   
-  progressIntervalRef.current = interval as unknown as number;
+  progressIntervalRef.current = interval;
   return interval;
 };
 
@@ -36,7 +36,7 @@ export const simulateProgress = (
  */
 export const resetProgress = (
   setProgress: (value: number) => void,
-  progressIntervalRef: React.MutableRefObject<number | null>
+  progressIntervalRef: React.MutableRefObject<NodeJS.Timeout | null>
 ): void => {
   setProgress(0);
   if (progressIntervalRef.current) {

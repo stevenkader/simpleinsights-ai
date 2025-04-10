@@ -21,7 +21,7 @@ export const useDocumentProcessor = (): UseDocumentProcessorReturn => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [fileReference, setFileReference] = useState<string>("");
-  const progressIntervalRef = useRef<number | null>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
   const handleFileChange = () => {
