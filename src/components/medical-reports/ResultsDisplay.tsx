@@ -86,6 +86,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       const listItemLineHeight = 5; // Reduced line height for list items
       const paragraphSpacing = 2; // Less space between paragraphs
       const sectionSpacing = 10; // Space between sections (before headings)
+      const listMargin = 15; // Space after a list
       
       // Helper function to add text with proper formatting and page breaks
       const addFormattedText = (text: string, fontSize: number, isBold: boolean, indent: number = 0) => {
@@ -141,25 +142,29 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                   // Check if item has a bold section
                   const boldText = item.querySelector('b, strong');
                   if (boldText) {
-                    // Add the bold part
-                    addFormattedText(`${prefix}${boldText.textContent || ""}`, 10, true, 5);
+                    // Extract the bold text part
+                    const boldContent = boldText.textContent?.trim() || "";
+                    
+                    // Add the bullet point with bold section
+                    addFormattedText(`${prefix}${boldContent}:`, 10, true, 5);
                     
                     // Add the rest of the text with additional indent
-                    const remainingText = itemText.replace(boldText.textContent || "", "");
-                    if (remainingText.trim()) {
+                    const remainingText = itemText.replace(`${boldContent}:`, "").trim();
+                    if (remainingText) {
                       addFormattedText(remainingText, 10, false, 10);
+                      // Add a small space after each bulletpoint content
+                      yPosition += 1;
                     }
                   } else {
                     // Add regular list item
                     addFormattedText(`${prefix}${itemText}`, 10, false, 5);
+                    // Add a small space after each bulletpoint
+                    yPosition += 1;
                   }
-                  
-                  // Reduce space between list items
-                  yPosition -= 2;
                 });
                 
-                // Add a bit of extra space after a list
-                yPosition += 5;
+                // Add extra space after a list
+                yPosition += listMargin;
               }
               
               nextElement = nextElement.nextElementSibling;
@@ -242,8 +247,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                   prose-p:leading-tight prose-p:my-2
                   prose-li:text-slate-700 dark:prose-li:text-slate-300
                   prose-strong:text-slate-900 dark:prose-strong:text-white
-                  prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5
-                  prose-h2:text-xl prose-h3:text-lg prose-h2:mt-6 prose-h3:mt-4
+                  prose-ul:my-4 prose-ol:my-4 prose-li:my-1.5
+                  prose-h2:text-xl prose-h3:text-lg prose-h2:mt-8 prose-h3:mt-6
                   max-w-none dark:prose-invert"
                 dangerouslySetInnerHTML={{ __html: response }}
               />
