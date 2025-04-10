@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { API_BASE_URL, API_ENDPOINTS } from "@/config/api";
@@ -54,13 +55,14 @@ const TranslationAssistant = () => {
   const simulateProgress = () => {
     resetProgress();
     let i = 0;
+    // Doubled the time by reducing the speed (600ms to 1200ms)
     const interval = setInterval(() => {
       i += 1;
       setProgress(i);
       if (i >= 100) {
         clearInterval(interval);
       }
-    }, 600);
+    }, 1200);
     
     progressIntervalRef.current = interval as unknown as number;
     return interval;
@@ -193,6 +195,7 @@ const TranslationAssistant = () => {
       description: "Processing demo translation document",
     });
     
+    // Doubled the demo process time (1500ms to 3000ms)
     setTimeout(() => {
       resetProgress();
       setProgress(100);
@@ -200,7 +203,7 @@ const TranslationAssistant = () => {
         setResponse(demoTranslationContent);
         setIsLoading(false);
       }, 500);
-    }, 1500);
+    }, 3000);
   };
 
   const exportPDF = () => {
