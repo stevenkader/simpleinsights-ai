@@ -122,6 +122,7 @@ export const useDocumentProcessor = (): UseDocumentProcessorReturn => {
         resetProgress(setProgress, progressIntervalRef);
         setProgress(100); // Set to 100 to complete the progress bar
         
+        // Handle demo fallback or provide clear error message
         toast({
           title: "Translation service unavailable",
           description: "The service is currently unavailable. Please try the demo instead.",
@@ -131,6 +132,10 @@ export const useDocumentProcessor = (): UseDocumentProcessorReturn => {
         // Set a friendly error message for display
         setResponse("Translation service unavailable");
         setIsLoading(false);
+        
+        // Automatically use the demo content as fallback if desired
+        // Uncomment the following line to enable:
+        // handleDemoProcess();
       }
       
     } catch (error) {
