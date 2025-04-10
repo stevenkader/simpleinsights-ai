@@ -82,61 +82,40 @@ export const useDocumentProcessor = (): UseDocumentProcessorReturn => {
       const processUrl = `${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`;
       console.log(`Processing document with: ${processUrl}`);
       
-      try {
-        const processResponse = await fetch(processUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ 
-            fileReference: fileRef,
-            documentType: "translation"
-          }),
-        });
-        
-        if (!processResponse.ok) {
-          console.error("Process response not OK:", processResponse.status, processResponse.statusText);
-          throw new Error(`Processing failed with status: ${processResponse.status}`);
-        }
-        
-        const resultText = await processResponse.text();
-        console.log("Translation result received, length:", resultText.length);
-        
-        if (!resultText || 
-            resultText.trim() === "" || 
-            resultText.toLowerCase().includes("error") || 
-            resultText.toLowerCase().includes("unavailable")) {
-          console.error("Invalid response:", resultText);
-          throw new Error("Translation service returned an empty or error response");
-        }
-        
-        setProgress(100);
-        resetProgress(setProgress, progressIntervalRef);
-        
-        setTimeout(() => {
-          setResponse(resultText);
-          setIsLoading(false);
-        }, 500);
-      } catch (error) {
-        console.error("Translation API error:", error);
-        resetProgress(setProgress, progressIntervalRef);
-        setProgress(100); // Set to 100 to complete the progress bar
-        
-        // Handle demo fallback or provide clear error message
-        toast({
-          title: "Translation service unavailable",
-          description: "The service is currently unavailable. Please try the demo instead.",
-          variant: "destructive",
-        });
-        
-        // Set a friendly error message for display
-        setResponse("Translation service unavailable");
-        setIsLoading(false);
-        
-        // Automatically use the demo content as fallback if desired
-        // Uncomment the following line to enable:
-        // handleDemoProcess();
+      const processResponse = await fetch(processUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          fileReference: fileRef,
+          documentType: "translation"
+        }),
+      });
+      
+      if (!processResponse.ok) {
+        console.error("Process response not OK:", processResponse.status, processResponse.statusText);
+        throw new Error(`Processing failed with status: ${processResponse.status}`);
       }
+      
+      const resultText = await processResponse.text();
+      console.log("Translation result received, length:", resultText.length);
+      
+      if (!resultText || 
+          resultText.trim() === "" || 
+          resultText.toLowerCase().includes("error") || 
+          resultText.toLowerCase().includes("unavailable")) {
+        console.error("Invalid response:", resultText);
+        throw new Error("Translation service returned an empty or error response");
+      }
+      
+      setProgress(100);
+      resetProgress(setProgress, progressIntervalRef);
+      
+      setTimeout(() => {
+        setResponse(resultText);
+        setIsLoading(false);
+      }, 500);
       
     } catch (error) {
       console.error("Error processing file:", error);
