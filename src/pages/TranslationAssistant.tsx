@@ -17,8 +17,7 @@ const TranslationAssistant = () => {
     progress,
     processFile,
     handleFileChange,
-    handleDemoProcess,
-    exportPDF
+    handleDemoProcess
   } = useDocumentProcessor();
 
   return (
@@ -53,7 +52,6 @@ const TranslationAssistant = () => {
             response={response} 
             isLoading={isLoading} 
             progress={progress}
-            onExportPDF={exportPDF}
           />
           <PrivacyNotice />
         </div>

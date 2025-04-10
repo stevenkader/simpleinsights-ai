@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Download, AlertCircle, Loader } from "lucide-react";
 import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
+import { useToast } from "@/hooks/use-toast";
 
 interface ResultsDisplayProps {
   response: string;
@@ -23,6 +23,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const resultSectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
+  const { toast } = useToast();
   
   useEffect(() => {
     // Scroll to results when response is available and loading is complete
@@ -66,53 +67,118 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   };
 
   const generatePDF = async () => {
-    if (!contentRef.current) return;
+    if (!contentRef.current || !response) return;
 
     try {
       setIsPdfGenerating(true);
-      
-      // Create the filename with current date
-      const today = new Date();
-      const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
-      const fileName = `TranslationReport-${formattedDate}.pdf`;
-
-      // Create a new jsPDF instance
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      
-      // Set title
-      pdf.setFontSize(18);
-      pdf.text("Translation Report", 20, 20);
-      
-      // Add date
-      pdf.setFontSize(12);
-      pdf.text(`Generated on: ${formattedDate}`, 20, 30);
-      
-      // Add horizontal line
-      pdf.setLineWidth(0.5);
-      pdf.line(20, 35, 190, 35);
-      
-      // Capture the HTML content using html2canvas
-      const canvas = await html2canvas(contentRef.current, {
-        scale: 2, // Higher scale for better quality
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff",
+      toast({
+        title: "Generating PDF",
+        description: "Please wait while your PDF is being created...",
       });
       
-      // Calculate the width to fit the PDF page
-      const imgWidth = 170;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const today = new Date();
+      const formattedDate = today.toISOString().split('T')[0];
+      const fileName = `TranslationReport-${formattedDate}.pdf`;
+
+      // Create PDF document with A4 format
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 20;
+      const contentWidth = pageWidth - (margin * 2);
       
-      // Convert canvas to image
-      const imgData = canvas.toDataURL('image/png');
+      // Add header
+      pdf.setFontSize(18);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Translation Report", margin, margin);
       
-      // Add the image to PDF
-      pdf.addImage(imgData, 'PNG', 20, 40, imgWidth, imgHeight);
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(`Generated on: ${formattedDate}`, margin, margin + 10);
       
-      // Save the PDF and trigger download automatically
+      pdf.setLineWidth(0.5);
+      pdf.line(margin, margin + 15, pageWidth - margin, margin + 15);
+      
+      // Parse and add HTML content as text
+      const parser = new DOMParser();
+      const htmlDoc = parser.parseFromString(cleanResponse(response), 'text/html');
+      const textContent = htmlDoc.body.textContent || "";
+      
+      // Process the HTML content
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = cleanResponse(response);
+      
+      // Extract and process content
+      let yPosition = margin + 25;
+      const lineHeight = 7;
+      
+      // Helper to add text with proper formatting
+      const addFormattedText = (text: string, fontSize: number, isBold: boolean, indent: number = 0) => {
+        pdf.setFontSize(fontSize);
+        pdf.setFont("helvetica", isBold ? "bold" : "normal");
+        
+        // Split text to fit width 
+        const textLines = pdf.splitTextToSize(text, contentWidth - indent);
+        
+        // Check if we need a new page
+        if (yPosition + (textLines.length * lineHeight) > pageHeight - margin) {
+          pdf.addPage();
+          yPosition = margin;
+        }
+        
+        // Add text with indentation
+        textLines.forEach((line: string) => {
+          pdf.text(line, margin + indent, yPosition);
+          yPosition += lineHeight;
+        });
+        
+        // Add some space after paragraphs
+        yPosition += 3;
+      };
+      
+      // Process headings
+      const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      headings.forEach((heading) => {
+        const level = parseInt(heading.tagName.substring(1));
+        const fontSize = Math.max(24 - (level * 2), 12); // h1=22, h2=20, h3=18, etc.
+        addFormattedText(heading.textContent || "", fontSize, true, (level - 1) * 3);
+      });
+      
+      // Process paragraphs
+      const paragraphs = tempDiv.querySelectorAll('p');
+      paragraphs.forEach((paragraph) => {
+        addFormattedText(paragraph.textContent || "", 12, false);
+      });
+      
+      // Process lists
+      const lists = tempDiv.querySelectorAll('ul, ol');
+      lists.forEach((list) => {
+        const isOrdered = list.tagName === 'OL';
+        const items = list.querySelectorAll('li');
+        items.forEach((item, i) => {
+          const prefix = isOrdered ? `${i + 1}. ` : '• ';
+          addFormattedText(prefix + item.textContent, 12, false, 5);
+        });
+      });
+      
+      // Process any remaining text (for simple text nodes)
+      if (headings.length === 0 && paragraphs.length === 0 && lists.length === 0) {
+        addFormattedText(textContent, 12, false);
+      }
+      
       pdf.save(fileName);
+      
+      toast({
+        title: "PDF Generated",
+        description: "Your PDF has been successfully created and downloaded.",
+      });
     } catch (error) {
       console.error("Error generating PDF:", error);
+      toast({
+        title: "PDF Generation Failed",
+        description: "There was an error creating your PDF. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsPdfGenerating(false);
     }

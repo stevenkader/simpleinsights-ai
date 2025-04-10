@@ -1,9 +1,11 @@
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Loader } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { jsPDF } from "jspdf";
+import { useToast } from "@/hooks/use-toast";
 
 interface ResultsDisplayProps {
   response: string;
@@ -19,6 +21,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   onExportPDF
 }) => {
   const resultSectionRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
+  const { toast } = useToast();
   
   useEffect(() => {
     // Scroll to results when response is available and loading is complete
@@ -40,83 +45,150 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
-  // Convert the HTML string to a properly styled output
-  const formatResponseContent = () => {
-    if (!response) return null;
-    
-    // Parse the HTML into a DOM element
-    const container = document.createElement('div');
-    container.innerHTML = response;
-    
-    // Return the formatted content
-    return (
-      <div className="prose dark:prose-invert max-w-none">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-200">Sections</h2>
-        <ol className="list-decimal ml-6 mb-8 space-y-2">
-          <li className="text-lg">Clinical Information</li>
-          <li className="text-lg">Technique</li>
-          <li className="text-lg">Findings</li>
-          <li className="text-lg">Impression</li>
-        </ol>
+  const generatePDF = async () => {
+    if (!contentRef.current || !response) return;
+
+    try {
+      setIsPdfGenerating(true);
+      toast({
+        title: "Generating PDF",
+        description: "Please wait while your PDF is being created...",
+      });
+      
+      const today = new Date();
+      const formattedDate = today.toISOString().split('T')[0];
+      const fileName = `MedicalReport-${formattedDate}.pdf`;
+
+      // Create PDF document with A4 format
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 20;
+      const contentWidth = pageWidth - (margin * 2);
+      
+      // Add header
+      pdf.setFontSize(18);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Medical Report Analysis", margin, margin);
+      
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(`Generated on: ${formattedDate}`, margin, margin + 10);
+      
+      pdf.setLineWidth(0.5);
+      pdf.line(margin, margin + 15, pageWidth - margin, margin + 15);
+      
+      // Parse and add HTML content as text
+      const parser = new DOMParser();
+      const htmlDoc = parser.parseFromString(response, 'text/html');
+      const textContent = htmlDoc.body.textContent || "";
+      
+      // Process the HTML content
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = response;
+      
+      // Extract and process content
+      let yPosition = margin + 25;
+      const lineHeight = 7;
+      
+      // Helper to add text with proper formatting
+      const addFormattedText = (text: string, fontSize: number, isBold: boolean, indent: number = 0) => {
+        pdf.setFontSize(fontSize);
+        pdf.setFont("helvetica", isBold ? "bold" : "normal");
         
-        <h2 className="text-2xl font-semibold mt-10 mb-6 text-gray-800 dark:text-gray-200">Section Summaries</h2>
+        // Split text to fit width 
+        const textLines = pdf.splitTextToSize(text, contentWidth - indent);
         
-        <h3 className="text-xl font-medium mb-4 text-gray-700 dark:text-gray-300">1. Clinical Information</h3>
-        <ul className="list-disc ml-6 mb-6 space-y-3">
-          <li>
-            <span className="font-semibold">Medical Summary:</span> The patient has been experiencing pain and swelling in the left medial foot and ankle, as well as plantar metatarsal pain for 5 weeks. There is no known trauma.
-          </li>
-          <li>
-            <span className="font-semibold">Layman's Summary:</span> The patient has been having pain and swelling in the inside of the left foot and ankle, and pain in the ball of the foot for 5 weeks. There is no known injury that caused this.
-          </li>
-        </ul>
+        // Check if we need a new page
+        if (yPosition + (textLines.length * lineHeight) > pageHeight - margin) {
+          pdf.addPage();
+          yPosition = margin;
+        }
         
-        <h3 className="text-xl font-medium mb-4 text-gray-700 dark:text-gray-300">2. Technique</h3>
-        <ul className="list-disc ml-6 mb-6 space-y-3">
-          <li>
-            <span className="font-semibold">Medical Summary:</span> The MRI was performed on the left midfoot and forefoot without contrast, using Sagittal T1 and STIR, short axis PD and STIR, long axis PD FS imaging.
-          </li>
-          <li>
-            <span className="font-semibold">Layman's Summary:</span> The MRI scan was done on the middle and front part of the left foot without using any dye. Different types of imaging techniques were used to get detailed pictures of the foot.
-          </li>
-        </ul>
+        // Add text with indentation
+        textLines.forEach((line: string) => {
+          pdf.text(line, margin + indent, yPosition);
+          yPosition += lineHeight;
+        });
         
-        <h3 className="text-xl font-medium mb-4 text-gray-700 dark:text-gray-300">3. Findings</h3>
-        <ul className="list-disc ml-6 mb-6 space-y-3">
-          <li>
-            <span className="font-semibold">Medical Summary:</span> The MRI shows swelling in the bone of the second toe and soft tissue swelling along the bottom of the second toe and joint. There is also a partial tear in the plantar plate of the second toe joint. Other parts of the foot appear normal.
-          </li>
-          <li>
-            <span className="font-semibold">Layman's Summary:</span> The MRI shows swelling in the bone of the second toe and soft tissue swelling along the bottom of the second toe and joint. There is also a small tear in the tissue that supports the second toe joint. Other parts of the foot appear normal.
-          </li>
-        </ul>
+        // Add some space after paragraphs
+        yPosition += 3;
+      };
+      
+      // Process headings
+      const sections = tempDiv.querySelectorAll('h2');
+      sections.forEach((section) => {
+        addFormattedText(section.textContent || "", 16, true);
+      });
+      
+      // Process sections list
+      const lists = tempDiv.querySelectorAll('ol');
+      if (lists.length > 0) {
+        const list = lists[0];
+        const items = list.querySelectorAll('li');
+        items.forEach((item, i) => {
+          addFormattedText(`${i + 1}. ${item.textContent}`, 12, false, 5);
+        });
+      }
+      
+      // Process section summaries
+      const h3Elements = tempDiv.querySelectorAll('h3');
+      h3Elements.forEach((h3) => {
+        addFormattedText(h3.textContent || "", 14, true, 0);
         
-        <h3 className="text-xl font-medium mb-4 text-gray-700 dark:text-gray-300">4. Impression</h3>
-        <ul className="list-disc ml-6 mb-6 space-y-3">
-          <li>
-            <span className="font-semibold">Medical Summary:</span> The MRI findings suggest a partial tear or sprain in the plantar plate of the second toe joint, along with swelling. There is also swelling within the bone of the second toe, which could be due to a bone bruise or stress-related swelling. Infection seems less likely.
-          </li>
-          <li>
-            <span className="font-semibold">Layman's Summary:</span> The MRI suggests a small tear or sprain in the tissue that supports the second toe joint, along with swelling. There is also swelling within the bone of the second toe, which could be due to a bone bruise or stress-related swelling. Infection seems less likely.
-          </li>
-        </ul>
+        let nextElement = h3.nextElementSibling;
+        if (nextElement && nextElement.tagName === 'UL') {
+          const items = nextElement.querySelectorAll('li');
+          items.forEach((item) => {
+            // Check for bold elements within list items
+            const boldText = item.querySelector('b') || item.querySelector('strong');
+            if (boldText) {
+              addFormattedText(boldText.textContent || "", 12, true, 5);
+              // Remove the bold text from the item text to avoid duplication
+              const itemText = item.textContent?.replace(boldText.textContent || "", "") || "";
+              addFormattedText(itemText, 12, false, 10);
+            } else {
+              addFormattedText(item.textContent || "", 12, false, 5);
+            }
+          });
+        }
+      });
+      
+      // Process report and treatment sections
+      const reportHeading = Array.from(tempDiv.querySelectorAll('h2')).filter(el => 
+        el.textContent?.includes('Report') || el.textContent?.includes('Treatments')
+      );
+      
+      reportHeading.forEach(heading => {
+        addFormattedText(heading.textContent || "", 16, true);
+        let nextElement = heading.nextElementSibling;
         
-        <h2 className="text-2xl font-semibold mt-10 mb-4 text-gray-800 dark:text-gray-200">Report</h2>
-        <p className="mb-6 text-gray-600 dark:text-gray-400">
-          The patient has been experiencing pain and swelling in the left foot and ankle, and pain in the ball of the foot for 5 weeks. An MRI scan was performed on the foot, which showed swelling in the bone of the second toe and soft tissue swelling along the bottom of the second toe and joint. There is also a small tear in the tissue that supports the second toe joint. Other parts of the foot appear normal. The swelling within the bone of the second toe could be due to a bone bruise or stress-related swelling. Infection seems less likely.
-        </p>
-        
-        <h2 className="text-2xl font-semibold mt-10 mb-4 text-gray-800 dark:text-gray-200">Possible Treatments</h2>
-        <p className="mb-6 text-gray-600 dark:text-gray-400">
-          Based on the MRI findings, possible treatments may include rest, ice, compression, and elevation (RICE) to reduce swelling and pain. Physical therapy may also be recommended to strengthen the foot and improve flexibility. In some cases, surgery may be required to repair the tear in the plantar plate. However, the exact treatment will depend on the patient's overall health and the severity of the symptoms.
-        </p>
-      </div>
-    );
+        // If next element is a paragraph, add it
+        if (nextElement && nextElement.tagName === 'P') {
+          addFormattedText(nextElement.textContent || "", 12, false);
+        }
+      });
+      
+      pdf.save(fileName);
+      
+      toast({
+        title: "PDF Generated",
+        description: "Your PDF has been successfully created and downloaded.",
+      });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "PDF Generation Failed",
+        description: "There was an error creating your PDF. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPdfGenerating(false);
+    }
   };
 
   return (
     <>
-      {/* Only render progress section when actually loading */}
       {isLoading && (
         <div id="progressSection" className="mb-4">
           <Card className="bg-slate-50 dark:bg-slate-900 mb-4">
@@ -136,15 +208,38 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl">Medical Analysis Results</CardTitle>
-              {onExportPDF && (
-                <Button variant="outline" className="ml-auto" onClick={onExportPDF}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Save as PDF
-                </Button>
-              )}
+              <Button 
+                variant="outline" 
+                className="ml-auto" 
+                onClick={generatePDF}
+                disabled={isPdfGenerating}
+              >
+                {isPdfGenerating ? (
+                  <>
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Save as PDF
+                  </>
+                )}
+              </Button>
             </CardHeader>
             <CardContent>
-              {formatResponseContent()}
+              <div 
+                id="output"
+                ref={contentRef}
+                className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                  prose-p:text-slate-700 dark:prose-p:text-slate-300
+                  prose-li:text-slate-700 dark:prose-li:text-slate-300
+                  prose-strong:text-slate-900 dark:prose-strong:text-white
+                  prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5
+                  prose-h2:text-xl prose-h3:text-lg
+                  max-w-none dark:prose-invert"
+                dangerouslySetInnerHTML={{ __html: response }}
+              />
             </CardContent>
           </Card>
         </div>
