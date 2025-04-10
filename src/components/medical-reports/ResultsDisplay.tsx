@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,12 +25,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const { toast } = useToast();
   
   useEffect(() => {
-    // Scroll to results when response is available and loading is complete
     if (response && !isLoading && resultSectionRef.current) {
-      // Ensure we scroll after the component is fully rendered
       const timer = setTimeout(() => {
-        // Add an offset to ensure the header is visible
-        const yOffset = -240; // Same value as legal assistant for consistency
+        const yOffset = -240;
         const element = resultSectionRef.current;
         const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
         
@@ -39,9 +35,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           top: y, 
           behavior: 'smooth'
         });
-      }, 500); // Use a longer delay to ensure DOM has updated completely
+      }, 500);
       
-      return () => clearTimeout(timer); // Clean up timer on unmount
+      return () => clearTimeout(timer);
     }
   }, [response, isLoading]);
 
@@ -59,14 +55,12 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       const formattedDate = today.toISOString().split('T')[0];
       const fileName = `MedicalReport-${formattedDate}.pdf`;
 
-      // Create PDF document with A4 format
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
       const margin = 20;
       const contentWidth = pageWidth - (margin * 2);
       
-      // Add header
       pdf.setFontSize(18);
       pdf.setFont("helvetica", "bold");
       pdf.text("Medical Report Analysis", margin, margin);
@@ -78,50 +72,40 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       pdf.setLineWidth(0.5);
       pdf.line(margin, margin + 15, pageWidth - margin, margin + 15);
       
-      // Parse and add HTML content as text
       const parser = new DOMParser();
       const htmlDoc = parser.parseFromString(response, 'text/html');
       const textContent = htmlDoc.body.textContent || "";
       
-      // Process the HTML content
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = response;
       
-      // Extract and process content
       let yPosition = margin + 25;
       const lineHeight = 7;
       
-      // Helper to add text with proper formatting
       const addFormattedText = (text: string, fontSize: number, isBold: boolean, indent: number = 0) => {
         pdf.setFontSize(fontSize);
         pdf.setFont("helvetica", isBold ? "bold" : "normal");
         
-        // Split text to fit width 
         const textLines = pdf.splitTextToSize(text, contentWidth - indent);
         
-        // Check if we need a new page
         if (yPosition + (textLines.length * lineHeight) > pageHeight - margin) {
           pdf.addPage();
           yPosition = margin;
         }
         
-        // Add text with indentation
         textLines.forEach((line: string) => {
           pdf.text(line, margin + indent, yPosition);
           yPosition += lineHeight;
         });
         
-        // Add some space after paragraphs
         yPosition += 3;
       };
       
-      // Process headings
       const sections = tempDiv.querySelectorAll('h2');
       sections.forEach((section) => {
         addFormattedText(section.textContent || "", 16, true);
       });
       
-      // Process sections list
       const lists = tempDiv.querySelectorAll('ol');
       if (lists.length > 0) {
         const list = lists[0];
@@ -131,7 +115,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         });
       }
       
-      // Process section summaries
       const h3Elements = tempDiv.querySelectorAll('h3');
       h3Elements.forEach((h3) => {
         addFormattedText(h3.textContent || "", 14, true, 0);
@@ -140,11 +123,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         if (nextElement && nextElement.tagName === 'UL') {
           const items = nextElement.querySelectorAll('li');
           items.forEach((item) => {
-            // Check for bold elements within list items
             const boldText = item.querySelector('b') || item.querySelector('strong');
             if (boldText) {
               addFormattedText(boldText.textContent || "", 12, true, 5);
-              // Remove the bold text from the item text to avoid duplication
               const itemText = item.textContent?.replace(boldText.textContent || "", "") || "";
               addFormattedText(itemText, 12, false, 10);
             } else {
@@ -154,7 +135,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         }
       });
       
-      // Process report and treatment sections
       const reportHeading = Array.from(tempDiv.querySelectorAll('h2')).filter(el => 
         el.textContent?.includes('Report') || el.textContent?.includes('Treatments')
       );
@@ -163,7 +143,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         addFormattedText(heading.textContent || "", 16, true);
         let nextElement = heading.nextElementSibling;
         
-        // If next element is a paragraph, add it
         if (nextElement && nextElement.tagName === 'P') {
           addFormattedText(nextElement.textContent || "", 12, false);
         }
@@ -233,6 +212,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 ref={contentRef}
                 className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
                   prose-p:text-slate-700 dark:prose-p:text-slate-300
+                  prose-p:leading-tight prose-p:my-2
                   prose-li:text-slate-700 dark:prose-li:text-slate-300
                   prose-strong:text-slate-900 dark:prose-strong:text-white
                   prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5
