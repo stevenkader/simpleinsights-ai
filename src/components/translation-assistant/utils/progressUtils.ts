@@ -18,14 +18,26 @@ export const simulateProgress = (
   
   setProgress(0);
   let i = 0;
-  // Progress advances slowly to give time for the API to respond
+  
+  // Progress advances slowly with a more realistic curve
+  // - 0-60%: Faster for initial progress
+  // - 60-90%: Slower for processing time
+  // - 90-99%: Very slow for server response waiting
   const interval = setInterval(() => {
-    i += 1;
-    setProgress(i);
-    if (i >= 100) {
+    if (i < 60) {
+      i += 2; // Faster at start
+    } else if (i < 90) {
+      i += 1; // Medium in the middle
+    } else if (i < 99) {
+      i += 0.5; // Slower at end
+    }
+    
+    setProgress(Math.min(Math.round(i), 99)); // Cap at 99% until complete
+    
+    if (i >= 99) {
       clearInterval(interval);
     }
-  }, 1200); // Increased from original 600ms to 1200ms for slower progress
+  }, 1200); // Keep the slower 1200ms timing
   
   progressIntervalRef.current = interval;
   return interval;

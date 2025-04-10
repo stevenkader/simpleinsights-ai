@@ -39,6 +39,8 @@ export const useDocumentProcessor = (): UseDocumentProcessorReturn => {
       
       const progressInterval = simulateProgress(setProgress, progressIntervalRef);
       
+      // Step 1: Upload the file
+      console.log(`Uploading file to: ${API_BASE_URL}${API_ENDPOINTS.UPLOAD_FILE}`);
       const uploadResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.UPLOAD_FILE}`, {
         method: "POST",
         body: formData,
@@ -50,6 +52,7 @@ export const useDocumentProcessor = (): UseDocumentProcessorReturn => {
       }
       
       const fileRef = await uploadResponse.text();
+      console.log("File reference received:", fileRef);
       
       if (fileRef === "max_tokens") {
         resetProgress(setProgress, progressIntervalRef);
@@ -75,15 +78,16 @@ export const useDocumentProcessor = (): UseDocumentProcessorReturn => {
       
       setFileReference(fileRef);
       
-      console.log(`Processing document with: ${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`);
+      // Step 2: Process the document
+      const processUrl = `${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`;
+      console.log(`Processing document with: ${processUrl}`);
       
       try {
-        const processResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`, {
+        const processResponse = await fetch(processUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          mode: "cors",
           body: JSON.stringify({ 
             fileReference: fileRef,
             documentType: "translation"
@@ -91,11 +95,12 @@ export const useDocumentProcessor = (): UseDocumentProcessorReturn => {
         });
         
         if (!processResponse.ok) {
-          console.error("Process response not OK:", processResponse.status);
+          console.error("Process response not OK:", processResponse.status, processResponse.statusText);
           throw new Error(`Processing failed with status: ${processResponse.status}`);
         }
         
         const resultText = await processResponse.text();
+        console.log("Translation result received, length:", resultText.length);
         
         if (!resultText || 
             resultText.trim() === "" || 
@@ -115,26 +120,31 @@ export const useDocumentProcessor = (): UseDocumentProcessorReturn => {
       } catch (error) {
         console.error("Translation API error:", error);
         resetProgress(setProgress, progressIntervalRef);
-        setResponse("Translation service unavailable");
+        setProgress(100); // Set to 100 to complete the progress bar
+        
         toast({
-          title: "Translation failed",
-          description: "There was an error processing your translation. Please try the demo instead.",
+          title: "Translation service unavailable",
+          description: "The service is currently unavailable. Please try the demo instead.",
           variant: "destructive",
         });
+        
+        // Set a friendly error message for display
+        setResponse("Translation service unavailable");
         setIsLoading(false);
       }
       
     } catch (error) {
       console.error("Error processing file:", error);
       resetProgress(setProgress, progressIntervalRef);
-      
-      setResponse("Translation service unavailable");
+      setProgress(100); // Set to 100 to complete the progress bar
       
       toast({
         title: "Processing failed",
         description: "There was an error processing your file. Please try the demo instead.",
         variant: "destructive",
       });
+      
+      setResponse("Translation service unavailable");
       setIsLoading(false);
     }
   };
