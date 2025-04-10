@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -61,93 +62,112 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       const margin = 20;
       const contentWidth = pageWidth - (margin * 2);
       
+      // Set title
       pdf.setFontSize(18);
       pdf.setFont("helvetica", "bold");
       pdf.text("Medical Report Analysis", margin, margin);
       
+      // Set date
       pdf.setFontSize(12);
       pdf.setFont("helvetica", "normal");
       pdf.text(`Generated on: ${formattedDate}`, margin, margin + 10);
       
+      // Add separator line
       pdf.setLineWidth(0.5);
       pdf.line(margin, margin + 15, pageWidth - margin, margin + 15);
       
+      // Parse HTML content
       const parser = new DOMParser();
       const htmlDoc = parser.parseFromString(response, 'text/html');
-      const textContent = htmlDoc.body.textContent || "";
-      
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = response;
       
       let yPosition = margin + 25;
-      const lineHeight = 7;
+      const lineHeight = 5; // Reduced line height for paragraphs
+      const headerLineHeight = 7; // Keep headers a bit more spaced
+      const listItemLineHeight = 5; // Reduced line height for list items
+      const paragraphSpacing = 2; // Less space between paragraphs
       
+      // Helper function to add text with proper formatting and page breaks
       const addFormattedText = (text: string, fontSize: number, isBold: boolean, indent: number = 0) => {
         pdf.setFontSize(fontSize);
         pdf.setFont("helvetica", isBold ? "bold" : "normal");
         
-        const textLines = pdf.splitTextToSize(text, contentWidth - indent);
+        const textLines = pdf.splitTextToSize(text.trim(), contentWidth - indent);
         
-        if (yPosition + (textLines.length * lineHeight) > pageHeight - margin) {
+        // Check if we need a new page
+        if (yPosition + (textLines.length * (isBold ? headerLineHeight : lineHeight)) > pageHeight - margin) {
           pdf.addPage();
           yPosition = margin;
         }
         
+        // Add each line of text
         textLines.forEach((line: string) => {
           pdf.text(line, margin + indent, yPosition);
-          yPosition += lineHeight;
+          yPosition += isBold ? headerLineHeight : lineHeight;
         });
         
-        yPosition += 3;
+        // Only add spacing after the text block
+        yPosition += paragraphSpacing;
       };
       
-      const sections = tempDiv.querySelectorAll('h2');
-      sections.forEach((section) => {
-        addFormattedText(section.textContent || "", 16, true);
-      });
-      
-      const lists = tempDiv.querySelectorAll('ol');
-      if (lists.length > 0) {
-        const list = lists[0];
-        const items = list.querySelectorAll('li');
-        items.forEach((item, i) => {
-          addFormattedText(`${i + 1}. ${item.textContent}`, 12, false, 5);
-        });
-      }
-      
-      const h3Elements = tempDiv.querySelectorAll('h3');
-      h3Elements.forEach((h3) => {
-        addFormattedText(h3.textContent || "", 14, true, 0);
-        
-        let nextElement = h3.nextElementSibling;
-        if (nextElement && nextElement.tagName === 'UL') {
-          const items = nextElement.querySelectorAll('li');
-          items.forEach((item) => {
-            const boldText = item.querySelector('b') || item.querySelector('strong');
-            if (boldText) {
-              addFormattedText(boldText.textContent || "", 12, true, 5);
-              const itemText = item.textContent?.replace(boldText.textContent || "", "") || "";
-              addFormattedText(itemText, 12, false, 10);
-            } else {
-              addFormattedText(item.textContent || "", 12, false, 5);
+      // Process major sections
+      const processHeadings = (tagName: string, fontSize: number) => {
+        const headings = htmlDoc.querySelectorAll(tagName);
+        headings.forEach((heading) => {
+          const headingText = heading.textContent?.trim() || "";
+          if (headingText) {
+            addFormattedText(headingText, fontSize, true);
+            
+            // Process content after heading until next heading
+            let nextElement = heading.nextElementSibling;
+            while (nextElement && nextElement.tagName !== tagName && 
+                   nextElement.tagName !== 'H1' && nextElement.tagName !== 'H2' && 
+                   nextElement.tagName !== 'H3') {
+              
+              if (nextElement.tagName === 'P') {
+                const paragraphText = nextElement.textContent?.trim() || "";
+                if (paragraphText) {
+                  addFormattedText(paragraphText, 10, false, 0);
+                }
+              } else if (nextElement.tagName === 'UL' || nextElement.tagName === 'OL') {
+                const items = nextElement.querySelectorAll('li');
+                items.forEach((item, index) => {
+                  const prefix = nextElement.tagName === 'OL' ? `${index + 1}. ` : '• ';
+                  const itemText = item.textContent?.trim() || "";
+                  
+                  // Check if item has a bold section
+                  const boldText = item.querySelector('b, strong');
+                  if (boldText) {
+                    // Add the bold part
+                    addFormattedText(`${prefix}${boldText.textContent || ""}`, 10, true, 5);
+                    
+                    // Add the rest of the text with additional indent
+                    const remainingText = itemText.replace(boldText.textContent || "", "");
+                    if (remainingText.trim()) {
+                      addFormattedText(remainingText, 10, false, 10);
+                    }
+                  } else {
+                    // Add regular list item
+                    addFormattedText(`${prefix}${itemText}`, 10, false, 5);
+                  }
+                  
+                  // Reduce space between list items
+                  yPosition -= 2;
+                });
+              }
+              
+              nextElement = nextElement.nextElementSibling;
             }
-          });
-        }
-      });
+          }
+        });
+      };
       
-      const reportHeading = Array.from(tempDiv.querySelectorAll('h2')).filter(el => 
-        el.textContent?.includes('Report') || el.textContent?.includes('Treatments')
-      );
+      // Process h2 headings (main sections)
+      processHeadings('h2', 14);
       
-      reportHeading.forEach(heading => {
-        addFormattedText(heading.textContent || "", 16, true);
-        let nextElement = heading.nextElementSibling;
-        
-        if (nextElement && nextElement.tagName === 'P') {
-          addFormattedText(nextElement.textContent || "", 12, false);
-        }
-      });
+      // Process h3 headings (sub-sections)
+      processHeadings('h3', 12);
       
+      // Save the PDF
       pdf.save(fileName);
       
       toast({
