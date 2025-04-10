@@ -78,7 +78,7 @@ export const useDocumentProcessor = (): UseDocumentProcessorReturn => {
       
       setFileReference(fileRef);
       
-      // Step 2: Process the document
+      // Step 2: Process the document with upload-translate01 endpoint
       const processUrl = `${API_BASE_URL}${API_ENDPOINTS.PROCESS_DOCUMENT}`;
       console.log(`Processing document with: ${processUrl}`);
       
