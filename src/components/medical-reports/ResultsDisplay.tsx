@@ -1,11 +1,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Loader } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import { jsPDF } from "jspdf";
 import { useToast } from "@/hooks/use-toast";
+import { generatePDF } from "@/utils/pdf-export";
 
 interface ResultsDisplayProps {
   response: string;
@@ -42,7 +42,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
-  const generatePDF = async () => {
+  const handleGeneratePDF = async () => {
     if (!contentRef.current || !response) return;
 
     try {
@@ -52,140 +52,21 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         description: "Please wait while your PDF is being created...",
       });
       
-      const today = new Date();
-      const formattedDate = today.toISOString().split('T')[0];
-      const fileName = `MedicalReport-${formattedDate}.pdf`;
-
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const margin = 20;
-      const contentWidth = pageWidth - (margin * 2);
-      
-      // Set title
-      pdf.setFontSize(18);
-      pdf.setFont("helvetica", "bold");
-      pdf.text("Medical Report Analysis", margin, margin);
-      
-      // Set date
-      pdf.setFontSize(12);
-      pdf.setFont("helvetica", "normal");
-      pdf.text(`Generated on: ${formattedDate}`, margin, margin + 10);
-      
-      // Add separator line
-      pdf.setLineWidth(0.5);
-      pdf.line(margin, margin + 15, pageWidth - margin, margin + 15);
-      
-      // Parse HTML content
-      const parser = new DOMParser();
-      const htmlDoc = parser.parseFromString(response, 'text/html');
-      
-      let yPosition = margin + 25;
-      const lineHeight = 5; // Reduced line height for paragraphs
-      const headerLineHeight = 7; // Keep headers a bit more spaced
-      const listItemLineHeight = 5; // Reduced line height for list items
-      const paragraphSpacing = 2; // Less space between paragraphs
-      const sectionSpacing = 6; // Reduced space between sections (before headings)
-      const listMargin = 8; // Reduced space after a list
-      
-      // Helper function to add text with proper formatting and page breaks
-      const addFormattedText = (text: string, fontSize: number, isBold: boolean, indent: number = 0) => {
-        pdf.setFontSize(fontSize);
-        pdf.setFont("helvetica", isBold ? "bold" : "normal");
-        
-        const textLines = pdf.splitTextToSize(text.trim(), contentWidth - indent);
-        
-        // Check if we need a new page
-        if (yPosition + (textLines.length * (isBold ? headerLineHeight : lineHeight)) > pageHeight - margin) {
-          pdf.addPage();
-          yPosition = margin;
-        }
-        
-        // Add each line of text
-        textLines.forEach((line: string) => {
-          pdf.text(line, margin + indent, yPosition);
-          yPosition += isBold ? headerLineHeight : lineHeight;
-        });
-        
-        // Only add spacing after the text block
-        yPosition += paragraphSpacing;
-      };
-      
-      // Process major sections
-      const processHeadings = (tagName: string, fontSize: number) => {
-        const headings = htmlDoc.querySelectorAll(tagName);
-        headings.forEach((heading) => {
-          // Add extra space before headings
-          yPosition += sectionSpacing;
-          
-          const headingText = heading.textContent?.trim() || "";
-          if (headingText) {
-            addFormattedText(headingText, fontSize, true);
-            
-            // Process content after heading until next heading
-            let nextElement = heading.nextElementSibling;
-            while (nextElement && nextElement.tagName !== tagName && 
-                   nextElement.tagName !== 'H1' && nextElement.tagName !== 'H2' && 
-                   nextElement.tagName !== 'H3') {
-              
-              if (nextElement.tagName === 'P') {
-                const paragraphText = nextElement.textContent?.trim() || "";
-                if (paragraphText) {
-                  addFormattedText(paragraphText, 10, false, 0);
-                }
-              } else if (nextElement.tagName === 'UL' || nextElement.tagName === 'OL') {
-                const items = nextElement.querySelectorAll('li');
-                items.forEach((item, index) => {
-                  const prefix = nextElement.tagName === 'OL' ? `${index + 1}. ` : '• ';
-                  const itemText = item.textContent?.trim() || "";
-                  
-                  // Check if item has a bold section
-                  const boldText = item.querySelector('b, strong');
-                  if (boldText) {
-                    // Extract the bold text part
-                    const boldContent = boldText.textContent?.trim() || "";
-                    
-                    // Add the bullet point with bold section
-                    addFormattedText(`${prefix}${boldContent}:`, 10, true, 5);
-                    
-                    // Add the rest of the text with additional indent
-                    const remainingText = itemText.replace(`${boldContent}:`, "").trim();
-                    if (remainingText) {
-                      addFormattedText(remainingText, 10, false, 10);
-                      // Small space after each bulletpoint content
-                      yPosition += 0.5;
-                    }
-                  } else {
-                    // Add regular list item
-                    addFormattedText(`${prefix}${itemText}`, 10, false, 5);
-                    // Small space after each bulletpoint
-                    yPosition += 0.5;
-                  }
-                });
-                
-                // Add moderate space after a list
-                yPosition += listMargin;
-              }
-              
-              nextElement = nextElement.nextElementSibling;
-            }
-          }
-        });
-      };
-      
-      // Process h2 headings (main sections)
-      processHeadings('h2', 14);
-      
-      // Process h3 headings (sub-sections)
-      processHeadings('h3', 12);
-      
-      // Save the PDF
-      pdf.save(fileName);
-      
-      toast({
-        title: "PDF Generated",
-        description: "Your PDF has been successfully created and downloaded.",
+      const success = await generatePDF({
+        title: "Medical Report Analysis",
+        fileName: "MedicalReport",
+        contentRef,
+        content: response
       });
+      
+      if (success) {
+        toast({
+          title: "PDF Generated",
+          description: "Your PDF has been successfully created and downloaded.",
+        });
+      } else {
+        throw new Error("PDF generation failed");
+      }
     } catch (error) {
       console.error("Error generating PDF:", error);
       toast({
@@ -222,7 +103,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               <Button 
                 variant="outline" 
                 className="ml-auto" 
-                onClick={generatePDF}
+                onClick={handleGeneratePDF}
                 disabled={isPdfGenerating}
               >
                 {isPdfGenerating ? (
