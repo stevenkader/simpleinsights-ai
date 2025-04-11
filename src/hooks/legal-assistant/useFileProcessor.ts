@@ -23,7 +23,6 @@ export const useFileProcessor = () => {
     resetProgress();
     let i = 0;
     
-    // Implement a more realistic progress simulation like in TranslationAssistant
     const interval = setInterval(() => {
       if (i < 60) {
         i += 2; // Faster at start
@@ -103,9 +102,15 @@ export const useFileProcessor = () => {
       }
       
       const resultHtml = await processResponse.text();
+      
+      // Set progress to 100% to indicate completion
       setProgress(100);
       
-      resetProgress();
+      // Clear the interval now that we've completed
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
       
       setTimeout(() => {
         setResponse(resultHtml);

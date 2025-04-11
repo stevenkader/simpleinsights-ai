@@ -56,6 +56,6 @@ export const useProcessingControls = () => {
     setIsLoading,
     setResponse,
     setIsRiskAnalysis,
-    setProgress // Expose setProgress function
+    setProgress
   };
 };

@@ -8,7 +8,7 @@ export interface RiskAnalysisProps {
   setIsLoading: (isLoading: boolean) => void;
   setResponse: (response: string) => void;
   resetProgress: () => void;
-  simulateProgress: () => NodeJS.Timeout; // Updated type from number to NodeJS.Timeout
+  simulateProgress: () => NodeJS.Timeout;
 }
 
 export const useRiskAnalysis = ({
@@ -58,6 +58,8 @@ export const useRiskAnalysis = ({
       
       const resultHtml = await response.text();
       
+      // Clear the progress interval
+      clearInterval(progressInterval);
       resetProgress();
       
       setTimeout(() => {
