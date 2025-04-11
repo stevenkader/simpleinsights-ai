@@ -29,7 +29,7 @@ const LegalAssistant = () => {
     setIsLoading,
     setResponse,
     setIsRiskAnalysis,
-    setProgress // Make sure we have this available for the progress simulation
+    setProgress
   } = useProcessingControls();
 
   const { handleDemoProcess } = useDemoProcessor({

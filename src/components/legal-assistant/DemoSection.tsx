@@ -15,7 +15,7 @@ import {
 interface DemoSectionProps {
   showDemoDialog: boolean;
   setShowDemoDialog: (show: boolean) => void;
-  handleDemoProcess: () => void;
+  handleDemoProcess: (demoType: string) => void;
 }
 
 const DemoSection: React.FC<DemoSectionProps> = ({
@@ -42,7 +42,7 @@ const DemoSection: React.FC<DemoSectionProps> = ({
             View Demo PDF
           </Button>
           <Button 
-            onClick={handleDemoProcess}
+            onClick={() => handleDemoProcess("contract")}
             className="w-full justify-start"
           >
             <ArrowRight className="mr-2" />
