@@ -210,6 +210,10 @@ export const useProcessingControls = () => {
     resetProgress,
     handleFileChange,
     processFile,
-    handleRiskAnalysis
+    handleRiskAnalysis,
+    // Expose the setter functions that are needed in LegalAssistant.tsx
+    setIsLoading,
+    setResponse,
+    setIsRiskAnalysis
   };
 };
