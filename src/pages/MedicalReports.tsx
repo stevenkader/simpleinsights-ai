@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -15,7 +16,7 @@ const MedicalReports = () => {
   const [showDemoDialog, setShowDemoDialog] = useState<boolean>(false);
   const [fileReference, setFileReference] = useState<string>("");
   const { toast } = useToast();
-  const progressIntervalRef = useRef<number | null>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   const demoMedicalReport = `
     <div>
@@ -69,17 +70,32 @@ const MedicalReports = () => {
   };
 
   const simulateProgress = () => {
-    resetProgress();
+    // Make sure to clear any existing interval first
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
+    }
+    
+    setProgress(0);
     let i = 0;
+    
     const interval = setInterval(() => {
-      i += 1;
-      setProgress(i);
-      if (i >= 100) {
+      if (i < 60) {
+        i += 2; // Faster at start
+      } else if (i < 90) {
+        i += 1; // Medium in the middle
+      } else if (i < 99) {
+        i += 0.5; // Slower at end
+      }
+      
+      setProgress(Math.min(Math.round(i), 99)); // Cap at 99% until complete
+      
+      if (i >= 99) {
         clearInterval(interval);
       }
     }, 600);
     
-    progressIntervalRef.current = interval as unknown as number;
+    progressIntervalRef.current = interval;
     return interval;
   };
 
@@ -96,7 +112,8 @@ const MedicalReports = () => {
       const formData = new FormData();
       formData.append("file", file);
       
-      const progressInterval = simulateProgress();
+      // Start progress simulation
+      simulateProgress();
       
       const uploadResponse = await fetch(`${API_BASE_URL}/upload-temp-file`, {
         method: "POST",
@@ -147,9 +164,15 @@ const MedicalReports = () => {
       }
       
       const resultHtml = await processResponse.text();
+      
+      // Set progress to 100% to indicate completion
       setProgress(100);
       
-      resetProgress();
+      // Clear the interval now that we've completed
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
       
       setTimeout(() => {
         setResponse(resultHtml);
@@ -172,8 +195,8 @@ const MedicalReports = () => {
     setIsLoading(true);
     setResponse("");
     
-    const progressInterval = simulateProgress();
-    progressIntervalRef.current = progressInterval as unknown as number;
+    // Start progress simulation
+    simulateProgress();
     
     toast({
       title: "Using demo file",
@@ -181,13 +204,20 @@ const MedicalReports = () => {
     });
     
     setTimeout(() => {
-      resetProgress();
+      // Set progress to 100% to indicate completion
       setProgress(100);
+      
+      // Clear the interval now that we've completed
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+      
       setTimeout(() => {
         setResponse(demoMedicalReport);
         setIsLoading(false);
       }, 500);
-    }, 1500);
+    }, 3000); // Slightly longer delay for demo to show progress
   };
 
   useEffect(() => {
