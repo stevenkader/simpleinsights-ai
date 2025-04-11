@@ -52,10 +52,11 @@ export const useProcessingControls = () => {
     handleFileChange,
     processFile,
     handleRiskAnalysis,
-    // Expose the setter functions that are needed in LegalAssistant.tsx
+    // Expose all needed functions
     setIsLoading,
     setResponse,
     setIsRiskAnalysis,
-    setProgress
+    setProgress,
+    simulateProgress
   };
 };

@@ -29,7 +29,8 @@ const LegalAssistant = () => {
     setIsLoading,
     setResponse,
     setIsRiskAnalysis,
-    setProgress
+    setProgress,
+    simulateProgress
   } = useProcessingControls();
 
   const { handleDemoProcess } = useDemoProcessor({
@@ -37,27 +38,7 @@ const LegalAssistant = () => {
     setResponse,
     setPartyName,
     setIsRiskAnalysis,
-    simulateProgress: () => {
-      resetProgress();
-      let i = 0;
-      const interval = setInterval(() => {
-        if (i < 60) {
-          i += 2; // Faster at start
-        } else if (i < 90) {
-          i += 1; // Medium in the middle
-        } else if (i < 99) {
-          i += 0.5; // Slower at end
-        }
-        
-        setProgress(Math.min(Math.round(i), 99)); // Cap at 99% until complete
-        
-        if (i >= 99) {
-          clearInterval(interval);
-        }
-      }, 600);
-      
-      return interval;
-    },
+    simulateProgress,
     resetProgress
   });
 

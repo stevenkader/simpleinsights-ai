@@ -20,7 +20,13 @@ export const useFileProcessor = () => {
   };
 
   const simulateProgress = () => {
-    resetProgress();
+    // Make sure to clear any existing interval first
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
+    }
+    
+    setProgress(0);
     let i = 0;
     
     const interval = setInterval(() => {
@@ -51,7 +57,8 @@ export const useFileProcessor = () => {
       const formData = new FormData();
       formData.append("file", file);
       
-      const progressInterval = simulateProgress();
+      // Start progress simulation
+      simulateProgress();
       
       const uploadResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.UPLOAD_FILE}`, {
         method: "POST",

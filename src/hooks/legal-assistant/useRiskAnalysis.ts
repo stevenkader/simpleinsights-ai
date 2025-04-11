@@ -39,6 +39,8 @@ export const useRiskAnalysis = ({
       setResponse(""); // Clear existing results
       setIsRiskAnalysis(true); // Set this to true for risk analysis
       
+      // Make sure we have a clean start
+      resetProgress();
       const progressInterval = simulateProgress();
       
       const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.LEGAL_RISK_ANALYSIS}`, {
@@ -60,7 +62,6 @@ export const useRiskAnalysis = ({
       
       // Clear the progress interval
       clearInterval(progressInterval);
-      resetProgress();
       
       setTimeout(() => {
         setResponse(resultHtml);
