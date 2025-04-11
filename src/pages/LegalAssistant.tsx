@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -21,6 +20,7 @@ const LegalAssistant = () => {
   const [fileReference, setFileReference] = useState<string>("");
   const [partyName, setPartyName] = useState<string>("");
   const [isRiskAnalysisLoading, setIsRiskAnalysisLoading] = useState<boolean>(false);
+  const [isRiskAnalysis, setIsRiskAnalysis] = useState<boolean>(false);
   const { toast } = useToast();
   const progressIntervalRef = useRef<number | null>(null);
   
@@ -54,11 +54,13 @@ const LegalAssistant = () => {
     setResponse("");
     resetProgress();
     setPartyName("");
+    setIsRiskAnalysis(false);
   };
 
   const processFile = async (file: File) => {
     setIsLoading(true);
     setResponse("");
+    setIsRiskAnalysis(false);
     
     try {
       const formData = new FormData();
@@ -150,6 +152,7 @@ const LegalAssistant = () => {
       setIsRiskAnalysisLoading(true);
       setIsLoading(true);
       setResponse(""); // Clear existing results
+      setIsRiskAnalysis(true); // Set this to true for risk analysis
       
       const progressInterval = simulateProgress();
       
@@ -189,6 +192,7 @@ const LegalAssistant = () => {
       resetProgress();
       setIsLoading(false);
       setIsRiskAnalysisLoading(false);
+      setIsRiskAnalysis(false);
       
       toast({
         title: "Risk Analysis Failed",
@@ -202,6 +206,7 @@ const LegalAssistant = () => {
     setIsLoading(true);
     setResponse("");
     setPartyName("");
+    setIsRiskAnalysis(false);
     
     const progressInterval = simulateProgress();
     progressIntervalRef.current = progressInterval as unknown as number;
@@ -292,6 +297,7 @@ const LegalAssistant = () => {
             response={response} 
             isLoading={isLoading} 
             progress={progress}
+            isRiskAnalysis={isRiskAnalysis}
           />
           <PrivacyNotice />
         </div>

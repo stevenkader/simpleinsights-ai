@@ -13,13 +13,15 @@ interface ResultsDisplayProps {
   progress: number;
   onExportPDF?: () => void;
   fileReference?: string;
+  isRiskAnalysis?: boolean;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ 
   response, 
   isLoading, 
   progress,
-  fileReference
+  fileReference,
+  isRiskAnalysis = false
 }) => {
   const resultSectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -53,9 +55,19 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         description: "Please wait while your PDF is being created...",
       });
       
+      const today = new Date();
+      const formattedDate = today.toISOString().split('T')[0];
+      // Generate a random 1-digit number to make the filename more unique
+      const randomDigit = Math.floor(Math.random() * 10);
+      
+      // Create different filenames based on whether it's a risk analysis or regular analysis
+      const fileName = isRiskAnalysis 
+        ? `LegalDocReport-Risk-${formattedDate}-${randomDigit}` 
+        : `LegalDocReport-${formattedDate}`;
+      
       const success = await generatePDF({
-        title: "Legal Document Analysis Report",
-        fileName: "LegalDocReport",
+        title: isRiskAnalysis ? "Legal Risk Analysis Report" : "Legal Document Analysis Report",
+        fileName,
         contentRef,
         content: response
       });
@@ -100,7 +112,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <div id="resultSection" ref={resultSectionRef} className="animate-fade-in">
           <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-xl">Analysis Results</CardTitle>
+              <CardTitle className="text-xl">
+                {isRiskAnalysis ? "Risk Analysis Results" : "Analysis Results"}
+              </CardTitle>
               <Button 
                 variant="outline" 
                 className="ml-auto" 
