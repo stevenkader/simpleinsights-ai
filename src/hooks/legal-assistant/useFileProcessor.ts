@@ -9,7 +9,7 @@ export const useFileProcessor = () => {
   const [progress, setProgress] = useState<number>(0);
   const [response, setResponse] = useState<string>("");
   const { toast } = useToast();
-  const progressIntervalRef = useRef<number | null>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const resetProgress = () => {
     setProgress(0);
@@ -22,15 +22,25 @@ export const useFileProcessor = () => {
   const simulateProgress = () => {
     resetProgress();
     let i = 0;
+    
+    // Implement a more realistic progress simulation like in TranslationAssistant
     const interval = setInterval(() => {
-      i += 1;
-      setProgress(i);
-      if (i >= 100) {
+      if (i < 60) {
+        i += 2; // Faster at start
+      } else if (i < 90) {
+        i += 1; // Medium in the middle
+      } else if (i < 99) {
+        i += 0.5; // Slower at end
+      }
+      
+      setProgress(Math.min(Math.round(i), 99)); // Cap at 99% until complete
+      
+      if (i >= 99) {
         clearInterval(interval);
       }
     }, 600);
     
-    progressIntervalRef.current = interval as unknown as number;
+    progressIntervalRef.current = interval;
     return interval;
   };
 

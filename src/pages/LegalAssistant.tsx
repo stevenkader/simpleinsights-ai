@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -40,13 +39,22 @@ const LegalAssistant = () => {
       resetProgress();
       let i = 0;
       const interval = setInterval(() => {
-        i += 1;
-        if (i >= 100) {
+        if (i < 60) {
+          i += 2; // Faster at start
+        } else if (i < 90) {
+          i += 1; // Medium in the middle
+        } else if (i < 99) {
+          i += 0.5; // Slower at end
+        }
+        
+        setProgress(Math.min(Math.round(i), 99)); // Cap at 99% until complete
+        
+        if (i >= 99) {
           clearInterval(interval);
         }
       }, 600);
       
-      return interval as unknown as number;
+      return interval;
     },
     resetProgress
   });
