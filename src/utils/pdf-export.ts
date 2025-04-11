@@ -17,7 +17,8 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
   try {
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
-    const documentFileName = `${fileName}-${formattedDate}.pdf`;
+    // Use the fileName directly without adding the date again (it's already in the fileName)
+    const documentFileName = `${fileName}.pdf`;
 
     // Create PDF document with A4 format
     const pdf = new jsPDF('p', 'mm', 'a4');
