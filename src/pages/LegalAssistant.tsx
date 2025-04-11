@@ -7,7 +7,11 @@ import DocumentUploader from "@/components/document-uploader/DocumentUploader";
 import ResultsDisplay from "@/components/legal-assistant/ResultsDisplay";
 import PrivacyNotice from "@/components/legal-assistant/PrivacyNotice";
 import { useToast } from "@/hooks/use-toast";
-import { API_BASE_URL } from "@/config/api";
+import { API_BASE_URL, API_ENDPOINTS } from "@/config/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { AlertCircle, Loader } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const LegalAssistant = () => {
   const [response, setResponse] = useState<string>("");
@@ -15,6 +19,8 @@ const LegalAssistant = () => {
   const [progress, setProgress] = useState<number>(0);
   const [showDemoDialog, setShowDemoDialog] = useState<boolean>(false);
   const [fileReference, setFileReference] = useState<string>("");
+  const [partyName, setPartyName] = useState<string>("");
+  const [isRiskAnalysisLoading, setIsRiskAnalysisLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const progressIntervalRef = useRef<number | null>(null);
   
@@ -47,6 +53,7 @@ const LegalAssistant = () => {
   const handleFileChange = () => {
     setResponse("");
     resetProgress();
+    setPartyName("");
   };
 
   const processFile = async (file: File) => {
@@ -59,7 +66,7 @@ const LegalAssistant = () => {
       
       const progressInterval = simulateProgress();
       
-      const uploadResponse = await fetch(`${API_BASE_URL}/upload-temp-file`, {
+      const uploadResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.UPLOAD_FILE}`, {
         method: "POST",
         body: formData
       });
@@ -95,7 +102,7 @@ const LegalAssistant = () => {
       setFileReference(fileRef);
       localStorage.setItem("fileReference", fileRef);
       
-      const processResponse = await fetch(`${API_BASE_URL}/upload-legal01`, {
+      const processResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.LEGAL_ANALYSIS}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -129,9 +136,72 @@ const LegalAssistant = () => {
     }
   };
 
+  const handleRiskAnalysis = async () => {
+    if (!fileReference || !partyName) {
+      toast({
+        title: "Missing Information",
+        description: "Please specify which party you are before requesting risk analysis.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsRiskAnalysisLoading(true);
+      setIsLoading(true);
+      setResponse(""); // Clear existing results
+      
+      const progressInterval = simulateProgress();
+      
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.LEGAL_RISK_ANALYSIS}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          fileReference, 
+          party: partyName 
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      const resultHtml = await response.text();
+      setProgress(100);
+      
+      resetProgress();
+      
+      setTimeout(() => {
+        setResponse(resultHtml);
+        setIsLoading(false);
+        setIsRiskAnalysisLoading(false);
+        
+        toast({
+          title: "Risk Analysis Complete",
+          description: "Your legal risk analysis is now available.",
+        });
+      }, 500);
+      
+    } catch (error) {
+      console.error("Error generating risk analysis:", error);
+      resetProgress();
+      setIsLoading(false);
+      setIsRiskAnalysisLoading(false);
+      
+      toast({
+        title: "Risk Analysis Failed",
+        description: "There was an error analyzing risks for your party. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleDemoProcess = () => {
     setIsLoading(true);
     setResponse("");
+    setPartyName("");
     
     const progressInterval = simulateProgress();
     progressIntervalRef.current = progressInterval as unknown as number;
@@ -180,11 +250,48 @@ const LegalAssistant = () => {
             />
           </div>
           
+          {/* Risk Analysis Section */}
+          {fileReference && !isLoading && (
+            <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
+              <CardHeader>
+                <CardTitle className="text-xl">Risk Analysis</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <div className="flex-grow">
+                    <Input
+                      placeholder="Which party are you? (e.g. Buyer, Seller, Tenant, etc.)"
+                      value={partyName}
+                      onChange={(e) => setPartyName(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
+                  <Button 
+                    onClick={handleRiskAnalysis}
+                    disabled={isRiskAnalysisLoading || !partyName.trim()}
+                    className="whitespace-nowrap"
+                  >
+                    {isRiskAnalysisLoading ? (
+                      <>
+                        <Loader className="mr-2 h-4 w-4 animate-spin" />
+                        Analyzing...
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle className="mr-2 h-4 w-4" />
+                        Display Risk Analysis
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
           <ResultsDisplay 
             response={response} 
             isLoading={isLoading} 
             progress={progress}
-            fileReference={fileReference}
           />
           <PrivacyNotice />
         </div>
