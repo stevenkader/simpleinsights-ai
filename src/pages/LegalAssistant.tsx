@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -183,6 +184,7 @@ const LegalAssistant = () => {
             response={response} 
             isLoading={isLoading} 
             progress={progress}
+            fileReference={fileReference}
           />
           <PrivacyNotice />
         </div>

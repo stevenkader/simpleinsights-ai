@@ -2,27 +2,34 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Loader } from "lucide-react";
+import { Download, Loader, AlertCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { generatePDF } from "@/utils/pdf-export";
+import { Input } from "@/components/ui/input";
+import { API_BASE_URL } from "@/config/api";
 
 interface ResultsDisplayProps {
   response: string;
   isLoading: boolean;
   progress: number;
   onExportPDF?: () => void;
+  fileReference?: string;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ 
   response, 
   isLoading, 
   progress,
-  onExportPDF
+  onExportPDF,
+  fileReference
 }) => {
   const resultSectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
+  const [partyName, setPartyName] = useState("");
+  const [isRiskAnalysisLoading, setIsRiskAnalysisLoading] = useState(false);
+  const [riskAnalysis, setRiskAnalysis] = useState<string>("");
   const { toast } = useToast();
   
   useEffect(() => {
@@ -56,7 +63,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         title: "Legal Document Analysis Report",
         fileName: "LegalDocReport",
         contentRef,
-        content: response
+        content: riskAnalysis || response
       });
       
       if (success) {
@@ -76,6 +83,53 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       });
     } finally {
       setIsPdfGenerating(false);
+    }
+  };
+
+  const handleRiskAnalysis = async () => {
+    if (!fileReference || !partyName) {
+      toast({
+        title: "Missing Information",
+        description: "Please specify which party you are before requesting risk analysis.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsRiskAnalysisLoading(true);
+      
+      const response = await fetch(`${API_BASE_URL}/upload-legal-risk`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          fileReference, 
+          party: partyName 
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      const resultHtml = await response.text();
+      setRiskAnalysis(resultHtml);
+      
+      toast({
+        title: "Risk Analysis Complete",
+        description: "Your legal risk analysis is now available.",
+      });
+    } catch (error) {
+      console.error("Error generating risk analysis:", error);
+      toast({
+        title: "Risk Analysis Failed",
+        description: "There was an error analyzing risks for your party. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRiskAnalysisLoading(false);
     }
   };
 
@@ -120,19 +174,69 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               </Button>
             </CardHeader>
             <CardContent>
-              <div 
-                id="output"
-                ref={contentRef}
-                className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
-                  prose-p:text-slate-700 dark:prose-p:text-slate-300
-                  prose-p:leading-tight prose-p:my-2
-                  prose-li:text-slate-700 dark:prose-li:text-slate-300
-                  prose-strong:text-slate-900 dark:prose-strong:text-white
-                  prose-ul:my-2 prose-ol:my-2 prose-li:my-1
-                  prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
-                  max-w-none dark:prose-invert"
-                dangerouslySetInnerHTML={{ __html: response }}
-              />
+              {!riskAnalysis ? (
+                <>
+                  <div 
+                    id="output"
+                    ref={contentRef}
+                    className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                      prose-p:text-slate-700 dark:prose-p:text-slate-300
+                      prose-p:leading-tight prose-p:my-2
+                      prose-li:text-slate-700 dark:prose-li:text-slate-300
+                      prose-strong:text-slate-900 dark:prose-strong:text-white
+                      prose-ul:my-2 prose-ol:my-2 prose-li:my-1
+                      prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
+                      max-w-none dark:prose-invert"
+                    dangerouslySetInnerHTML={{ __html: response }}
+                  />
+                  
+                  {fileReference && (
+                    <div className="mt-6 border-t pt-4">
+                      <h3 className="text-lg font-medium mb-3">Risk Analysis</h3>
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                        <div className="flex-grow">
+                          <Input
+                            placeholder="Which party are you? (e.g. Buyer, Seller, Tenant, etc.)"
+                            value={partyName}
+                            onChange={(e) => setPartyName(e.target.value)}
+                            className="w-full"
+                          />
+                        </div>
+                        <Button 
+                          onClick={handleRiskAnalysis}
+                          disabled={isRiskAnalysisLoading || !partyName.trim()}
+                          className="whitespace-nowrap"
+                        >
+                          {isRiskAnalysisLoading ? (
+                            <>
+                              <Loader className="mr-2 h-4 w-4 animate-spin" />
+                              Analyzing...
+                            </>
+                          ) : (
+                            <>
+                              <AlertCircle className="mr-2 h-4 w-4" />
+                              Display Risk Analysis
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div
+                  ref={contentRef}
+                  className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                    prose-p:text-slate-700 dark:prose-p:text-slate-300
+                    prose-p:leading-tight prose-p:my-2
+                    prose-li:text-slate-700 dark:prose-li:text-slate-300
+                    prose-strong:text-slate-900 dark:prose-strong:text-white
+                    prose-ul:my-2 prose-ol:my-2 prose-li:my-1
+                    prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
+                    max-w-none dark:prose-invert"
+                  dangerouslySetInnerHTML={{ __html: riskAnalysis }}
+                />
+              )}
             </CardContent>
           </Card>
         </div>
