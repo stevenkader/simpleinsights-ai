@@ -8,7 +8,7 @@ interface DemoProcessorProps {
   setResponse: (response: string) => void;
   setPartyName: (partyName: string) => void;
   setIsRiskAnalysis: (isRiskAnalysis: boolean) => void;
-  simulateProgress: () => NodeJS.Timeout; // Updated to NodeJS.Timeout
+  simulateProgress: () => NodeJS.Timeout;
   resetProgress: () => void;
 }
 
@@ -36,12 +36,11 @@ export const useDemoProcessor = ({
     }
     
     try {
-      const progressInterval = simulateProgress();
+      // Start progress simulation
+      simulateProgress();
       
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 5000));
-      
-      clearInterval(progressInterval);
       
       // Get response based on demo type
       const responseHTML = mockDemoResponse(demoType);

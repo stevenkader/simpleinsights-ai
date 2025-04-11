@@ -1,4 +1,5 @@
 
+import { useCallback } from "react";
 import { useFileProcessor } from "@/hooks/legal-assistant/useFileProcessor";
 import { useRiskAnalysis, RiskAnalysisProps } from "@/hooks/legal-assistant/useRiskAnalysis";
 
@@ -28,16 +29,17 @@ export const useProcessingControls = () => {
     fileReference,
     setIsLoading,
     setResponse,
+    setProgress,
     resetProgress,
     simulateProgress
   } as RiskAnalysisProps);
 
-  const handleFileChange = () => {
+  const handleFileChange = useCallback(() => {
     setResponse("");
     resetProgress();
     setPartyName("");
     setIsRiskAnalysis(false);
-  };
+  }, [resetProgress, setResponse, setPartyName, setIsRiskAnalysis]);
 
   return {
     response,

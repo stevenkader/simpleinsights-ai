@@ -7,6 +7,7 @@ export interface RiskAnalysisProps {
   fileReference: string;
   setIsLoading: (isLoading: boolean) => void;
   setResponse: (response: string) => void;
+  setProgress: (progress: number) => void;
   resetProgress: () => void;
   simulateProgress: () => NodeJS.Timeout;
 }
@@ -15,6 +16,7 @@ export const useRiskAnalysis = ({
   fileReference,
   setIsLoading,
   setResponse,
+  setProgress,
   resetProgress,
   simulateProgress
 }: RiskAnalysisProps) => {
@@ -39,9 +41,8 @@ export const useRiskAnalysis = ({
       setResponse(""); // Clear existing results
       setIsRiskAnalysis(true); // Set this to true for risk analysis
       
-      // Make sure we have a clean start
-      resetProgress();
-      const progressInterval = simulateProgress();
+      // Start progress simulation
+      simulateProgress();
       
       const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.LEGAL_RISK_ANALYSIS}`, {
         method: "POST",
@@ -60,8 +61,8 @@ export const useRiskAnalysis = ({
       
       const resultHtml = await response.text();
       
-      // Clear the progress interval
-      clearInterval(progressInterval);
+      // Set progress to 100% to indicate completion
+      setProgress(100);
       
       setTimeout(() => {
         setResponse(resultHtml);

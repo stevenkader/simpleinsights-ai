@@ -1,5 +1,5 @@
 
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { API_BASE_URL, API_ENDPOINTS } from "@/config/api";
 
@@ -11,15 +11,15 @@ export const useFileProcessor = () => {
   const { toast } = useToast();
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const resetProgress = () => {
+  const resetProgress = useCallback(() => {
     setProgress(0);
     if (progressIntervalRef.current) {
       clearInterval(progressIntervalRef.current);
       progressIntervalRef.current = null;
     }
-  };
+  }, []);
 
-  const simulateProgress = () => {
+  const simulateProgress = useCallback(() => {
     // Make sure to clear any existing interval first
     if (progressIntervalRef.current) {
       clearInterval(progressIntervalRef.current);
@@ -47,7 +47,7 @@ export const useFileProcessor = () => {
     
     progressIntervalRef.current = interval;
     return interval;
-  };
+  }, []);
 
   const processFile = async (file: File) => {
     setIsLoading(true);
