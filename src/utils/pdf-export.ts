@@ -75,7 +75,7 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     
     // Function to add footer to the current page
     const addFooterToCurrentPage = (pageNumber: number) => {
-      const footerText = "SimpleInsights.ai";
+      const footerText = "SimpleInsights.ai – Legal intelligence, made simple.";
       const pageText = `Page ${pageNumber}`;
       
       // Save current text settings
@@ -86,13 +86,17 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
       pdf.setFontSize(9);
       pdf.setFont("helvetica", "normal");
       
-      // Add footer text at the bottom of the page
-      pdf.text(footerText, margin, pageHeight - 10);
+      // Add centered footer text at the bottom of the page
+      const footerWidth = pdf.getTextWidth(footerText);
+      const footerX = (pageWidth - footerWidth) / 2;
+      pdf.setTextColor(120, 120, 120); // Gray color similar to #888
+      pdf.text(footerText, footerX, pageHeight - 10);
       
       // Add page number at the bottom right
       pdf.text(pageText, pageWidth - margin - pdf.getTextWidth(pageText), pageHeight - 10);
       
       // Restore previous text settings
+      pdf.setTextColor(0, 0, 0); // Reset to black
       pdf.setFontSize(currentFontSize);
       pdf.setFont(currentFont.fontName, currentFont.fontStyle);
     };

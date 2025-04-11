@@ -28,17 +28,16 @@ const LegalAssistant = () => {
     handleRiskAnalysis
   } = useProcessingControls();
 
-  const { handleDemoProcess } = useDemoProcessor(
-    setIsLoading => isLoading => setIsLoading(isLoading),
-    setResponse => response => setResponse(response),
-    setPartyName => name => setPartyName(name),
-    setIsRiskAnalysis => isRiskAnalysis => setIsRiskAnalysis(isRiskAnalysis),
-    simulateProgress => () => {
+  const { handleDemoProcess } = useDemoProcessor({
+    setIsLoading: (isLoading: boolean) => setIsLoading(isLoading),
+    setResponse: (response: string) => setResponse(response),
+    setPartyName: (name: string) => setPartyName(name),
+    setIsRiskAnalysis: (isRiskAnalysis: boolean) => setIsRiskAnalysis(isRiskAnalysis),
+    simulateProgress: () => {
       resetProgress();
       let i = 0;
       const interval = setInterval(() => {
         i += 1;
-        setProgress(i);
         if (i >= 100) {
           clearInterval(interval);
         }
@@ -47,7 +46,7 @@ const LegalAssistant = () => {
       return interval as unknown as number;
     },
     resetProgress
-  );
+  });
 
   useEffect(() => {
     return () => {
