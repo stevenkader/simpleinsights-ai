@@ -55,6 +55,7 @@ export const useProcessingControls = () => {
     // Expose the setter functions that are needed in LegalAssistant.tsx
     setIsLoading,
     setResponse,
-    setIsRiskAnalysis
+    setIsRiskAnalysis,
+    setProgress // Expose setProgress function
   };
 };

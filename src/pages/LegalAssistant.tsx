@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -27,7 +28,8 @@ const LegalAssistant = () => {
     handleRiskAnalysis,
     setIsLoading,
     setResponse,
-    setIsRiskAnalysis
+    setIsRiskAnalysis,
+    setProgress // Make sure we have this available for the progress simulation
   } = useProcessingControls();
 
   const { handleDemoProcess } = useDemoProcessor({
