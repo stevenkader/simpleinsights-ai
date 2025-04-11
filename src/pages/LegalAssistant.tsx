@@ -25,14 +25,17 @@ const LegalAssistant = () => {
     resetProgress,
     handleFileChange,
     processFile,
-    handleRiskAnalysis
+    handleRiskAnalysis,
+    setIsLoading,
+    setResponse,
+    setIsRiskAnalysis
   } = useProcessingControls();
 
   const { handleDemoProcess } = useDemoProcessor({
-    setIsLoading: (isLoading: boolean) => setIsLoading(isLoading),
-    setResponse: (response: string) => setResponse(response),
-    setPartyName: (name: string) => setPartyName(name),
-    setIsRiskAnalysis: (isRiskAnalysis: boolean) => setIsRiskAnalysis(isRiskAnalysis),
+    setIsLoading,
+    setResponse,
+    setPartyName,
+    setIsRiskAnalysis,
     simulateProgress: () => {
       resetProgress();
       let i = 0;

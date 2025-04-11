@@ -14,14 +14,25 @@ export const DemoProcessor: React.FC<DemoProcessorProps> = ({ onProcess }) => {
   return null;
 };
 
-export const useDemoProcessor = (
-  setIsLoading: (isLoading: boolean) => void,
-  setResponse: (response: string) => void,
-  setPartyName: (name: string) => void,
-  setIsRiskAnalysis: (isRiskAnalysis: boolean) => void,
-  simulateProgress: () => number,
-  resetProgress: () => void
-) => {
+interface DemoProcessorOptions {
+  setIsLoading: (isLoading: boolean) => void;
+  setResponse: (response: string) => void;
+  setPartyName: (name: string) => void;
+  setIsRiskAnalysis: (isRiskAnalysis: boolean) => void;
+  simulateProgress: () => number;
+  resetProgress: () => void;
+}
+
+export const useDemoProcessor = (options: DemoProcessorOptions) => {
+  const {
+    setIsLoading,
+    setResponse,
+    setPartyName,
+    setIsRiskAnalysis,
+    simulateProgress,
+    resetProgress
+  } = options;
+
   const handleDemoProcess = () => {
     setIsLoading(true);
     setResponse("");
@@ -31,6 +42,7 @@ export const useDemoProcessor = (
     const progressInterval = simulateProgress();
     
     setTimeout(() => {
+      clearInterval(progressInterval);
       resetProgress();
       setTimeout(() => {
         setResponse(demoLegalHTML);
