@@ -1,5 +1,6 @@
 
 import { Link } from 'react-router-dom';
+import { APP_VERSION } from '@/config/version';
 
 const Footer = () => {
   return (
@@ -59,6 +60,7 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} SimpleInsights.ai. All rights reserved.
+            <span className="ml-2 text-xs opacity-70">v{APP_VERSION}</span>
           </p>
           <div className="flex items-center gap-6">
             <a href="#" className="text-muted-foreground hover:text-foreground">
@@ -89,4 +91,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
