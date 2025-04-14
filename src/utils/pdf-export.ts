@@ -1,6 +1,5 @@
 
 import { jsPDF } from "jspdf";
-import { useToast } from "@/hooks/use-toast";
 
 export interface PDFExportOptions {
   title: string;
@@ -17,7 +16,6 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
   try {
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
-    // Use the fileName directly without adding the date again (it's already in the fileName)
     const documentFileName = `${fileName}.pdf`;
 
     // Create PDF document with A4 format
@@ -39,19 +37,53 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     pdf.setLineWidth(0.5);
     pdf.line(margin, margin + 15, pageWidth - margin, margin + 15);
     
+    // Get the HTML content from the div
+    const htmlContent = contentRef.current.innerHTML;
+    
     // Parse HTML content
     const parser = new DOMParser();
-    const htmlDoc = parser.parseFromString(content, 'text/html');
+    const htmlDoc = parser.parseFromString(htmlContent, 'text/html');
+    
+    // Remove style tags that might interfere with processing
+    const styleTags = htmlDoc.querySelectorAll('style');
+    styleTags.forEach(tag => tag.remove());
     
     let yPosition = margin + 25;
-    const lineHeight = 5; // Reduced line height for paragraphs
-    const headerLineHeight = 7; // Keep headers a bit more spaced
-    const paragraphSpacing = 2; // Less space between paragraphs
-    const sectionSpacing = 2; // Significantly reduced space between sections (before headings)
-    const listMargin = 4; // Reduced space after a list
+    const lineHeight = 6;
+    const headerLineHeight = 8;
+    const paragraphSpacing = 4;
+    const sectionSpacing = 8;
+    const listMargin = 5;
+    
+    // Process text nodes and handle formatting
+    const processTextNode = (node: Node): string => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent || '';
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as Element;
+        
+        // Handle specific tags
+        if (element.tagName === 'STRONG' || element.tagName === 'B') {
+          return element.textContent || '';
+        } else if (element.tagName === 'EM' || element.tagName === 'I') {
+          return element.textContent || '';
+        } else if (element.tagName === 'SPAN') {
+          return element.textContent || '';
+        } else {
+          let result = '';
+          for (const child of Array.from(element.childNodes)) {
+            result += processTextNode(child);
+          }
+          return result;
+        }
+      }
+      return '';
+    };
     
     // Helper function to add text with proper formatting and page breaks
     const addFormattedText = (text: string, fontSize: number, isBold: boolean, indent: number = 0) => {
+      if (!text || text.trim() === '') return;
+      
       pdf.setFontSize(fontSize);
       pdf.setFont("helvetica", isBold ? "bold" : "normal");
       
@@ -60,7 +92,7 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
       // Check if we need a new page
       if (yPosition + (textLines.length * (isBold ? headerLineHeight : lineHeight)) > pageHeight - margin) {
         addPageWithFooter();
-        yPosition = margin;
+        yPosition = margin + 15; // Start a bit lower on new pages
       }
       
       // Add each line of text
@@ -69,7 +101,7 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
         yPosition += isBold ? headerLineHeight : lineHeight;
       });
       
-      // Only add spacing after the text block
+      // Add spacing after the text block
       yPosition += paragraphSpacing;
     };
     
@@ -89,7 +121,7 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
       // Add centered footer text at the bottom of the page
       const footerWidth = pdf.getTextWidth(footerText);
       const footerX = (pageWidth - footerWidth) / 2;
-      pdf.setTextColor(120, 120, 120); // Gray color similar to #888
+      pdf.setTextColor(120, 120, 120); // Gray color
       pdf.text(footerText, footerX, pageHeight - 10);
       
       // Add page number at the bottom right
@@ -110,9 +142,10 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
       pdf.addPage();
     };
     
-    // Process major sections
+    // Process headings
     const processHeadings = (tagName: string, fontSize: number) => {
       const headings = htmlDoc.querySelectorAll(tagName);
+      
       headings.forEach((heading) => {
         // Add extra space before headings
         yPosition += sectionSpacing;
@@ -123,60 +156,66 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
           
           // Process content after heading until next heading
           let nextElement = heading.nextElementSibling;
-          while (nextElement && nextElement.tagName !== tagName && 
-                 nextElement.tagName !== 'H1' && nextElement.tagName !== 'H2' && 
-                 nextElement.tagName !== 'H3') {
+          
+          while (nextElement && 
+                 !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(nextElement.tagName)) {
             
             if (nextElement.tagName === 'P') {
               const paragraphText = nextElement.textContent?.trim() || "";
               if (paragraphText) {
-                addFormattedText(paragraphText, 10, false, 0);
+                addFormattedText(paragraphText, 10, false);
               }
-            } else if (nextElement.tagName === 'UL' || nextElement.tagName === 'OL') {
+            } 
+            else if (nextElement.tagName === 'UL' || nextElement.tagName === 'OL') {
               const items = nextElement.querySelectorAll('li');
               items.forEach((item, index) => {
-                const prefix = nextElement.tagName === 'OL' ? `${index + 1}. ` : '• ';
                 const itemText = item.textContent?.trim() || "";
-                
-                // Check if item has a bold section
-                const boldText = item.querySelector('b, strong');
-                if (boldText) {
-                  // Extract the bold text part
-                  const boldContent = boldText.textContent?.trim() || "";
-                  
-                  // Add the bullet point with bold section
-                  addFormattedText(`${prefix}${boldContent}:`, 10, true, 5);
-                  
-                  // Add the rest of the text with additional indent
-                  const remainingText = itemText.replace(`${boldContent}:`, "").trim();
-                  if (remainingText) {
-                    addFormattedText(remainingText, 10, false, 10);
-                    // Small space after each bulletpoint content
-                    yPosition += 0.5;
-                  }
-                } else {
-                  // Add regular list item
+                if (itemText) {
+                  const prefix = nextElement.tagName === 'OL' ? `${index + 1}. ` : '• ';
                   addFormattedText(`${prefix}${itemText}`, 10, false, 5);
-                  // Small space after each bulletpoint
-                  yPosition += 0.5;
                 }
               });
               
-              // Add moderate space after a list
+              // Add space after list
               yPosition += listMargin;
             }
             
-            nextElement = nextElement.nextElementSibling;
+            const tempNext = nextElement.nextElementSibling;
+            if (!tempNext) break;
+            nextElement = tempNext;
           }
         }
       });
     };
+    
+    // Process h1 headings (title)
+    const h1Elements = htmlDoc.querySelectorAll('h1');
+    if (h1Elements.length > 0) {
+      const titleText = h1Elements[0].textContent?.trim() || "";
+      if (titleText) {
+        addFormattedText(titleText, 16, true);
+        yPosition += 5; // Extra space after title
+      }
+    }
     
     // Process h2 headings (main sections)
     processHeadings('h2', 14);
     
     // Process h3 headings (sub-sections)
     processHeadings('h3', 12);
+    
+    // Process any paragraphs not under headings
+    const standaloneParas = Array.from(htmlDoc.querySelectorAll('p')).filter(p => {
+      const prevSibling = p.previousElementSibling;
+      return !prevSibling || !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(prevSibling.tagName);
+    });
+    
+    standaloneParas.forEach(para => {
+      const paraText = para.textContent?.trim() || "";
+      if (paraText) {
+        addFormattedText(paraText, 10, false);
+      }
+    });
     
     // Add footer to the last page
     addFooterToCurrentPage(pdf.getNumberOfPages());

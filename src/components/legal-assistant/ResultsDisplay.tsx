@@ -63,13 +63,16 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       // Create different filenames based on whether it's a risk analysis or regular analysis
       const fileName = isRiskAnalysis 
         ? `LegalDocReport-Risk-${formattedDate}-${randomDigit}` 
-        : `LegalDocReport-${formattedDate}`;
+        : `LegalDocReport-${formattedDate}-${randomDigit}`;
+      
+      // Create a clean copy of the HTML content without additional DOM elements
+      const cleanContent = response;
       
       const success = await generatePDF({
         title: isRiskAnalysis ? "Legal Risk Analysis Report" : "Legal Document Analysis Report",
         fileName,
         contentRef,
-        content: response
+        content: cleanContent
       });
       
       if (success) {
