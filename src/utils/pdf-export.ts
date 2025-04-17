@@ -1,3 +1,4 @@
+
 import { jsPDF } from "jspdf";
 
 export interface PDFExportOptions {
@@ -116,6 +117,8 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
       
       // Add centered footer text at the bottom of the page
       const footerText = "SimpleInsights.ai – Complex docs, made simple.";
+      const pageText = `Page ${pageNumber}`;
+      
       const footerWidth = pdf.getTextWidth(footerText);
       const footerX = (pageWidth - footerWidth) / 2;
       pdf.setTextColor(120, 120, 120); // Gray color
