@@ -107,7 +107,7 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     
     // Function to add footer to the current page
     const addFooterToCurrentPage = (pageNumber: number) => {
-      const footerText = "SimpleInsights.ai – Legal intelligence, made simple.";
+      const footerText = "Transform your complex documents into easily understandable insights with our user-friendly platform.";
       const pageText = `Page ${pageNumber}`;
       
       // Save current text settings
