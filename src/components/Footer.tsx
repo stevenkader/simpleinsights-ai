@@ -15,7 +15,7 @@ const Footer = () => {
               <span className="font-bold text-xl">SimpleInsights.ai</span>
             </div>
             <p className="text-sm text-muted-foreground max-w-xs">
-              Complex documents, made simple
+              Transform your complex documents into easily understandable insights with our user-friendly platform.
             </p>
           </div>
           
