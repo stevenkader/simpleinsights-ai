@@ -1,4 +1,3 @@
-
 import { jsPDF } from "jspdf";
 
 export interface PDFExportOptions {
@@ -107,9 +106,6 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     
     // Function to add footer to the current page
     const addFooterToCurrentPage = (pageNumber: number) => {
-      const footerText = "SimpleInsights.ai – Legal intelligence, made simple.";
-      const pageText = `Page ${pageNumber}`;
-      
       // Save current text settings
       const currentFontSize = pdf.getFontSize();
       const currentFont = pdf.getFont();
@@ -119,6 +115,7 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
       pdf.setFont("helvetica", "normal");
       
       // Add centered footer text at the bottom of the page
+      const footerText = "SimpleInsights.ai – Complex docs, made simple.";
       const footerWidth = pdf.getTextWidth(footerText);
       const footerX = (pageWidth - footerWidth) / 2;
       pdf.setTextColor(120, 120, 120); // Gray color
