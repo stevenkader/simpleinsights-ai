@@ -1,4 +1,3 @@
-
 import { jsPDF } from "jspdf";
 
 export interface PDFExportOptions {
@@ -16,7 +15,8 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
   try {
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
-    const documentFileName = `${fileName}.pdf`;
+    const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp
+    const documentFileName = `${fileName}-${timestamp}.pdf`;
 
     // Create PDF document with A4 format
     const pdf = new jsPDF('p', 'mm', 'a4');
