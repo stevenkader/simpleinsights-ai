@@ -79,8 +79,8 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     });
 
     // Process table content first so they get proper positioning
-    console.log("Processing tables...");
-    renderTablesFromHtml(pdf, htmlDoc, {
+    console.log("Processing tables as images...");
+    await renderTablesFromHtml(pdf, htmlDoc, {
       margin,
       contentWidth,
       pageWidth,
