@@ -98,13 +98,21 @@ export function renderTablesFromHtml(
     
     console.log(`Table ${tableIndex + 1} has ${columnCount} columns`);
     
-    // Improved column width calculation - first column gets 25%, others share remaining 75%
+    // Improved column width calculation - more space for description columns
     const availableWidth = options.contentWidth;
     const columnWidths = [];
-    if (columnCount > 0) {
-      // First column (usually the clause name) gets 25% of the width
-      columnWidths.push(availableWidth * 0.25);
-      const remainingWidth = availableWidth * 0.75;
+    
+    if (columnCount === 4) {
+      // Common risk analysis table format (Clause, Risk, Description, Impact)
+      columnWidths.push(availableWidth * 0.2);  // Clause column - 20%
+      columnWidths.push(availableWidth * 0.15); // Risk Level column - 15%
+      columnWidths.push(availableWidth * 0.3);  // Description column - 30%
+      columnWidths.push(availableWidth * 0.35); // Business Impact column - 35%
+    } else if (columnCount > 0) {
+      // Default distribution for other table formats
+      // First column gets 20%, others share remaining 80%
+      columnWidths.push(availableWidth * 0.2);
+      const remainingWidth = availableWidth * 0.8;
       const standardColumnWidth = remainingWidth / (columnCount - 1);
       for (let i = 1; i < columnCount; i++) {
         columnWidths.push(standardColumnWidth);
@@ -112,7 +120,7 @@ export function renderTablesFromHtml(
     }
     
     // Check if we need a new page for this table
-    const estimatedTableHeight = (rows.length + 1) * (options.tableLineHeight * 2.5);
+    const estimatedTableHeight = (rows.length + 1) * (options.tableLineHeight * 3);
     if (yPosition + estimatedTableHeight > options.pageHeight - options.margin) {
       console.log(`Table ${tableIndex + 1} would overflow, adding new page`);
       options.addPageWithFooter();
@@ -122,10 +130,10 @@ export function renderTablesFromHtml(
     // Helper to draw a cell with optional background color
     const drawTableCell = (text: string, x: number, y: number, width: number, height: number, isBold: boolean, bgColor?: string) => {
       if (bgColor) {
-        // Use predefined light colors instead of calculating opacity
-        if (bgColor === "#4caf50") pdf.setFillColor(220, 237, 220); // light green
-        else if (bgColor === "#ff9800") pdf.setFillColor(255, 243, 224); // light orange
-        else if (bgColor === "#f44336") pdf.setFillColor(253, 225, 225); // light red
+        // Use predefined light colors for better visibility
+        if (bgColor === "#4caf50") pdf.setFillColor(232, 245, 233); // lighter green
+        else if (bgColor === "#ff9800") pdf.setFillColor(255, 243, 224); // lighter orange
+        else if (bgColor === "#f44336") pdf.setFillColor(255, 235, 238); // lighter red
         else {
           // Default fallback for other colors
           const hex = bgColor.replace('#', '');
@@ -144,20 +152,25 @@ export function renderTablesFromHtml(
       
       // Render text
       pdf.setFont("helvetica", isBold ? "bold" : "normal");
-      const cellWidth = width - (options.tableCellPadding * 2);
       
-      // Ensure text breaks properly
+      // Ensure text breaks properly with adequate internal padding for readable text
+      const internalPadding = 2;
+      const cellWidth = width - (options.tableCellPadding * 2 + internalPadding * 2);
+      
+      // Smaller font size for better fit
+      pdf.setFontSize(isBold ? 8.5 : 8);
+      
+      // Handle text wrapping with proper spacing
       const textLines = pdf.splitTextToSize(text, cellWidth);
-      const lineHeight = 5.5; // Slightly reduced line height for better fit
+      const lineHeight = 4; // Reduced line height for denser text
       
-      // Calculate text positioning
+      // Calculate vertical positioning to ensure text fits and is centered
       const textHeight = textLines.length * lineHeight;
-      // Center text vertically in the cell
-      const textY = y - height + options.tableCellPadding + ((height - textHeight) / 2) + lineHeight;
+      const textY = y - height + options.tableCellPadding + 5; // Start a bit lower from the top
       
       // Render each line of text
       textLines.forEach((line: string, i: number) => {
-        pdf.text(line, x + options.tableCellPadding, textY + (i * lineHeight));
+        pdf.text(line, x + options.tableCellPadding + internalPadding, textY + (i * lineHeight));
       });
       
       return textLines.length;
@@ -165,10 +178,10 @@ export function renderTablesFromHtml(
 
     // Draw table header row
     let xOffset = options.margin;
-    const headerHeight = options.tableLineHeight * 2;
+    const headerHeight = options.tableLineHeight * 2.5;
     pdf.setFillColor(240, 240, 240);
     pdf.setTextColor(50, 50, 50);
-    pdf.setFontSize(9.5); // Slightly smaller font for better fit
+    pdf.setFontSize(8.5); // Slightly smaller font for header
     pdf.setFont("helvetica", "bold");
     
     headers.forEach((header, i) => {
@@ -180,11 +193,22 @@ export function renderTablesFromHtml(
 
     // Draw table data rows
     pdf.setTextColor(0, 0, 0);
-    pdf.setFontSize(9); // Slightly smaller font for data cells
+    pdf.setFontSize(8); // Smaller font for data cells
 
     rows.forEach((row, rowIndex) => {
       xOffset = options.margin;
-      const cellHeight = options.tableLineHeight * 2.5; // Increased height for better readability
+      
+      // Calculate row height dynamically based on content length
+      // Estimate 12 characters per line at font size 8 for a typical column
+      const maxCharactersPerCell = row.map((cell, idx) => {
+        const colWidth = columnWidths[idx] || 30;
+        const charsPerLine = Math.floor(colWidth / 2); // Approximate chars per line
+        const estimatedLines = Math.ceil(cell.text.length / charsPerLine);
+        return Math.max(estimatedLines, 1);
+      });
+      
+      const maxLines = Math.max(...maxCharactersPerCell, 3); // Minimum 3 lines high
+      const cellHeight = Math.max(options.tableLineHeight * 2, maxLines * 5); // Dynamic height
       
       row.forEach((cell, colIndex) => {
         // Make sure we don't go out of bounds with column widths
