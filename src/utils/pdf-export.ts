@@ -1,3 +1,4 @@
+
 import { jsPDF } from "jspdf";
 
 export interface PDFExportOptions {
@@ -54,6 +55,8 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     const paragraphSpacing = 4;
     const sectionSpacing = 8;
     const listMargin = 5;
+    const tableCellPadding = 3;
+    const tableLineHeight = 7;
     
     // Process text nodes and handle formatting
     const processTextNode = (node: Node): string => {
@@ -142,6 +145,170 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
       pdf.addPage();
     };
     
+    // Process tables - NEW FUNCTION
+    const processTables = () => {
+      const tables = htmlDoc.querySelectorAll('table');
+      
+      tables.forEach(table => {
+        // Add extra space before table
+        yPosition += sectionSpacing;
+        
+        // Get table headers
+        const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent?.trim() || "");
+        
+        // Get table rows
+        const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr => {
+          return Array.from(tr.querySelectorAll('td')).map(td => {
+            // Check for risk level colors
+            let cellText = td.textContent?.trim() || "";
+            let cellColor = "";
+            
+            // Try to detect risk levels by text content
+            if (cellText.toLowerCase() === "low") {
+              cellColor = "#4caf50"; // Green for low risk
+            } else if (cellText.toLowerCase() === "medium") {
+              cellColor = "#ff9800"; // Orange for medium risk
+            } else if (cellText.toLowerCase() === "high") {
+              cellColor = "#f44336"; // Red for high risk
+            }
+            
+            return { text: cellText, color: cellColor };
+          });
+        });
+        
+        // Calculate column widths based on content
+        const columnCount = Math.max(headers.length, ...rows.map(row => row.length));
+        
+        // If no columns, skip this table
+        if (columnCount === 0) return;
+        
+        // Estimate comfortable column widths with margins
+        const availableWidth = contentWidth;
+        const columnWidths = [];
+        
+        // Simple algorithm: first column gets 25% (for labels), divide rest equally
+        if (columnCount > 0) {
+          columnWidths.push(availableWidth * 0.25); // First column (usually for labels/clause names)
+          
+          const remainingWidth = availableWidth * 0.75;
+          const standardColumnWidth = remainingWidth / (columnCount - 1);
+          
+          // Add remaining column widths
+          for (let i = 1; i < columnCount; i++) {
+            columnWidths.push(standardColumnWidth);
+          }
+        }
+        
+        // Check if we need a new page for the table
+        const estimatedTableHeight = (rows.length + 1) * (tableLineHeight * 3); // Rough estimate including headers
+        if (yPosition + estimatedTableHeight > pageHeight - margin) {
+          addPageWithFooter();
+          yPosition = margin + 15;
+        }
+        
+        // Helper to draw a cell with optional background color
+        const drawTableCell = (text: string, x: number, y: number, width: number, height: number, isBold: boolean, bgColor?: string) => {
+          // Draw background if specified
+          if (bgColor) {
+            pdf.setFillColor(bgColor);
+            pdf.rect(x, y - height + tableCellPadding, width, height, 'F');
+          }
+          
+          // Draw borders
+          pdf.setDrawColor(200, 200, 200);
+          pdf.rect(x, y - height + tableCellPadding, width, height, 'S');
+          
+          // Add text
+          pdf.setFont("helvetica", isBold ? "bold" : "normal");
+          
+          // Split text to fit in cell
+          const cellWidth = width - (tableCellPadding * 2);
+          const textLines = pdf.splitTextToSize(text, cellWidth);
+          
+          // Center text vertically in cell
+          const textHeight = textLines.length * lineHeight;
+          const textY = y - height + tableCellPadding + ((height - textHeight) / 2);
+          
+          // Add each line of text
+          textLines.forEach((line: string, i: number) => {
+            pdf.text(line, x + tableCellPadding, textY + (i * lineHeight));
+          });
+          
+          return textLines.length;
+        };
+        
+        // Draw table headers
+        let xOffset = margin;
+        const headerHeight = tableLineHeight * 2;
+        
+        // Set header background and text style
+        pdf.setFillColor(240, 240, 240);
+        pdf.setTextColor(50, 50, 50);
+        pdf.setFontSize(10);
+        pdf.setFont("helvetica", "bold");
+        
+        // Draw header cells
+        headers.forEach((header, i) => {
+          const colWidth = columnWidths[i] || 30; // Default 30mm if not specified
+          drawTableCell(header, xOffset, yPosition, colWidth, headerHeight, true, "#f5f5f5");
+          xOffset += colWidth;
+        });
+        
+        yPosition += headerHeight;
+        
+        // Draw data rows
+        pdf.setTextColor(0, 0, 0);
+        pdf.setFontSize(9);
+        
+        rows.forEach((row, rowIndex) => {
+          xOffset = margin;
+          let maxLines = 1;
+          const cellHeight = tableLineHeight * 2;
+          
+          // First pass: draw cell backgrounds/borders and get line counts
+          row.forEach((cell, colIndex) => {
+            const colWidth = columnWidths[colIndex] || 30;
+            
+            // Convert color hex to RGB for the cell background if present
+            let bgColor;
+            if (cell.color) {
+              const hex = cell.color.replace('#', '');
+              const r = parseInt(hex.substring(0, 2), 16);
+              const g = parseInt(hex.substring(2, 4), 16);
+              const b = parseInt(hex.substring(4, 6), 16);
+              bgColor = [r, g, b];
+              pdf.setFillColor(r, g, b, 0.2); // Use light version of the color
+            }
+            
+            const lines = drawTableCell(
+              cell.text, 
+              xOffset, 
+              yPosition, 
+              colWidth, 
+              cellHeight, 
+              false,
+              bgColor ? `rgba(${bgColor[0]}, ${bgColor[1]}, ${bgColor[2]}, 0.2)` : undefined
+            );
+            
+            maxLines = Math.max(maxLines, lines);
+            xOffset += colWidth;
+          });
+          
+          // Move to next row
+          yPosition += cellHeight;
+          
+          // Check if we need a new page
+          if (yPosition + cellHeight > pageHeight - margin && rowIndex < rows.length - 1) {
+            addPageWithFooter();
+            yPosition = margin + 15;
+          }
+        });
+        
+        // Add space after table
+        yPosition += sectionSpacing;
+      });
+    };
+    
     // Process headings
     const processHeadings = (tagName: string, fontSize: number) => {
       const headings = htmlDoc.querySelectorAll(tagName);
@@ -158,7 +325,7 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
           let nextElement = heading.nextElementSibling;
           
           while (nextElement && 
-                 !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(nextElement.tagName)) {
+                 !['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'TABLE'].includes(nextElement.tagName)) {
             
             if (nextElement.tagName === 'P') {
               const paragraphText = nextElement.textContent?.trim() || "";
@@ -203,6 +370,9 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     
     // Process h3 headings (sub-sections)
     processHeadings('h3', 12);
+    
+    // Process tables
+    processTables();
     
     // Process any paragraphs not under headings
     const standaloneParas = Array.from(htmlDoc.querySelectorAll('p')).filter(p => {
