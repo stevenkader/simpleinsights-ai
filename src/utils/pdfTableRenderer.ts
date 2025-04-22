@@ -61,7 +61,20 @@ export function renderTablesFromHtml(
     // Helper to draw a cell with optional background color
     const drawTableCell = (text: string, x: number, y: number, width: number, height: number, isBold: boolean, bgColor?: string) => {
       if (bgColor) {
-        pdf.setFillColor(bgColor);
+        // Convert hex color to RGB values for jsPDF (it doesn't support rgba)
+        const hex = bgColor.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16) || 0;
+        const g = parseInt(hex.substring(2, 4), 16) || 0;
+        const b = parseInt(hex.substring(4, 6), 16) || 0;
+        
+        // Use RGB values with the setFillColor method
+        pdf.setFillColor(r, g, b);
+        
+        // Apply a lighter opacity by adjusting the fill color
+        if (bgColor === "#4caf50") pdf.setFillColor(220, 237, 220); // light green
+        else if (bgColor === "#ff9800") pdf.setFillColor(255, 243, 224); // light orange
+        else if (bgColor === "#f44336") pdf.setFillColor(253, 225, 225); // light red
+        
         pdf.rect(x, y - height + options.tableCellPadding, width, height, 'F');
       }
       pdf.setDrawColor(200, 200, 200);
@@ -99,14 +112,6 @@ export function renderTablesFromHtml(
       const cellHeight = options.tableLineHeight * 2;
       row.forEach((cell, colIndex) => {
         const colWidth = columnWidths[colIndex] || 30;
-        let bgColor;
-        if (cell.color) {
-          const hex = cell.color.replace('#', '');
-          const r = parseInt(hex.substring(0, 2), 16);
-          const g = parseInt(hex.substring(2, 4), 16);
-          const b = parseInt(hex.substring(4, 6), 16);
-          bgColor = `rgba(${r}, ${g}, ${b}, 0.2)`;
-        }
         drawTableCell(
           cell.text,
           xOffset,
@@ -114,7 +119,7 @@ export function renderTablesFromHtml(
           colWidth,
           cellHeight,
           false,
-          bgColor
+          cell.color
         );
         xOffset += colWidth;
       });
