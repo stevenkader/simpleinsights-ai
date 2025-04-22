@@ -11,6 +11,17 @@ export function cleanHtmlContent(htmlString: string): Document {
   const styleTags = htmlDoc.querySelectorAll('style');
   styleTags.forEach((tag) => tag.remove());
 
+  // Add debug info for tables
+  const tables = htmlDoc.querySelectorAll('table');
+  console.log(`Parser found ${tables.length} tables in the HTML content`);
+  
+  // Log the HTML structure when tables are found for debugging
+  if (tables.length > 0) {
+    tables.forEach((table, i) => {
+      console.log(`Table ${i+1} structure:`, table.outerHTML.substring(0, 150) + '...');
+    });
+  }
+
   return htmlDoc;
 }
 

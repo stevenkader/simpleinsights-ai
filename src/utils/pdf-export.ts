@@ -23,6 +23,9 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp
     const documentFileName = `${fileName}-${timestamp}.pdf`;
 
+    console.log("Starting PDF generation with jsPDF...");
+    
+    // Initialize the PDF document
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
@@ -41,7 +44,8 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     pdf.setLineWidth(0.5);
     pdf.line(margin, margin + 15, pageWidth - margin, margin + 15);
 
-    // Get and clean HTML content
+    console.log("Cleaning HTML content for parsing...");
+    // Get and clean HTML content 
     const htmlContent = contentRef.current.innerHTML;
     const htmlDoc = cleanHtmlContent(htmlContent);
 
@@ -54,8 +58,11 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     const tableCellPadding = 3;
     const tableLineHeight = 7;
 
-    // --- Text renderer
+    // Set initial Y position for content
     let yPosition = margin + 25;
+    
+    // Initialize text renderer
+    console.log("Initializing text renderer...");
     const textRenderer = createTextRenderer(pdf, {
       contentWidth,
       pageHeight,
@@ -71,10 +78,31 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
       }
     });
 
-    // --- Headings/Paras/Lists
+    // Process table content first so they get proper positioning
+    console.log("Processing tables...");
+    renderTablesFromHtml(pdf, htmlDoc, {
+      margin,
+      contentWidth,
+      pageWidth,
+      pageHeight,
+      sectionSpacing,
+      tableLineHeight,
+      tableCellPadding,
+      addPageWithFooter: () => {
+        addPageWithFooter(pdf, () => addFooterToCurrentPage(pdf, pdf.getNumberOfPages(), pageWidth, pageHeight, margin));
+      },
+      getY: textRenderer.getY,
+      setY: textRenderer.setY
+    });
+
+    // Process headings, paragraphs, and lists
+    console.log("Processing headings and paragraphs...");
     const processHeadings = (tagName: string, fontSize: number) => {
       const headings = htmlDoc.querySelectorAll(tagName);
       headings.forEach((heading) => {
+        // Skip headings that are part of tables
+        if (heading.closest('table')) return;
+        
         textRenderer.incY(sectionSpacing);
         const headingText = heading.textContent?.trim() || "";
         if (headingText) {
@@ -109,8 +137,8 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
       });
     };
 
-    // Process h1 as title
-    const h1Elements = htmlDoc.querySelectorAll('h1');
+    // Process h1 as title (excluding those in tables)
+    const h1Elements = Array.from(htmlDoc.querySelectorAll('h1')).filter(h => !h.closest('table'));
     if (h1Elements.length > 0) {
       const titleText = h1Elements[0].textContent?.trim() || "";
       if (titleText) {
@@ -119,31 +147,17 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
       }
     }
 
-    // h2/h3
+    // Process h2/h3 elements (excluding those in tables)
     processHeadings('h2', 14);
     processHeadings('h3', 12);
 
-    // Tables
-    renderTablesFromHtml(pdf, htmlDoc, {
-      margin,
-      contentWidth,
-      pageWidth,
-      pageHeight,
-      sectionSpacing,
-      tableLineHeight,
-      tableCellPadding,
-      addPageWithFooter: () => {
-        addPageWithFooter(pdf, () => addFooterToCurrentPage(pdf, pdf.getNumberOfPages(), pageWidth, pageHeight, margin));
-      },
-      getY: textRenderer.getY,
-      setY: textRenderer.setY
-    });
-
-    // Standalone paragraphs
+    // Process standalone paragraphs (those not following h1/h2/h3 and not in tables)
+    console.log("Processing standalone paragraphs...");
     const standaloneParas = Array.from(htmlDoc.querySelectorAll('p')).filter(p => {
       const prevSibling = p.previousElementSibling;
-      return !prevSibling || !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(prevSibling.tagName);
+      return (!prevSibling || !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(prevSibling.tagName)) && !p.closest('table');
     });
+    
     standaloneParas.forEach(para => {
       const paraText = para.textContent?.trim() || "";
       if (paraText) {
@@ -151,11 +165,14 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
       }
     });
 
-    // Footer
+    // Add footer to the last page
+    console.log("Adding footer to the final page...");
     addFooterToCurrentPage(pdf, pdf.getNumberOfPages(), pageWidth, pageHeight, margin);
 
-    // Save
+    // Save the PDF file
+    console.log("Saving PDF document...");
     pdf.save(documentFileName);
+    console.log("PDF generation completed successfully!");
 
     return true;
   } catch (error) {

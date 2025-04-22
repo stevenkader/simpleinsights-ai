@@ -24,27 +24,85 @@ export function renderTablesFromHtml(
 ) {
   let yPosition = options.getY();
 
-  const tables = htmlDoc.querySelectorAll('table');
-  tables.forEach(table => {
+  // Improved table detection - look for both direct tables and tables within divs
+  const tables = Array.from(htmlDoc.querySelectorAll('table'));
+  
+  // Check if we have any tables to render
+  if (tables.length === 0) {
+    console.log("No tables found in the document");
+    return;
+  }
+  
+  console.log(`Found ${tables.length} tables to render`);
+  
+  tables.forEach((table, tableIndex) => {
+    console.log(`Processing table ${tableIndex + 1}`);
     yPosition += options.sectionSpacing;
 
+    // Extract headers
     const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent?.trim() || "");
-    const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr => {
+    console.log(`Table ${tableIndex + 1} has ${headers.length} headers`);
+    
+    // If no explicit headers found, try to use the first row as headers
+    let useFirstRowAsHeader = false;
+    if (headers.length === 0) {
+      const firstRow = table.querySelector('tr');
+      if (firstRow) {
+        useFirstRowAsHeader = true;
+        const firstRowCells = Array.from(firstRow.querySelectorAll('td'));
+        firstRowCells.forEach(cell => {
+          headers.push(cell.textContent?.trim() || "");
+        });
+        console.log(`Using first row as headers, found ${headers.length} columns`);
+      }
+    }
+    
+    // Extract rows
+    let rowsSelector = useFirstRowAsHeader ? 'tr:not(:first-child)' : 'tbody tr';
+    let rows = Array.from(table.querySelectorAll(rowsSelector)).map(tr => {
       return Array.from(tr.querySelectorAll('td')).map(td => {
         let cellText = td.textContent?.trim() || "";
         let cellColor = "";
+        
+        // More robust risk level detection
         if (cellText.toLowerCase() === "low") cellColor = "#4caf50";
         else if (cellText.toLowerCase() === "medium") cellColor = "#ff9800";
         else if (cellText.toLowerCase() === "high") cellColor = "#f44336";
+        
         return { text: cellText, color: cellColor };
       });
     });
+    
+    // If we're using the first row as header and got no rows, just use all rows
+    if (rows.length === 0 && !useFirstRowAsHeader) {
+      rows = Array.from(table.querySelectorAll('tr')).map(tr => {
+        return Array.from(tr.querySelectorAll('td')).map(td => {
+          let cellText = td.textContent?.trim() || "";
+          let cellColor = "";
+          if (cellText.toLowerCase() === "low") cellColor = "#4caf50";
+          else if (cellText.toLowerCase() === "medium") cellColor = "#ff9800";
+          else if (cellText.toLowerCase() === "high") cellColor = "#f44336";
+          return { text: cellText, color: cellColor };
+        });
+      });
+    }
+    
+    console.log(`Table ${tableIndex + 1} has ${rows.length} rows`);
 
+    // Calculate column widths
     const columnCount = Math.max(headers.length, ...rows.map(row => row.length));
-    if (columnCount === 0) return;
+    if (columnCount === 0) {
+      console.log("No columns found in table, skipping");
+      return;
+    }
+    
+    console.log(`Table ${tableIndex + 1} has ${columnCount} columns`);
+    
+    // Improved column width calculation - first column gets 25%, others share remaining 75%
     const availableWidth = options.contentWidth;
     const columnWidths = [];
     if (columnCount > 0) {
+      // First column (usually the clause name) gets 25% of the width
       columnWidths.push(availableWidth * 0.25);
       const remainingWidth = availableWidth * 0.75;
       const standardColumnWidth = remainingWidth / (columnCount - 1);
@@ -52,8 +110,11 @@ export function renderTablesFromHtml(
         columnWidths.push(standardColumnWidth);
       }
     }
-    const estimatedTableHeight = (rows.length + 1) * (options.tableLineHeight * 3);
+    
+    // Check if we need a new page for this table
+    const estimatedTableHeight = (rows.length + 1) * (options.tableLineHeight * 2.5);
     if (yPosition + estimatedTableHeight > options.pageHeight - options.margin) {
+      console.log(`Table ${tableIndex + 1} would overflow, adding new page`);
       options.addPageWithFooter();
       yPosition = options.margin + 15;
     }
@@ -61,42 +122,55 @@ export function renderTablesFromHtml(
     // Helper to draw a cell with optional background color
     const drawTableCell = (text: string, x: number, y: number, width: number, height: number, isBold: boolean, bgColor?: string) => {
       if (bgColor) {
-        // Convert hex color to RGB values for jsPDF (it doesn't support rgba)
-        const hex = bgColor.replace('#', '');
-        const r = parseInt(hex.substring(0, 2), 16) || 0;
-        const g = parseInt(hex.substring(2, 4), 16) || 0;
-        const b = parseInt(hex.substring(4, 6), 16) || 0;
-        
-        // Use RGB values with the setFillColor method
-        pdf.setFillColor(r, g, b);
-        
-        // Apply a lighter opacity by adjusting the fill color
+        // Use predefined light colors instead of calculating opacity
         if (bgColor === "#4caf50") pdf.setFillColor(220, 237, 220); // light green
         else if (bgColor === "#ff9800") pdf.setFillColor(255, 243, 224); // light orange
         else if (bgColor === "#f44336") pdf.setFillColor(253, 225, 225); // light red
+        else {
+          // Default fallback for other colors
+          const hex = bgColor.replace('#', '');
+          const r = parseInt(hex.substring(0, 2), 16) || 240;
+          const g = parseInt(hex.substring(2, 4), 16) || 240;
+          const b = parseInt(hex.substring(4, 6), 16) || 240;
+          pdf.setFillColor(r, g, b);
+        }
         
         pdf.rect(x, y - height + options.tableCellPadding, width, height, 'F');
       }
-      pdf.setDrawColor(200, 200, 200);
+      
+      // Draw cell border
+      pdf.setDrawColor(180, 180, 180);
       pdf.rect(x, y - height + options.tableCellPadding, width, height, 'S');
+      
+      // Render text
       pdf.setFont("helvetica", isBold ? "bold" : "normal");
       const cellWidth = width - (options.tableCellPadding * 2);
+      
+      // Ensure text breaks properly
       const textLines = pdf.splitTextToSize(text, cellWidth);
-      const lineHeight = 6;
+      const lineHeight = 5.5; // Slightly reduced line height for better fit
+      
+      // Calculate text positioning
       const textHeight = textLines.length * lineHeight;
-      const textY = y - height + options.tableCellPadding + ((height - textHeight) / 2);
+      // Center text vertically in the cell
+      const textY = y - height + options.tableCellPadding + ((height - textHeight) / 2) + lineHeight;
+      
+      // Render each line of text
       textLines.forEach((line: string, i: number) => {
         pdf.text(line, x + options.tableCellPadding, textY + (i * lineHeight));
       });
+      
       return textLines.length;
     };
 
+    // Draw table header row
     let xOffset = options.margin;
     const headerHeight = options.tableLineHeight * 2;
     pdf.setFillColor(240, 240, 240);
     pdf.setTextColor(50, 50, 50);
-    pdf.setFontSize(10);
+    pdf.setFontSize(9.5); // Slightly smaller font for better fit
     pdf.setFont("helvetica", "bold");
+    
     headers.forEach((header, i) => {
       const colWidth = columnWidths[i] || 30;
       drawTableCell(header, xOffset, yPosition, colWidth, headerHeight, true, "#f5f5f5");
@@ -104,14 +178,18 @@ export function renderTablesFromHtml(
     });
     yPosition += headerHeight;
 
+    // Draw table data rows
     pdf.setTextColor(0, 0, 0);
-    pdf.setFontSize(9);
+    pdf.setFontSize(9); // Slightly smaller font for data cells
 
     rows.forEach((row, rowIndex) => {
       xOffset = options.margin;
-      const cellHeight = options.tableLineHeight * 2;
+      const cellHeight = options.tableLineHeight * 2.5; // Increased height for better readability
+      
       row.forEach((cell, colIndex) => {
-        const colWidth = columnWidths[colIndex] || 30;
+        // Make sure we don't go out of bounds with column widths
+        const colWidth = colIndex < columnWidths.length ? columnWidths[colIndex] : 30;
+        
         drawTableCell(
           cell.text,
           xOffset,
@@ -123,14 +201,21 @@ export function renderTablesFromHtml(
         );
         xOffset += colWidth;
       });
+      
       yPosition += cellHeight;
+      
+      // Check if we need a new page for the next row
       if (yPosition + cellHeight > options.pageHeight - options.margin && rowIndex < rows.length - 1) {
         options.addPageWithFooter();
         yPosition = options.margin + 15;
       }
     });
 
-    yPosition += options.sectionSpacing;
+    // Add some spacing after the table
+    yPosition += options.sectionSpacing * 1.5;
+    console.log(`Finished rendering table ${tableIndex + 1} at position ${yPosition}`);
+    
+    // Update position tracker
     options.setY(yPosition);
   });
 }
