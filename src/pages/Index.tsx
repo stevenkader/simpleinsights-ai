@@ -1,3 +1,4 @@
+import React from 'react';
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -10,17 +11,17 @@ const Index = () => {
     <div className="flex min-h-screen flex-col">
       <Navigation />
       
-      {/* Hero Section with Cleaner Layout */}
+      {/* Hero Section with Updated Text */}
       <section className="relative overflow-hidden bg-gradient-to-b from-background to-muted py-20 md:py-28">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col justify-center space-y-8 mx-auto text-center max-w-3xl">
             <div className="space-y-4">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                Understand Complex Documents with 
-                <span className="gradient-text"> AI Simplicity</span>
+                Confused by Complex Documents? Let AI 
+                <span className="gradient-text"> Break Them Down—Fast.</span>
               </h1>
               <p className="text-xl text-muted-foreground mx-auto max-w-[700px]">
-                SimpleInsights.ai provides specialized tools designed to make complex documents approachable for everyone.
+                Legal contracts, medical reports, or documents in another language—SimpleInsights helps you instantly understand what matters, in plain language you can trust.
               </p>
             </div>
             
