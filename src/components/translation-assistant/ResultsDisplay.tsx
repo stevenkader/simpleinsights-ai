@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,7 +41,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
-  // More refined error detection to avoid false positives
   const hasError = typeof response === 'string' && (
     response.includes('Translation service unavailable') || 
     response.includes('<!DOCTYPE html>') && response.includes('<pre>Error') || 
@@ -50,7 +48,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     response.trim() === ''
   );
 
-  // Function to remove "Translation of PDF" text from the response
   const cleanResponse = (html: string): string => {
     if (typeof html !== 'string' || html.trim() === '') {
       return html;
