@@ -16,14 +16,41 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp
     const documentFileName = `${fileName}-${timestamp}.pdf`;
 
-    // Get the HTML content from the div
-    const htmlContent = contentRef.current.innerHTML;
+    // Create a temporary container with proper styling
+    const styledHTML = `
+      <html>
+        <head>
+          <style>
+            @page {
+              margin: 0.5in;
+              @bottom-center {
+                content: "SimpleInsights.ai – Complex docs, made simple. | Page " counter(page);
+              }
+            }
+            body {
+              font-family: Arial, sans-serif;
+              line-height: 1.6;
+              margin: 0;
+              padding: 0;
+            }
+            .content {
+              margin-bottom: 40px; /* Space for footer */
+            }
+          </style>
+        </head>
+        <body>
+          <div class="content">
+            ${contentRef.current.innerHTML}
+          </div>
+        </body>
+      </html>
+    `;
     
     // Send HTML to the backend for PDF generation
     const response = await fetch('https://simpleinsights-ai-backend.onrender.com/generate-pdf', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: htmlContent
+      body: styledHTML
     });
 
     if (!response.ok) {
@@ -51,3 +78,4 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     return false;
   }
 };
+
