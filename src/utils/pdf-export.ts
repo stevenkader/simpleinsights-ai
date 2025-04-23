@@ -28,11 +28,10 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
               }
             }
             body {
-              font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+              font-family: Arial, sans-serif;
               line-height: 1.6;
               margin: 0;
               padding: 0;
-              color: #666666; /* Softer, more neutral gray */
             }
             .content {
               margin-bottom: 40px; /* Space for footer */
