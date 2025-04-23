@@ -1,4 +1,3 @@
-
 export interface PDFExportOptions {
   title: string;
   fileName: string;
@@ -28,10 +27,11 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
               }
             }
             body {
-              font-family: Arial, sans-serif;
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
               line-height: 1.6;
               margin: 0;
               padding: 0;
+              color: #4a4a4a; /* Lighter, softer text color */
             }
             .content {
               margin-bottom: 40px; /* Space for footer */
@@ -78,4 +78,3 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
     return false;
   }
 };
-
