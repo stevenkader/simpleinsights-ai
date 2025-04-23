@@ -25,6 +25,9 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
               margin: 0.5in;
               @bottom-center {
                 content: "SimpleInsights.ai – Complex docs, made simple. | Page " counter(page);
+                font-family: Arial, sans-serif;
+                font-size: 8pt;
+                color: #6B7280; /* Tailwind gray-500 */
               }
             }
             body {
