@@ -62,7 +62,7 @@ const LegalAssistant = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
             <DemoSection 
               showDemoDialog={showDemoDialog}
               setShowDemoDialog={setShowDemoDialog}
@@ -76,6 +76,32 @@ const LegalAssistant = () => {
               title="Get Plain English Version"
               acceptedFileTypes={[".pdf"]}
             />
+
+            <Card className="bg-card">
+              <CardHeader>
+                <CardTitle>Risk Analysis</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <DocumentUploader 
+                    isLoading={isRiskAnalysisLoading}
+                    onProcessFile={handleRiskAnalysis}
+                    onFileChange={handleFileChange}
+                    title="Upload Contract"
+                    acceptedFileTypes={[".pdf"]}
+                  />
+                </div>
+                <div>
+                  <Input
+                    placeholder="Which party are you? (e.g. Buyer, Seller)"
+                    value={partyName}
+                    onChange={(e) => setPartyName(e.target.value)}
+                    disabled={!fileReference}
+                    className="w-full"
+                  />
+                </div>
+              </CardContent>
+            </Card>
           </div>
           
           {fileReference && !isLoading && (
