@@ -31,32 +31,42 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const { toast } = useToast();
   const [currentTab, setCurrentTab] = useState("plain");
   
+  const [plainContent, setPlainContent] = useState<string>("");
+  const [riskContent, setRiskContent] = useState<string>("");
+  
   useEffect(() => {
-    if (response && !isLoading && resultSectionRef.current) {
+    if (response && !isLoading) {
+      if (isRiskAnalysis) {
+        setRiskContent(response);
+        setCurrentTab("risk");
+      } else {
+        setPlainContent(response);
+        setCurrentTab("plain");
+      }
+      
+      // Scroll to results section
       const timer = setTimeout(() => {
-        const yOffset = -240;
-        const element = resultSectionRef.current;
-        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        
-        window.scrollTo({ 
-          top: y, 
-          behavior: 'smooth'
-        });
+        if (resultSectionRef.current) {
+          const yOffset = -240;
+          const element = resultSectionRef.current;
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          
+          window.scrollTo({ 
+            top: y, 
+            behavior: 'smooth'
+          });
+        }
       }, 500);
       
       return () => clearTimeout(timer);
     }
-  }, [response, isLoading]);
-
-  useEffect(() => {
-    if (isRiskAnalysis) {
-      setCurrentTab("risk");
-    }
-  }, [isRiskAnalysis]);
+  }, [response, isLoading, isRiskAnalysis]);
 
   const handleGeneratePDF = async (type: 'plain' | 'risk') => {
     const contentRef = type === 'plain' ? plainContentRef : riskContentRef;
-    if (!contentRef.current || !response) return;
+    const content = type === 'plain' ? plainContent : riskContent;
+    
+    if (!contentRef.current || !content) return;
 
     try {
       setIsPdfGenerating(true);
@@ -81,7 +91,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         title,
         fileName,
         contentRef,
-        content: response
+        content: content
       });
       
       if (success) {
@@ -104,87 +114,102 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   };
 
-  return (
-    <>
-      {isLoading && (
-        <div id="progressSection" className="mb-4">
-          <Card className="bg-slate-50 dark:bg-slate-900 mb-4">
-            <CardHeader>
-              <CardTitle className="text-xl">Processing Document</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Progress value={progress} className="w-full h-4" />
-              <p className="text-sm text-center mt-2">{progress}% complete</p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+  // Show loading progress when processing
+  if (isLoading && !plainContent && !riskContent) {
+    return (
+      <div id="progressSection" className="mb-4">
+        <Card className="bg-slate-50 dark:bg-slate-900 mb-4">
+          <CardHeader>
+            <CardTitle className="text-xl">Processing Document</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Progress value={progress} className="w-full h-4" />
+            <p className="text-sm text-center mt-2">{progress}% complete</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+  
+  if (!plainContent && !riskContent) {
+    return null;
+  }
 
-      {response && (
-        <div id="resultSection" ref={resultSectionRef} className="animate-fade-in">
-          <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-xl">Analysis Results</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-                <TabsList className="w-full">
-                  <TabsTrigger value="plain" className="flex-1">Plain English Version</TabsTrigger>
-                  <TabsTrigger value="risk" className="flex-1">Risk Analysis</TabsTrigger>
-                </TabsList>
-                <div className="mt-4 flex justify-end">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => handleGeneratePDF(currentTab as 'plain' | 'risk')}
-                    disabled={isPdfGenerating}
-                  >
-                    {isPdfGenerating ? (
-                      <>
-                        <Loader className="mr-2 h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <Download className="mr-2 h-4 w-4" />
-                        Save as PDF
-                      </>
-                    )}
-                  </Button>
-                </div>
-                <TabsContent value="plain">
-                  <div 
-                    ref={plainContentRef}
-                    className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
-                      prose-p:text-slate-700 dark:prose-p:text-slate-300
-                      prose-p:leading-tight prose-p:my-2
-                      prose-li:text-slate-700 dark:prose-li:text-slate-300
-                      prose-strong:text-slate-900 dark:prose-strong:text-white
-                      prose-ul:my-2 prose-ol:my-2 prose-li:my-1
-                      prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
-                      max-w-none dark:prose-invert"
-                    dangerouslySetInnerHTML={{ __html: !isRiskAnalysis ? response : '' }}
-                  />
-                </TabsContent>
-                <TabsContent value="risk">
-                  <div 
-                    ref={riskContentRef}
-                    className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
-                      prose-p:text-slate-700 dark:prose-p:text-slate-300
-                      prose-p:leading-tight prose-p:my-2
-                      prose-li:text-slate-700 dark:prose-li:text-slate-300
-                      prose-strong:text-slate-900 dark:prose-strong:text-white
-                      prose-ul:my-2 prose-ol:my-2 prose-li:my-1
-                      prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
-                      max-w-none dark:prose-invert"
-                    dangerouslySetInnerHTML={{ __html: isRiskAnalysis ? response : '' }}
-                  />
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-    </>
+  return (
+    <div id="resultSection" ref={resultSectionRef} className="animate-fade-in">
+      <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-xl">Analysis Results</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
+            <TabsList className="w-full">
+              <TabsTrigger value="plain" className="flex-1">Plain English Version</TabsTrigger>
+              <TabsTrigger value="risk" className="flex-1">Risk Analysis</TabsTrigger>
+            </TabsList>
+            <div className="mt-4 flex justify-end">
+              <Button 
+                variant="outline" 
+                onClick={() => handleGeneratePDF(currentTab as 'plain' | 'risk')}
+                disabled={isPdfGenerating || (currentTab === 'plain' && !plainContent) || (currentTab === 'risk' && !riskContent)}
+              >
+                {isPdfGenerating ? (
+                  <>
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Save as PDF
+                  </>
+                )}
+              </Button>
+            </div>
+            <TabsContent value="plain">
+              {plainContent ? (
+                <div 
+                  ref={plainContentRef}
+                  className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                    prose-p:text-slate-700 dark:prose-p:text-slate-300
+                    prose-p:leading-tight prose-p:my-2
+                    prose-li:text-slate-700 dark:prose-li:text-slate-300
+                    prose-strong:text-slate-900 dark:prose-strong:text-white
+                    prose-ul:my-2 prose-ol:my-2 prose-li:my-1
+                    prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
+                    max-w-none dark:prose-invert"
+                  dangerouslySetInnerHTML={{ __html: plainContent }}
+                />
+              ) : (
+                <p className="text-muted-foreground text-center py-6">
+                  No plain text analysis available yet. Upload a document to see results here.
+                </p>
+              )}
+            </TabsContent>
+            <TabsContent value="risk">
+              {riskContent ? (
+                <div 
+                  ref={riskContentRef}
+                  className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                    prose-p:text-slate-700 dark:prose-p:text-slate-300
+                    prose-p:leading-tight prose-p:my-2
+                    prose-li:text-slate-700 dark:prose-li:text-slate-300
+                    prose-strong:text-slate-900 dark:prose-strong:text-white
+                    prose-ul:my-2 prose-ol:my-2 prose-li:my-1
+                    prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
+                    max-w-none dark:prose-invert"
+                  dangerouslySetInnerHTML={{ __html: riskContent }}
+                />
+              ) : (
+                <p className="text-muted-foreground text-center py-6">
+                  No risk analysis available yet. Use the "Analyze Risks" section to generate a risk analysis.
+                </p>
+              )}
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
