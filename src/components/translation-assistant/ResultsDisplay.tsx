@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   
   useEffect(() => {
     if (response && !isLoading && resultSectionRef.current) {
+      // Store current scroll position
+      const scrollY = window.scrollY;
+      
       const timer = setTimeout(() => {
         const yOffset = -240;
         const element = resultSectionRef.current;
@@ -99,7 +103,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     <>
       {isLoading && (
         <div id="progressSection" className="mb-4">
-          <Card className="bg-slate-50 dark:bg-slate-900 mb-4">
+          <Card className="bg-slate-50 dark:bg-slate-900 mb-4 border-2 border-gray-300 dark:border-gray-700">
             <CardHeader>
               <CardTitle className="text-xl">Processing Document</CardTitle>
             </CardHeader>
@@ -113,13 +117,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {response && (
         <div id="resultSection" ref={resultSectionRef} className="animate-fade-in">
-          <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
+          <Card className="bg-slate-50 dark:bg-slate-900 mb-8 border-2 border-gray-300 dark:border-gray-700">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl">Translation Result</CardTitle>
               {!hasError && (
                 <Button 
                   variant="outline" 
-                  className="ml-auto" 
+                  className="ml-auto border-2 border-gray-300 dark:border-gray-700" 
                   onClick={handleGeneratePDF}
                   disabled={isPdfGenerating}
                 >
