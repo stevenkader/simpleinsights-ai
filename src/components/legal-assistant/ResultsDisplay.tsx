@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -44,23 +43,24 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         setCurrentTab("plain");
       }
       
-      // Scroll to results section
-      const timer = setTimeout(() => {
-        if (resultSectionRef.current) {
-          const yOffset = -240;
-          const element = resultSectionRef.current;
-          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          
-          window.scrollTo({ 
-            top: y, 
-            behavior: 'smooth'
-          });
-        }
-      }, 500);
-      
-      return () => clearTimeout(timer);
+      if (!plainContent && !riskContent) {
+        const timer = setTimeout(() => {
+          if (resultSectionRef.current) {
+            const yOffset = -240;
+            const element = resultSectionRef.current;
+            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            
+            window.scrollTo({ 
+              top: y, 
+              behavior: 'smooth'
+            });
+          }
+        }, 500);
+        
+        return () => clearTimeout(timer);
+      }
     }
-  }, [response, isLoading, isRiskAnalysis]);
+  }, [response, isLoading, isRiskAnalysis, plainContent, riskContent]);
 
   const handleGeneratePDF = async (type: 'plain' | 'risk') => {
     const contentRef = type === 'plain' ? plainContentRef : riskContentRef;
@@ -114,11 +114,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   };
 
-  // Show loading progress when processing
   if (isLoading && !plainContent && !riskContent) {
     return (
       <div id="progressSection" className="mb-4">
-        <Card className="bg-slate-50 dark:bg-slate-900 mb-4">
+        <Card className="bg-slate-50 dark:bg-slate-900 mb-4 border-2 border-gray-300 dark:border-gray-700">
           <CardHeader>
             <CardTitle className="text-xl">Processing Document</CardTitle>
           </CardHeader>
@@ -137,21 +136,30 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
   return (
     <div id="resultSection" ref={resultSectionRef} className="animate-fade-in">
-      <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
+      <Card className="bg-slate-50 dark:bg-slate-900 mb-8 border-2 border-gray-300 dark:border-gray-700">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-xl">Analysis Results</CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-            <TabsList className="w-full">
-              <TabsTrigger value="plain" className="flex-1">Plain English Version</TabsTrigger>
-              <TabsTrigger value="risk" className="flex-1">Risk Analysis</TabsTrigger>
+          <Tabs 
+            value={currentTab} 
+            onValueChange={setCurrentTab} 
+            className="w-full min-h-[400px]"
+          >
+            <TabsList className="w-full border-2 border-gray-300 dark:border-gray-700">
+              <TabsTrigger value="plain" className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-primary">
+                Plain English Version
+              </TabsTrigger>
+              <TabsTrigger value="risk" className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-primary">
+                Risk Analysis
+              </TabsTrigger>
             </TabsList>
             <div className="mt-4 flex justify-end">
               <Button 
                 variant="outline" 
                 onClick={() => handleGeneratePDF(currentTab as 'plain' | 'risk')}
                 disabled={isPdfGenerating || (currentTab === 'plain' && !plainContent) || (currentTab === 'risk' && !riskContent)}
+                className="border-2 border-gray-300 dark:border-gray-700"
               >
                 {isPdfGenerating ? (
                   <>
@@ -166,7 +174,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 )}
               </Button>
             </div>
-            <TabsContent value="plain">
+            <TabsContent value="plain" className="mt-4 min-h-[300px] border-2 border-gray-300 dark:border-gray-700 rounded-lg p-4">
               {plainContent ? (
                 <div 
                   ref={plainContentRef}
@@ -186,7 +194,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 </p>
               )}
             </TabsContent>
-            <TabsContent value="risk">
+            <TabsContent value="risk" className="mt-4 min-h-[300px] border-2 border-gray-300 dark:border-gray-700 rounded-lg p-4">
               {riskContent ? (
                 <div 
                   ref={riskContentRef}
