@@ -20,6 +20,10 @@ const MedicalReports = () => {
     handleFileChange,
     processFile,
     resetProgress,
+    // Extract the setter functions from the hook
+    setProgress,
+    setResponse,
+    setIsLoading
   } = useFileProcessor();
 
   const handleDemoProcess = () => {
