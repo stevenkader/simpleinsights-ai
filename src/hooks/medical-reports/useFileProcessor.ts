@@ -145,5 +145,9 @@ export const useFileProcessor = () => {
     handleFileChange,
     processFile,
     resetProgress,
+    // Export the setter functions so they can be used in the MedicalReports component
+    setProgress,
+    setResponse,
+    setIsLoading
   };
 };

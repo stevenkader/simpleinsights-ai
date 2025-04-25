@@ -1,3 +1,4 @@
+
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import ResultsDisplay from "@/components/medical-reports/ResultsDisplay";
@@ -19,7 +20,7 @@ const MedicalReports = () => {
     handleFileChange,
     processFile,
     resetProgress,
-    // Extract the setter functions from the hook
+    // Now these setter functions are properly imported from the hook
     setProgress,
     setResponse,
     setIsLoading
