@@ -73,7 +73,7 @@ const LegalAssistant = () => {
               isLoading={isLoading}
               onProcessFile={processFile}
               onFileChange={handleFileChange}
-              title="Get Plain English Translation"
+              title="Get Plain English Version"
               acceptedFileTypes={[".pdf"]}
             />
           </div>
