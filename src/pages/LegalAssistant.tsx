@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -9,6 +8,8 @@ import PrivacyNotice from "@/components/legal-assistant/PrivacyNotice";
 import RiskAnalysisSection from "@/components/legal-assistant/RiskAnalysisSection";
 import { useProcessingControls } from "@/components/legal-assistant/ProcessingControls";
 import { useDemoProcessor } from "@/components/legal-assistant/DemoProcessor";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 const LegalAssistant = () => {
   const [showDemoDialog, setShowDemoDialog] = useState<boolean>(false);
