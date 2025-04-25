@@ -175,6 +175,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 Risk Analysis
               </TabsTrigger>
             </TabsList>
+            
             <div className="mb-4 flex justify-end">
               <Button 
                 variant="outline" 
@@ -196,55 +197,59 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               </Button>
             </div>
             
-            {/* Fixed height content containers with proper positioning */}
-            <div className="relative min-h-[500px]">
-              <TabsContent 
-                value="plain" 
-                className="absolute top-0 left-0 w-full mt-0 border-2 border-gray-300 dark:border-gray-700 rounded-lg p-6 min-h-[500px] overflow-auto"
-              >
-                {plainContent ? (
-                  <div 
-                    ref={plainContentRef}
-                    className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
-                      prose-p:text-slate-700 dark:prose-p:text-slate-300
-                      prose-p:leading-tight prose-p:my-2
-                      prose-li:text-slate-700 dark:prose-li:text-slate-300
-                      prose-strong:text-slate-900 dark:prose-strong:text-white
-                      prose-ul:my-2 prose-ol:my-2 prose-li:my-1
-                      prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
-                      max-w-none dark:prose-invert"
-                    dangerouslySetInnerHTML={{ __html: plainContent }}
-                  />
-                ) : (
-                  <p className="text-muted-foreground text-center py-6">
-                    No plain text analysis available yet. Upload a document to see results here.
-                  </p>
-                )}
-              </TabsContent>
-              
-              <TabsContent 
-                value="risk" 
-                className="absolute top-0 left-0 w-full mt-0 border-2 border-gray-300 dark:border-gray-700 rounded-lg p-6 min-h-[500px] overflow-auto"
-              >
-                {riskContent ? (
-                  <div 
-                    ref={riskContentRef}
-                    className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
-                      prose-p:text-slate-700 dark:prose-p:text-slate-300
-                      prose-p:leading-tight prose-p:my-2
-                      prose-li:text-slate-700 dark:prose-li:text-slate-300
-                      prose-strong:text-slate-900 dark:prose-strong:text-white
-                      prose-ul:my-2 prose-ol:my-2 prose-li:my-1
-                      prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
-                      max-w-none dark:prose-invert"
-                    dangerouslySetInnerHTML={{ __html: riskContent }}
-                  />
-                ) : (
-                  <p className="text-muted-foreground text-center py-6">
-                    No risk analysis available yet. Use the "Analyze Risks" section to generate a risk analysis.
-                  </p>
-                )}
-              </TabsContent>
+            {/* Fixed height container for consistent content positioning */}
+            <div className="border-2 border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
+              <div className="relative">
+                {/* Plain English Tab Content */}
+                <div 
+                  className={`p-6 ${currentTab === "plain" ? "block" : "hidden"}`}
+                  style={{ minHeight: "500px" }}
+                >
+                  {plainContent ? (
+                    <div 
+                      ref={plainContentRef}
+                      className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                        prose-p:text-slate-700 dark:prose-p:text-slate-300
+                        prose-p:leading-tight prose-p:my-2
+                        prose-li:text-slate-700 dark:prose-li:text-slate-300
+                        prose-strong:text-slate-900 dark:prose-strong:text-white
+                        prose-ul:my-2 prose-ol:my-2 prose-li:my-1
+                        prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
+                        max-w-none dark:prose-invert"
+                      dangerouslySetInnerHTML={{ __html: plainContent }}
+                    />
+                  ) : (
+                    <p className="text-muted-foreground text-center py-6">
+                      No plain text analysis available yet. Upload a document to see results here.
+                    </p>
+                  )}
+                </div>
+                
+                {/* Risk Analysis Tab Content */}
+                <div 
+                  className={`p-6 ${currentTab === "risk" ? "block" : "hidden"}`}
+                  style={{ minHeight: "500px" }}
+                >
+                  {riskContent ? (
+                    <div 
+                      ref={riskContentRef}
+                      className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                        prose-p:text-slate-700 dark:prose-p:text-slate-300
+                        prose-p:leading-tight prose-p:my-2
+                        prose-li:text-slate-700 dark:prose-li:text-slate-300
+                        prose-strong:text-slate-900 dark:prose-strong:text-white
+                        prose-ul:my-2 prose-ol:my-2 prose-li:my-1
+                        prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
+                        max-w-none dark:prose-invert"
+                      dangerouslySetInnerHTML={{ __html: riskContent }}
+                    />
+                  ) : (
+                    <p className="text-muted-foreground text-center py-6">
+                      No risk analysis available yet. Use the "Analyze Risks" section to generate a risk analysis.
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
           </Tabs>
         </CardContent>
