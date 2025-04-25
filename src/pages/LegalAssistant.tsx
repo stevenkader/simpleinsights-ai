@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -79,7 +80,20 @@ const LegalAssistant = () => {
             />
           </div>
           
-          {fileReference && !isLoading && (
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <Card className="bg-slate-50 dark:bg-slate-900">
+              <CardHeader>
+                <CardTitle className="text-xl">Document Processing</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-4">
+                  <p className="text-sm text-muted-foreground">
+                    Upload your document to get started with the analysis.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
             <RiskAnalysisSection
               fileReference={fileReference}
               partyName={partyName}
@@ -87,7 +101,7 @@ const LegalAssistant = () => {
               isRiskAnalysisLoading={isRiskAnalysisLoading}
               onAnalyzeRisks={handleRiskAnalysis}
             />
-          )}
+          </div>
           
           <ResultsDisplay 
             response={response} 

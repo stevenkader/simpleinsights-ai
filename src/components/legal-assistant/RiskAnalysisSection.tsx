@@ -36,37 +36,41 @@ const RiskAnalysisSection: React.FC<RiskAnalysisSectionProps> = ({
     onAnalyzeRisks();
   };
 
-  if (!fileReference) return null;
-
   return (
-    <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
+    <Card className="bg-slate-50 dark:bg-slate-900">
       <CardHeader>
         <CardTitle className="text-xl">Risk Analysis</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-4">
           <div className="flex-grow">
             <Input
               placeholder="Which party are you? (e.g. Buyer, Seller, Tenant, etc.)"
               value={partyName}
               onChange={(e) => setPartyName(e.target.value)}
               className="w-full"
+              disabled={!fileReference}
             />
+            {!fileReference && (
+              <p className="text-sm text-muted-foreground mt-2">
+                Please upload and process a document first to enable risk analysis.
+              </p>
+            )}
           </div>
           <Button 
             onClick={handleAnalyzeClick}
-            disabled={isRiskAnalysisLoading || !partyName.trim()}
-            className="whitespace-nowrap"
+            disabled={isRiskAnalysisLoading || !partyName.trim() || !fileReference}
+            className="w-full"
           >
             {isRiskAnalysisLoading ? (
               <>
                 <Loader className="mr-2 h-4 w-4 animate-spin" />
-                Analyzing...
+                Analyzing Risks...
               </>
             ) : (
               <>
                 <AlertCircle className="mr-2 h-4 w-4" />
-                Display Risk Analysis
+                Analyze Risks
               </>
             )}
           </Button>
@@ -77,4 +81,3 @@ const RiskAnalysisSection: React.FC<RiskAnalysisSectionProps> = ({
 };
 
 export default RiskAnalysisSection;
-
