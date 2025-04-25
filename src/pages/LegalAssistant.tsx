@@ -10,7 +10,6 @@ import RiskAnalysisSection from "@/components/legal-assistant/RiskAnalysisSectio
 import { useProcessingControls } from "@/components/legal-assistant/ProcessingControls";
 import { useDemoProcessor } from "@/components/legal-assistant/DemoProcessor";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 
 const LegalAssistant = () => {
   const [showDemoDialog, setShowDemoDialog] = useState<boolean>(false);
@@ -50,6 +49,13 @@ const LegalAssistant = () => {
     };
   }, [resetProgress]);
 
+  // Wrap processFile to ensure party name is cleared
+  const handleProcessFile = (file: File) => {
+    setPartyName(""); // Clear party name when processing new document
+    setIsRiskAnalysis(false); // Reset risk analysis state
+    processFile(file);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -73,7 +79,7 @@ const LegalAssistant = () => {
             
             <DocumentUploader 
               isLoading={isLoading}
-              onProcessFile={processFile}
+              onProcessFile={handleProcessFile}
               onFileChange={handleFileChange}
               title="Get Plain English Version"
               acceptedFileTypes={[".pdf"]}
