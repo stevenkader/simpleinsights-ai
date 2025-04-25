@@ -1,4 +1,3 @@
-
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import ResultsDisplay from "@/components/medical-reports/ResultsDisplay";
@@ -72,7 +71,7 @@ const MedicalReports = () => {
               isLoading={isLoading}
               onProcessFile={processFile}
               onFileChange={handleFileChange}
-              title="Upload Document for Analysis"
+              title="Get Plain English Translation"
               acceptedFileTypes={[".pdf"]}
             />
           </div>
