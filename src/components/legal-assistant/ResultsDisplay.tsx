@@ -116,13 +116,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {response && (
         <div id="resultSection" className="animate-fade-in">
-          <Card className="bg-slate-50 dark:bg-slate-900 mb-8 border-2 border-gray-300 dark:border-gray-700">
+          <div>
             <ResultsHeader 
               isPdfGenerating={isPdfGenerating}
               onGeneratePDF={handleGeneratePDF}
               currentTab={currentTab}
             />
-            <CardContent>
+            <div>
               <ResultsTabs
                 currentTab={currentTab}
                 onTabChange={handleTabChange}
@@ -131,8 +131,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 plainContentRef={plainContentRef}
                 riskContentRef={riskContentRef}
               />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       )}
     </>

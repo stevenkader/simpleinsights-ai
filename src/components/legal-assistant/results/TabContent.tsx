@@ -16,8 +16,7 @@ const TabContent: React.FC<TabContentProps> = ({
 }) => {
   return (
     <div 
-      className={`p-6 ${isVisible ? "block" : "hidden"}`}
-      style={{ minHeight: "500px" }}
+      className={`${isVisible ? "block" : "hidden"}`}
     >
       {content ? (
         <div 

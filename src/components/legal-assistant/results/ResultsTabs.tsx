@@ -26,7 +26,7 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
       onValueChange={onTabChange} 
       className="w-full"
     >
-      <TabsList className="w-full border-2 border-gray-300 dark:border-gray-700 mb-4">
+      <TabsList className="w-full mb-4">
         <TabsTrigger value="plain" className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-primary font-medium">
           Plain English Version
         </TabsTrigger>
@@ -35,22 +35,20 @@ const ResultsTabs: React.FC<ResultsTabsProps> = ({
         </TabsTrigger>
       </TabsList>
 
-      <div className="border-2 border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
-        <div className="relative">
-          <TabContent
-            content={plainContent}
-            isVisible={currentTab === "plain"}
-            contentRef={plainContentRef}
-            emptyMessage="No plain text analysis available yet. Upload a document to see results here."
-          />
-          
-          <TabContent
-            content={riskContent}
-            isVisible={currentTab === "risk"}
-            contentRef={riskContentRef}
-            emptyMessage="No risk analysis available yet. Use the 'Analyze Risks' section to generate a risk analysis."
-          />
-        </div>
+      <div>
+        <TabContent
+          content={plainContent}
+          isVisible={currentTab === "plain"}
+          contentRef={plainContentRef}
+          emptyMessage="No plain text analysis available yet. Upload a document to see results here."
+        />
+        
+        <TabContent
+          content={riskContent}
+          isVisible={currentTab === "risk"}
+          contentRef={riskContentRef}
+          emptyMessage="No risk analysis available yet. Use the 'Analyze Risks' section to generate a risk analysis."
+        />
       </div>
     </RadixTabs>
   );
