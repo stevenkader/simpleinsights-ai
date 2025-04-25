@@ -1,6 +1,4 @@
-
 import React, { useRef, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { generatePDF } from "@/utils/pdf-export";
 import ProgressDisplay from "./results/ProgressDisplay";

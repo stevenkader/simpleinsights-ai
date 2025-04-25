@@ -15,9 +15,7 @@ const TabContent: React.FC<TabContentProps> = ({
   emptyMessage 
 }) => {
   return (
-    <div 
-      className={`${isVisible ? "block" : "hidden"}`}
-    >
+    <div className={`${isVisible ? "block" : "hidden"}`}>
       {content ? (
         <div 
           ref={contentRef}
