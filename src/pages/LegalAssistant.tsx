@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -9,7 +8,6 @@ import PrivacyNotice from "@/components/legal-assistant/PrivacyNotice";
 import RiskAnalysisSection from "@/components/legal-assistant/RiskAnalysisSection";
 import { useProcessingControls } from "@/components/legal-assistant/ProcessingControls";
 import { useDemoProcessor } from "@/components/legal-assistant/DemoProcessor";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const LegalAssistant = () => {
   const [showDemoDialog, setShowDemoDialog] = useState<boolean>(false);
@@ -49,10 +47,9 @@ const LegalAssistant = () => {
     };
   }, [resetProgress]);
 
-  // Wrap processFile to ensure party name is cleared
   const handleProcessFile = (file: File) => {
-    setPartyName(""); // Clear party name when processing new document
-    setIsRiskAnalysis(false); // Reset risk analysis state
+    setPartyName("");
+    setIsRiskAnalysis(false);
     processFile(file);
   };
 
@@ -87,18 +84,12 @@ const LegalAssistant = () => {
           </div>
           
           <div className="grid md:grid-cols-2 gap-8 mb-8">
-            <Card className="bg-slate-50 dark:bg-slate-900">
-              <CardHeader>
-                <CardTitle className="text-xl">Document Processing</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col gap-4">
-                  <p className="text-sm text-muted-foreground">
-                    Upload your document to get started with the analysis.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg">
+              <h3 className="text-xl font-semibold mb-2">Document Processing</h3>
+              <p className="text-sm text-muted-foreground">
+                Upload your document to get started with the analysis.
+              </p>
+            </div>
 
             <RiskAnalysisSection
               fileReference={fileReference}
