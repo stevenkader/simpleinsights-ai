@@ -83,15 +83,6 @@ const LegalAssistant = () => {
                 <CardTitle>Risk Analysis</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <DocumentUploader 
-                    isLoading={isRiskAnalysisLoading}
-                    onProcessFile={handleRiskAnalysis}
-                    onFileChange={handleFileChange}
-                    title="Upload Contract"
-                    acceptedFileTypes={[".pdf"]}
-                  />
-                </div>
                 <div>
                   <Input
                     placeholder="Which party are you? (e.g. Buyer, Seller)"
