@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { Download, Loader } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { generatePDF } from "@/utils/pdf-export";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ResultsDisplayProps {
   response: string;
@@ -23,9 +25,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   isRiskAnalysis = false
 }) => {
   const resultSectionRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const plainContentRef = useRef<HTMLDivElement>(null);
+  const riskContentRef = useRef<HTMLDivElement>(null);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
   const { toast } = useToast();
+  const [currentTab, setCurrentTab] = useState("plain");
   
   useEffect(() => {
     if (response && !isLoading && resultSectionRef.current) {
@@ -44,7 +48,14 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading]);
 
-  const handleGeneratePDF = async () => {
+  useEffect(() => {
+    if (isRiskAnalysis) {
+      setCurrentTab("risk");
+    }
+  }, [isRiskAnalysis]);
+
+  const handleGeneratePDF = async (type: 'plain' | 'risk') => {
+    const contentRef = type === 'plain' ? plainContentRef : riskContentRef;
     if (!contentRef.current || !response) return;
 
     try {
@@ -56,22 +67,21 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       
       const today = new Date();
       const formattedDate = today.toISOString().split('T')[0];
-      // Generate a random 1-digit number to make the filename more unique
       const randomDigit = Math.floor(Math.random() * 10);
       
-      // Create different filenames based on whether it's a risk analysis or regular analysis
-      const fileName = isRiskAnalysis 
-        ? `LegalDocReport-Risk-${formattedDate}-${randomDigit}` 
-        : `LegalDocReport-${formattedDate}-${randomDigit}`;
+      const fileName = type === 'plain' 
+        ? `LegalDocReport-Plain-${formattedDate}-${randomDigit}`
+        : `LegalDocReport-Risk-${formattedDate}-${randomDigit}`;
       
-      // Create a clean copy of the HTML content without additional DOM elements
-      const cleanContent = response;
+      const title = type === 'plain' 
+        ? "Legal Document Analysis Report"
+        : "Legal Risk Analysis Report";
       
       const success = await generatePDF({
-        title: isRiskAnalysis ? "Legal Risk Analysis Report" : "Legal Document Analysis Report",
+        title,
         fileName,
         contentRef,
-        content: cleanContent
+        content: response
       });
       
       if (success) {
@@ -114,42 +124,62 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <div id="resultSection" ref={resultSectionRef} className="animate-fade-in">
           <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-xl">
-                {isRiskAnalysis ? "Risk Analysis Results" : "Plain English Version"}
-              </CardTitle>
-              <Button 
-                variant="outline" 
-                className="ml-auto" 
-                onClick={handleGeneratePDF}
-                disabled={isPdfGenerating}
-              >
-                {isPdfGenerating ? (
-                  <>
-                    <Loader className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <Download className="mr-2 h-4 w-4" />
-                    Save as PDF
-                  </>
-                )}
-              </Button>
+              <CardTitle className="text-xl">Analysis Results</CardTitle>
             </CardHeader>
             <CardContent>
-              <div 
-                id="output"
-                ref={contentRef}
-                className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
-                  prose-p:text-slate-700 dark:prose-p:text-slate-300
-                  prose-p:leading-tight prose-p:my-2
-                  prose-li:text-slate-700 dark:prose-li:text-slate-300
-                  prose-strong:text-slate-900 dark:prose-strong:text-white
-                  prose-ul:my-2 prose-ol:my-2 prose-li:my-1
-                  prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
-                  max-w-none dark:prose-invert"
-                dangerouslySetInnerHTML={{ __html: response }}
-              />
+              <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
+                <TabsList className="w-full">
+                  <TabsTrigger value="plain" className="flex-1">Plain English Version</TabsTrigger>
+                  <TabsTrigger value="risk" className="flex-1">Risk Analysis</TabsTrigger>
+                </TabsList>
+                <div className="mt-4 flex justify-end">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => handleGeneratePDF(currentTab as 'plain' | 'risk')}
+                    disabled={isPdfGenerating}
+                  >
+                    {isPdfGenerating ? (
+                      <>
+                        <Loader className="mr-2 h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="mr-2 h-4 w-4" />
+                        Save as PDF
+                      </>
+                    )}
+                  </Button>
+                </div>
+                <TabsContent value="plain">
+                  <div 
+                    ref={plainContentRef}
+                    className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                      prose-p:text-slate-700 dark:prose-p:text-slate-300
+                      prose-p:leading-tight prose-p:my-2
+                      prose-li:text-slate-700 dark:prose-li:text-slate-300
+                      prose-strong:text-slate-900 dark:prose-strong:text-white
+                      prose-ul:my-2 prose-ol:my-2 prose-li:my-1
+                      prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
+                      max-w-none dark:prose-invert"
+                    dangerouslySetInnerHTML={{ __html: !isRiskAnalysis ? response : '' }}
+                  />
+                </TabsContent>
+                <TabsContent value="risk">
+                  <div 
+                    ref={riskContentRef}
+                    className="prose prose-headings:font-semibold prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+                      prose-p:text-slate-700 dark:prose-p:text-slate-300
+                      prose-p:leading-tight prose-p:my-2
+                      prose-li:text-slate-700 dark:prose-li:text-slate-300
+                      prose-strong:text-slate-900 dark:prose-strong:text-white
+                      prose-ul:my-2 prose-ol:my-2 prose-li:my-1
+                      prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
+                      max-w-none dark:prose-invert"
+                    dangerouslySetInnerHTML={{ __html: isRiskAnalysis ? response : '' }}
+                  />
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </div>
