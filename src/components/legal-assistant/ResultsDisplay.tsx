@@ -1,13 +1,12 @@
 
 import React, { useRef, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { generatePDF } from "@/utils/pdf-export";
 import ProgressDisplay from "./results/ProgressDisplay";
 import { ScrollManager } from "./results/ScrollManager";
-import TabContent from "./results/TabContent";
-import ExportButton from "./results/ExportButton";
+import ResultsHeader from "./results/ResultsHeader";
+import ResultsTabs from "./results/ResultsTabs";
 
 interface ResultsDisplayProps {
   response: string;
@@ -118,49 +117,20 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {response && (
         <div id="resultSection" className="animate-fade-in">
           <Card className="bg-slate-50 dark:bg-slate-900 mb-8 border-2 border-gray-300 dark:border-gray-700">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-xl">Analysis Results</CardTitle>
-            </CardHeader>
+            <ResultsHeader 
+              isPdfGenerating={isPdfGenerating}
+              onGeneratePDF={handleGeneratePDF}
+              currentTab={currentTab}
+            />
             <CardContent>
-              <Tabs 
-                value={currentTab} 
-                onValueChange={handleTabChange} 
-                className="w-full"
-              >
-                <TabsList className="w-full border-2 border-gray-300 dark:border-gray-700 mb-4">
-                  <TabsTrigger value="plain" className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-primary font-medium">
-                    Plain English Version
-                  </TabsTrigger>
-                  <TabsTrigger value="risk" className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-primary font-medium">
-                    Risk Analysis
-                  </TabsTrigger>
-                </TabsList>
-                
-                <div className="mb-4 flex justify-end">
-                  <ExportButton 
-                    isPdfGenerating={isPdfGenerating}
-                    onClick={() => handleGeneratePDF(currentTab as 'plain' | 'risk')}
-                  />
-                </div>
-                
-                <div className="border-2 border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
-                  <div className="relative">
-                    <TabContent
-                      content={plainContent}
-                      isVisible={currentTab === "plain"}
-                      contentRef={plainContentRef}
-                      emptyMessage="No plain text analysis available yet. Upload a document to see results here."
-                    />
-                    
-                    <TabContent
-                      content={riskContent}
-                      isVisible={currentTab === "risk"}
-                      contentRef={riskContentRef}
-                      emptyMessage="No risk analysis available yet. Use the 'Analyze Risks' section to generate a risk analysis."
-                    />
-                  </div>
-                </div>
-              </Tabs>
+              <ResultsTabs
+                currentTab={currentTab}
+                onTabChange={handleTabChange}
+                plainContent={plainContent}
+                riskContent={riskContent}
+                plainContentRef={plainContentRef}
+                riskContentRef={riskContentRef}
+              />
             </CardContent>
           </Card>
         </div>
