@@ -33,15 +33,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const [plainContent, setPlainContent] = useState<string>("");
   const [riskContent, setRiskContent] = useState<string>("");
   
-  // Prevent tab switch from causing scroll jumps by implementing a new approach
   const handleTabChange = (value: string) => {
-    // Store current scroll position directly
     const scrollY = window.scrollY;
-    
-    // Change tab
     setCurrentTab(value);
-    
-    // Use setTimeout with 0ms delay to ensure the scroll restoration happens after DOM updates
     setTimeout(() => {
       window.scrollTo(0, scrollY);
     }, 0);
@@ -76,24 +70,22 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     }
   }, [response, isLoading, isRiskAnalysis, plainContent, riskContent]);
 
-  // Add effect for scrolling to progress bar when loading starts
   useEffect(() => {
     if (isLoading) {
       const progressSection = document.getElementById('progressSection');
       if (progressSection) {
-        const yOffset = -100; // Adjust this value to control the spacing from the top
+        const yOffset = -400;
         const y = progressSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: 'smooth' });
       }
     }
   }, [isLoading]);
 
-  // Add effect for scrolling to results when they appear
   useEffect(() => {
     if (response && !isLoading) {
       const resultSection = document.getElementById('resultSection');
       if (resultSection) {
-        const yOffset = -100; // Adjust this value to control the spacing from the top
+        const yOffset = -400;
         const y = resultSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: 'smooth' });
       }
@@ -236,10 +228,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                   </Button>
                 </div>
                 
-                {/* Fixed height container for consistent content positioning */}
                 <div className="border-2 border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
                   <div className="relative">
-                    {/* Plain English Tab Content */}
                     <div 
                       className={`p-6 ${currentTab === "plain" ? "block" : "hidden"}`}
                       style={{ minHeight: "500px" }}
@@ -264,7 +254,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                       )}
                     </div>
                     
-                    {/* Risk Analysis Tab Content */}
                     <div 
                       className={`p-6 ${currentTab === "risk" ? "block" : "hidden"}`}
                       style={{ minHeight: "500px" }}
