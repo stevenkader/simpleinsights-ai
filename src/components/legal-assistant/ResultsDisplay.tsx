@@ -115,7 +115,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <Card className="bg-slate-50 dark:bg-slate-900 mb-8">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl">
-                {isRiskAnalysis ? "Risk Analysis Results" : "Analysis Results"}
+                {isRiskAnalysis ? "Risk Analysis Results" : "Plain English Version"}
               </CardTitle>
               <Button 
                 variant="outline" 
