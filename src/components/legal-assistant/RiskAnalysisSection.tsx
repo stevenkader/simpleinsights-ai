@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ const RiskAnalysisSection: React.FC<RiskAnalysisSectionProps> = ({
   onAnalyzeRisks
 }) => {
   const { toast } = useToast();
+  const [inputFocused, setInputFocused] = useState(false);
 
   const handleAnalyzeClick = () => {
     if (!partyName.trim()) {
@@ -48,7 +49,9 @@ const RiskAnalysisSection: React.FC<RiskAnalysisSectionProps> = ({
               placeholder="Which party are you? (e.g. Buyer, Seller, Tenant, etc.)"
               value={partyName}
               onChange={(e) => setPartyName(e.target.value)}
-              className="w-full"
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setInputFocused(false)}
+              className={`w-full ${inputFocused || partyName ? 'ring-2 ring-primary/70 border-primary/70' : 'border-slate-300 dark:border-slate-700'}`}
               disabled={!fileReference}
             />
             {!fileReference && (
@@ -60,7 +63,7 @@ const RiskAnalysisSection: React.FC<RiskAnalysisSectionProps> = ({
           <Button 
             onClick={handleAnalyzeClick}
             disabled={isRiskAnalysisLoading || !partyName.trim() || !fileReference}
-            className="w-full"
+            className={`w-full ${!partyName.trim() ? 'opacity-50' : ''}`}
           >
             {isRiskAnalysisLoading ? (
               <>
