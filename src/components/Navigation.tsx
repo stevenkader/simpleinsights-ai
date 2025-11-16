@@ -38,6 +38,9 @@ const Navigation = () => {
             <Globe className="h-4 w-4" />
             Translator
           </Link>
+          <Link to="/orthodontic-analyzer" className="text-sm font-medium hover:text-insights-blue transition-colors">
+            Orthodontic Analyzer
+          </Link>
         </nav>
 
         {/* Mobile menu button */}
@@ -86,6 +89,13 @@ const Navigation = () => {
             >
               <Globe className="h-4 w-4 mr-1" />
               Translator
+            </Link>
+            <Link 
+              to="/orthodontic-analyzer" 
+              className="block py-2 text-sm font-medium hover:text-insights-blue"
+              onClick={() => setIsOpen(false)}
+            >
+              Orthodontic Analyzer
             </Link>
           </div>
         </div>
