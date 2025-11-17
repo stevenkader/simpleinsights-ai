@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { Upload, Scan } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +13,8 @@ const OrthodonticAnalyzer = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [treatmentPlan, setTreatmentPlan] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +51,29 @@ const OrthodonticAnalyzer = () => {
     }
 
     setIsAnalyzing(true);
+    setProgress(0);
+    setTreatmentPlan("");
+    
+    // Start progress simulation
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+    }
+    
+    let i = 0;
+    progressIntervalRef.current = setInterval(() => {
+      if (i < 60) {
+        i += 2;
+      } else if (i < 90) {
+        i += 1;
+      } else if (i < 99) {
+        i += 0.5;
+      }
+      setProgress(Math.min(Math.round(i), 99));
+      if (i >= 99 && progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+    }, 1200);
+    
     try {
       // Convert image to base64
       const reader = new FileReader();
@@ -60,21 +86,28 @@ const OrthodonticAnalyzer = () => {
 
         if (error) throw error;
 
-        setTreatmentPlan(data.analysis);
-        toast({
-          title: "Analysis complete",
-          description: "Your orthodontic treatment plan is ready",
-        });
+        setProgress(100);
+        setTimeout(() => {
+          setTreatmentPlan(data.analysis);
+          toast({
+            title: "Analysis complete",
+            description: "Your orthodontic treatment plan is ready",
+          });
+          setIsAnalyzing(false);
+        }, 500);
       };
       reader.readAsDataURL(imageFile);
     } catch (error) {
       console.error('Error analyzing image:', error);
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+      setProgress(0);
       toast({
         title: "Analysis failed",
         description: "There was an error analyzing your image. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setIsAnalyzing(false);
     }
   };
@@ -92,6 +125,18 @@ const OrthodonticAnalyzer = () => {
               Upload a panoramic X-ray to receive a comprehensive orthodontic evaluation and treatment plan powered by AI.
             </p>
           </div>
+
+          {isAnalyzing && (
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>Analyzing X-Ray</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Progress value={progress} className="w-full h-4" />
+                <p className="text-sm text-center mt-2 text-muted-foreground">{progress}% complete</p>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Left: Image Viewer */}
