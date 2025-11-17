@@ -21,11 +21,11 @@ const OrthodonticAnalyzer = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const validTypes = ['image/jpeg', 'image/png'];
+    const validTypes = ['image/jpeg', 'image/png', 'image/heic', 'application/pdf'];
     if (!validTypes.includes(file.type)) {
       toast({
         title: "Invalid file type",
-        description: "Please upload a JPG or PNG file",
+        description: "Please upload a JPG, PNG, HEIC, or PDF file",
         variant: "destructive",
       });
       return;
