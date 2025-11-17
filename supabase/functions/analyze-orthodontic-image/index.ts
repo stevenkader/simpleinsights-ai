@@ -97,10 +97,16 @@ Format your response in HTML with proper headings and lists for easy reading.`;
     const data = await response.json();
     const analysis = data.choices[0].message.content;
 
+    // Remove markdown code block delimiters
+    const cleanedAnalysis = analysis
+      .replace(/```html\n?/g, '')
+      .replace(/```\n?/g, '')
+      .trim();
+
     console.log('Analysis complete');
 
     return new Response(
-      JSON.stringify({ analysis }),
+      JSON.stringify({ analysis: cleanedAnalysis }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
