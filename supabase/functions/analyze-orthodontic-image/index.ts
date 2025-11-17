@@ -72,12 +72,14 @@ Format your response in HTML with proper headings and lists for easy reading.`;
             role: 'user',
             content: [
               {
-                type: 'input_text',
+                type: 'text',
                 text: userPrompt
               },
               {
-                type: 'input_image',
-                image_url: image
+                type: 'image_url',
+                image_url: {
+                  url: image
+                }
               }
             ]
           }
