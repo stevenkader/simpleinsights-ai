@@ -51,7 +51,13 @@ Your output must follow this structure:
 If the pano is unclear or too low-resolution, say so explicitly.
 Never guess a tooth or pathology that cannot be seen clearly.
 
-Format your response in HTML with proper headings and lists for easy reading.`;
+Format your response in clean, semantic HTML:
+- Use <h2> for main sections (e.g., "Radiographic Findings", "Problem List")
+- Use <h3> for subsections when needed
+- Use <ul> or <ol> for lists with proper <li> elements
+- Use <p> for paragraphs with clear spacing
+- Use <strong> for emphasis on key findings
+- Keep the HTML clean and well-structured for professional readability`;
 
     const userPrompt = `Here is a panoramic X-ray for orthodontic evaluation. Please analyze this pano in detail following the structure in your system prompt.`;
 
