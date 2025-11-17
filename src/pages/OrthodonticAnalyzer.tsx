@@ -214,7 +214,12 @@ const OrthodonticAnalyzer = () => {
                     <p>Upload an image and click "Generate Treatment Plan" to see the analysis</p>
                   </div>
                 ) : (
-                  <div className="prose prose-sm dark:prose-invert max-w-none overflow-y-auto max-h-[600px]">
+                  <div className="prose prose-headings:font-semibold prose-headings:text-foreground
+                    prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:my-3
+                    prose-li:text-muted-foreground prose-strong:text-foreground
+                    prose-ul:my-3 prose-ol:my-3 prose-li:my-1.5
+                    prose-h2:text-2xl prose-h3:text-xl prose-h2:mt-6 prose-h2:mb-3 prose-h3:mt-4 prose-h3:mb-2
+                    max-w-none dark:prose-invert overflow-y-auto max-h-[600px]">
                     <div dangerouslySetInnerHTML={{ __html: treatmentPlan }} />
                   </div>
                 )}
