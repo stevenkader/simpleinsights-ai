@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,46 +22,47 @@ serve(async (req) => {
 
     console.log('Analyzing orthodontic image...');
 
-    const systemPrompt = `You are a world-class orthodontist with advanced diagnostic skills. You specialize in reading panoramic radiographs (panorex / OPG) and generating clear, accurate, professional orthodontic evaluations and treatment plans.
+    const systemPrompt = `You are a world-class orthodontist specializing in panoramic radiograph (panorex/OPG) interpretation. Your job is to analyze the image and produce a professional orthodontic evaluation.
 
-Your job is to analyze a single panoramic radiograph uploaded by the user. You must carefully evaluate:
-• Presence or absence of permanent teeth
-• Crowding and spacing
-• Wisdom teeth position
-• Root morphology and length
-• Bony lesions, cysts, or abnormalities
-• Impacted teeth
-• Occlusal plane issues
-• Symmetry and arch form
-• Eruption sequencing
-• Pathology
+Evaluate:
+- Tooth presence or absence
+- Missing teeth, supernumerary teeth
+- Wisdom teeth position and pathology
+- Crowding, spacing, rotations
+- Eruption sequencing
+- Root morphology & length
+- Impacted teeth
+- Condylar symmetry
+- Alveolar bone levels (approx)
+- Pathology, cysts, lesions
+- Occlusal plane analysis
+- Arch form, symmetry
+- Any abnormalities
 
-Your output must be structured like a real orthodontic consultation report.
-If the pano is low quality, say so.
-If you cannot see something clearly, state it clearly rather than guessing.
-Never invent teeth that are not visible.
+Your output must follow this structure:
 
-Use clear language suitable for both clinicians and patients.
-Provide:
 1. Radiographic Findings
 2. Problem List
-3. Predicted Bite Classification (approximate)
+3. Estimated Bite Classification
 4. Treatment Objectives
-5. Recommended Treatment Plan (braces vs aligners, elastics, extractions, wisdom teeth, etc.)
-6. Risks or limitations due to pano-only evaluation
+5. Recommended Treatment Plan
+6. Risks & Limitations (due to pano-only)
+
+If the pano is unclear or too low-resolution, say so explicitly.
+Never guess a tooth or pathology that cannot be seen clearly.
 
 Format your response in HTML with proper headings and lists for easy reading.`;
 
     const userPrompt = `Here is a panoramic X-ray for orthodontic evaluation. Please analyze this pano in detail following the structure in your system prompt.`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
+        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4.1-2025-04-14',
         messages: [
           {
             role: 'system',
@@ -71,27 +72,24 @@ Format your response in HTML with proper headings and lists for easy reading.`;
             role: 'user',
             content: [
               {
-                type: 'text',
+                type: 'input_text',
                 text: userPrompt
               },
               {
-                type: 'image_url',
-                image_url: {
-                  url: image
-                }
+                type: 'input_image',
+                image_url: image
               }
             ]
           }
         ],
-        max_tokens: 2000,
-        temperature: 0.7
+        max_completion_tokens: 2000
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Lovable AI API error:', errorText);
-      throw new Error(`Lovable AI API error: ${response.status}`);
+      console.error('OpenAI API error:', errorText);
+      throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const data = await response.json();
