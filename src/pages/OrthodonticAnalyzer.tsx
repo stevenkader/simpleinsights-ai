@@ -7,6 +7,8 @@ import { Progress } from "@/components/ui/progress";
 import { Upload, Scan } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import ExportButton from "@/components/legal-assistant/results/ExportButton";
+import { generatePDF } from "@/utils/pdf-export";
 
 const OrthodonticAnalyzer = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -14,7 +16,9 @@ const OrthodonticAnalyzer = () => {
   const [treatmentPlan, setTreatmentPlan] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const treatmentPlanRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,6 +116,45 @@ const OrthodonticAnalyzer = () => {
     }
   };
 
+  const handleGeneratePDF = async () => {
+    if (!treatmentPlan) {
+      toast({
+        title: "No treatment plan",
+        description: "Please generate a treatment plan first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsPdfGenerating(true);
+    try {
+      const success = await generatePDF({
+        title: "Orthodontic Treatment Plan",
+        fileName: "orthodontic-treatment-plan",
+        contentRef: treatmentPlanRef,
+        content: treatmentPlan,
+      });
+
+      if (success) {
+        toast({
+          title: "PDF Generated",
+          description: "Your treatment plan has been downloaded",
+        });
+      } else {
+        throw new Error("PDF generation failed");
+      }
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "Export failed",
+        description: "There was an error generating the PDF. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPdfGenerating(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -205,8 +248,14 @@ const OrthodonticAnalyzer = () => {
 
             {/* Right: Treatment Plan Output */}
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Treatment Plan</CardTitle>
+                {treatmentPlan && (
+                  <ExportButton 
+                    isPdfGenerating={isPdfGenerating}
+                    onClick={handleGeneratePDF}
+                  />
+                )}
               </CardHeader>
               <CardContent>
                 {!treatmentPlan ? (
@@ -214,7 +263,9 @@ const OrthodonticAnalyzer = () => {
                     <p>Upload an image and click "Generate Treatment Plan" to see the analysis</p>
                   </div>
                 ) : (
-                  <div className="prose prose-headings:font-semibold prose-headings:text-foreground
+                  <div 
+                    ref={treatmentPlanRef}
+                    className="prose prose-headings:font-semibold prose-headings:text-foreground
                     prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:my-3
                     prose-li:text-muted-foreground prose-strong:text-foreground
                     prose-ul:my-3 prose-ol:my-3 prose-li:my-1.5
