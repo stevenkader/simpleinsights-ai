@@ -35,8 +35,8 @@ const logUsageEvent = async (eventType: string, metadata?: any, errorMessage?: s
 };
 
 const OrthodonticAnalyzer = () => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [treatmentPlan, setTreatmentPlan] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -46,36 +46,59 @@ const OrthodonticAnalyzer = () => {
   const { toast } = useToast();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
 
-    const validTypes = ['image/jpeg', 'image/png', 'image/heic', 'application/pdf'];
-    if (!validTypes.includes(file.type)) {
+    // Check if adding these files would exceed 8 images
+    if (selectedImages.length + files.length > 8) {
       toast({
-        title: "Invalid file type",
-        description: "Please upload a JPG, PNG, HEIC, or PDF file",
+        title: "Too many images",
+        description: "You can upload a maximum of 8 images",
         variant: "destructive",
       });
       return;
     }
 
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setSelectedImage(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
+    const validTypes = ['image/jpeg', 'image/png', 'image/heic', 'application/pdf'];
+    const invalidFiles = files.filter(file => !validTypes.includes(file.type));
+    
+    if (invalidFiles.length > 0) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload only JPG, PNG, HEIC, or PDF files",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Read all files and add them to state
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSelectedImages(prev => [...prev, e.target?.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+    
+    setImageFiles(prev => [...prev, ...files]);
     setTreatmentPlan("");
     
     // Log upload event
-    logUsageEvent('upload', { fileType: file.type, fileSize: file.size });
+    files.forEach(file => {
+      logUsageEvent('upload', { fileType: file.type, fileSize: file.size });
+    });
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setSelectedImages(prev => prev.filter((_, i) => i !== index));
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleAnalyze = async () => {
-    if (!imageFile) {
+    if (imageFiles.length === 0) {
       toast({
-        title: "No image selected",
-        description: "Please upload a panoramic X-ray first",
+        title: "No images selected",
+        description: "Please upload at least one image first",
         variant: "destructive",
       });
       return;
@@ -109,31 +132,25 @@ const OrthodonticAnalyzer = () => {
     }, 1200);
     
     try {
-      // Convert image to base64
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64Image = reader.result as string;
+      // All images are already in base64 format in selectedImages
+      const { data, error } = await supabase.functions.invoke('analyze-orthodontic-image', {
+        body: { images: selectedImages }
+      });
 
-        const { data, error } = await supabase.functions.invoke('analyze-orthodontic-image', {
-          body: { image: base64Image }
+      if (error) throw error;
+
+      setProgress(100);
+      setTimeout(() => {
+        setTreatmentPlan(data.analysis);
+        toast({
+          title: "Analysis complete",
+          description: "Your orthodontic treatment plan is ready",
         });
-
-        if (error) throw error;
-
-        setProgress(100);
-        setTimeout(() => {
-          setTreatmentPlan(data.analysis);
-          toast({
-            title: "Analysis complete",
-            description: "Your orthodontic treatment plan is ready",
-          });
-          setIsAnalyzing(false);
-          
-          // Log successful analysis
-          logUsageEvent('analysis_success');
-        }, 500);
-      };
-      reader.readAsDataURL(imageFile);
+        setIsAnalyzing(false);
+        
+        // Log successful analysis
+        logUsageEvent('analysis_success');
+      }, 500);
     } catch (error) {
       console.error('Error analyzing image:', error);
       if (progressIntervalRef.current) {
@@ -227,60 +244,63 @@ const OrthodonticAnalyzer = () => {
                 <CardTitle>Panoramic X-Ray</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {!selectedImage ? (
-                  <div className="border-2 border-dashed border-border rounded-lg p-12 text-center">
-                    <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground mb-4">
-                      Upload your panoramic X-ray
-                    </p>
-                    <label htmlFor="image-upload">
-                      <Button variant="default" asChild>
-                        <span>Select Image</span>
-                      </Button>
-                    </label>
-                    <input
-                      id="image-upload"
-                      type="file"
-                      accept=".jpg,.jpeg,.png,.heic,.pdf"
-                      className="hidden"
-                      onChange={handleImageUpload}
-                    />
-                    <p className="text-xs text-muted-foreground mt-4">
-                      Supported formats: JPG, PNG, PDF, HEIC
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="relative aspect-video bg-slate-100 dark:bg-slate-900 rounded-lg overflow-hidden">
-                      <img
-                        src={selectedImage}
-                        alt="Panoramic X-ray"
-                        className="w-full h-full object-contain"
-                      />
+                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                  <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground mb-4">
+                    Upload up to 8 images (panoramic X-rays, intraoral photos, etc.)
+                  </p>
+                  <label htmlFor="image-upload">
+                    <Button variant="default" asChild disabled={selectedImages.length >= 8}>
+                      <span>Select Images</span>
+                    </Button>
+                  </label>
+                  <input
+                    id="image-upload"
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.heic,.pdf"
+                    multiple
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                  <p className="text-xs text-muted-foreground mt-4">
+                    Supported formats: JPG, PNG, PDF, HEIC • {selectedImages.length}/8 images
+                  </p>
+                </div>
+
+                {selectedImages.length > 0 && (
+                  <>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {selectedImages.map((image, index) => (
+                        <div key={index} className="relative aspect-square bg-muted rounded-lg overflow-hidden group">
+                          <img
+                            src={image}
+                            alt={`Upload ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                            aria-label="Remove image"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                    <div className="flex gap-2">
-                      <label htmlFor="image-upload-replace" className="flex-1">
-                        <Button variant="outline" className="w-full" asChild>
-                          <span>Replace Image</span>
-                        </Button>
-                      </label>
-                      <input
-                        id="image-upload-replace"
-                        type="file"
-                        accept=".jpg,.jpeg,.png,.heic,.pdf"
-                        className="hidden"
-                        onChange={handleImageUpload}
-                      />
-                      <Button
-                        onClick={handleAnalyze}
-                        disabled={isAnalyzing}
-                        className="flex-1"
-                      >
-                        <Scan className="mr-2 h-4 w-4" />
-                        {isAnalyzing ? "Analyzing..." : "Generate Treatment Plan"}
-                      </Button>
-                    </div>
-                  </div>
+                    
+                    <Button
+                      onClick={handleAnalyze}
+                      disabled={isAnalyzing || selectedImages.length === 0}
+                      className="w-full"
+                      size="lg"
+                    >
+                      <Scan className="mr-2 h-4 w-4" />
+                      {isAnalyzing ? "Analyzing..." : "Generate Treatment Plan"}
+                    </Button>
+                  </>
                 )}
               </CardContent>
             </Card>
