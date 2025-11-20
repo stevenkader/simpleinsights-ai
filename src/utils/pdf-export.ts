@@ -66,10 +66,12 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
             @page {
               margin: 0.5in;
               @bottom-center {
-                content: "Page " counter(page);
+                content: "This AI-assisted evaluation is based solely on the uploaded images and is not a substitute for an in-person orthodontic examination, diagnosis, or treatment plan.";
                 font-family: Arial, sans-serif;
-                font-size: 8pt;
-                color: #6B7280;
+                font-size: 9pt;
+                color: #9CA3AF;
+                text-align: center;
+                max-width: 90%;
               }
             }
             body {
