@@ -6,10 +6,11 @@ export interface PDFExportOptions {
   contentRef: React.RefObject<HTMLDivElement>;
   content: string;
   images?: Array<{ src: string; caption?: string }>;
+  logo?: string;
 }
 
 export const generatePDF = async (options: PDFExportOptions): Promise<boolean> => {
-  const { fileName, contentRef, images } = options;
+  const { fileName, contentRef, images, logo } = options;
   
   if (!contentRef.current) return false;
 
@@ -40,9 +41,16 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
         `;
       }).join('');
 
+      const logoHTML = logo 
+        ? `<img src="${logo}" alt="Clinic Logo" class="clinic-logo" />`
+        : `<div class="clinic-logo-placeholder">Clinic Logo</div>`;
+
       imagesHTML = `
         <div class="images-page">
-          <div class="timestamp-header">Report generated: ${reportTimestamp}</div>
+          <div class="page-header">
+            ${logoHTML}
+            <div class="timestamp-header">Report generated: ${reportTimestamp}</div>
+          </div>
           <div class="images-grid">
             ${imageElements}
           </div>
@@ -72,12 +80,37 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
               color: #000;
               background: #fff;
             }
+            .page-header {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              margin-bottom: 32px;
+              gap: 20px;
+            }
+            .clinic-logo {
+              width: 150px;
+              height: auto;
+              object-fit: contain;
+            }
+            .clinic-logo-placeholder {
+              width: 150px;
+              height: 80px;
+              border: 2px dashed #D1D5DB;
+              background-color: #F3F4F6;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 10pt;
+              color: #9CA3AF;
+              font-weight: 500;
+              border-radius: 4px;
+            }
             .timestamp-header {
               text-align: right;
               font-size: 10pt;
               color: #374151;
-              margin-bottom: 24px;
               font-weight: 500;
+              flex-shrink: 0;
             }
             .images-page {
               margin-bottom: 40px;
