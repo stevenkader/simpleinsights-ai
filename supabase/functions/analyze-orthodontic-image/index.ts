@@ -14,42 +14,33 @@ serve(async (req) => {
   }
 
   try {
-    const { image } = await req.json();
+    const { images } = await req.json();
 
-    if (!image) {
-      throw new Error('No image provided');
+    if (!images || !Array.isArray(images) || images.length === 0) {
+      throw new Error('No images provided');
     }
 
-    console.log('Analyzing orthodontic image...');
+    console.log(`Analyzing ${images.length} orthodontic image(s)...`);
 
-    const systemPrompt = `You are a world-class orthodontist specializing in panoramic radiograph (panorex/OPG) interpretation. Your job is to analyze the image and produce a professional orthodontic evaluation.
+    const systemPrompt = `You are a world-class orthodontist who analyzes panoramic radiographs and intraoral photographs. The user may upload between 1 and 8 images. These may include:
+- Panoramic X-rays
+- Lateral cephalograms
+- Intraoral photos (front, left, right, upper occlusal, lower occlusal)
+- Extraoral facial photos
 
-Evaluate:
-- Tooth presence or absence
-- Missing teeth, supernumerary teeth
-- Wisdom teeth position and pathology
-- Crowding, spacing, rotations
-- Eruption sequencing
-- Root morphology & length
-- Impacted teeth
-- Condylar symmetry
-- Alveolar bone levels (approx)
-- Pathology, cysts, lesions
-- Occlusal plane analysis
-- Arch form, symmetry
-- Any abnormalities
-
-Your output must follow this structure:
+Your job is to review all provided images together and generate a structured orthodontic report including:
 
 1. Radiographic Findings
-2. Problem List
-3. Estimated Bite Classification
-4. Treatment Objectives
-5. Recommended Treatment Plan
-6. Risks & Limitations (due to pano-only)
+2. Intraoral Findings
+3. Bite/occlusion observations
+4. Missing teeth, impactions, asymmetry
+5. Problem List
+6. Treatment Objectives
+7. Treatment Options
+8. Clinical Limitations (due to photos only)
 
-If the pano is unclear or too low-resolution, say so explicitly.
-Never guess a tooth or pathology that cannot be seen clearly.
+If any images are unclear or low quality, state that clearly.
+Do not provide diagnoses; describe findings, implications, and orthodontic considerations.
 
 Format your response in clean, semantic HTML:
 - Use <h2> for main sections (e.g., "Radiographic Findings", "Problem List")
@@ -59,7 +50,25 @@ Format your response in clean, semantic HTML:
 - Use <strong> for emphasis on key findings
 - Keep the HTML clean and well-structured for professional readability`;
 
-    const userPrompt = `Here is a panoramic X-ray for orthodontic evaluation. Please analyze this pano in detail following the structure in your system prompt.`;
+    const userPrompt = `Here are ${images.length} image(s) for orthodontic evaluation. Please analyze all images together and generate the full structured report.`;
+
+    // Build the content array with text and all images
+    const contentArray: any[] = [
+      {
+        type: 'text',
+        text: userPrompt
+      }
+    ];
+
+    // Add all images to the content
+    images.forEach((imageUrl: string) => {
+      contentArray.push({
+        type: 'image_url',
+        image_url: {
+          url: imageUrl
+        }
+      });
+    });
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -76,18 +85,7 @@ Format your response in clean, semantic HTML:
           },
           {
             role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: userPrompt
-              },
-              {
-                type: 'image_url',
-                image_url: {
-                  url: image
-                }
-              }
-            ]
+            content: contentArray
           }
         ],
         max_completion_tokens: 2000
