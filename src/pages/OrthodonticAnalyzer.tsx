@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Upload, Scan } from "lucide-react";
+import { Upload, Scan, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ExportButton from "@/components/legal-assistant/results/ExportButton";
@@ -210,6 +210,20 @@ const OrthodonticAnalyzer = () => {
     }
   };
 
+  const handleClearAll = () => {
+    setSelectedImages([]);
+    setImageFiles([]);
+    setTreatmentPlan("");
+    setProgress(0);
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+    }
+    toast({
+      title: "Page cleared",
+      description: "All images and results have been removed",
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -240,8 +254,19 @@ const OrthodonticAnalyzer = () => {
           <div className="grid md:grid-cols-2 gap-8">
             {/* Left: Image Viewer */}
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Panoramic X-Ray</CardTitle>
+                {(selectedImages.length > 0 || treatmentPlan) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleClearAll}
+                    disabled={isAnalyzing}
+                  >
+                    <RotateCcw className="mr-2 h-4 w-4" />
+                    Clear All
+                  </Button>
+                )}
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
