@@ -73,6 +73,12 @@ export const generatePDF = async (options: PDFExportOptions): Promise<boolean> =
                 text-align: center;
                 max-width: 90%;
               }
+              @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: Arial, sans-serif;
+                font-size: 10pt;
+                color: #6B7280;
+              }
             }
             body {
               font-family: Arial, sans-serif;
