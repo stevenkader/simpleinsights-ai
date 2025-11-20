@@ -16,6 +16,7 @@ import LegalAssistant from "./pages/LegalAssistant";
 import MedicalReports from "./pages/MedicalReports";
 import TranslationAssistant from "./pages/TranslationAssistant";
 import OrthodonticAnalyzer from "./pages/OrthodonticAnalyzer";
+import OrthodonticAnalytics from "./pages/OrthodonticAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/medical-reports" element={<MedicalReports />} />
           <Route path="/translation-assistant" element={<TranslationAssistant />} />
           <Route path="/orthodontic-analyzer" element={<OrthodonticAnalyzer />} />
+          <Route path="/ortho-internal-stats" element={<OrthodonticAnalytics />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
