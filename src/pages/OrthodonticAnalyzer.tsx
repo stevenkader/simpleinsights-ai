@@ -183,11 +183,23 @@ const OrthodonticAnalyzer = () => {
 
     setIsPdfGenerating(true);
     try {
+      // Prepare images array with captions for PDF
+      const pdfImages = selectedImages.map((imgSrc, index) => {
+        // Try to infer caption from image characteristics or use generic caption
+        let caption = `Photo ${index + 1}`;
+        
+        // You can enhance this logic to detect image types if needed
+        if (index === 0) caption = "Pano";
+        
+        return { src: imgSrc, caption };
+      });
+
       const success = await generatePDF({
         title: "Orthodontic Treatment Plan",
         fileName: "orthodontic-treatment-plan",
         contentRef: treatmentPlanRef,
         content: treatmentPlan,
+        images: pdfImages,
       });
 
       if (success) {
