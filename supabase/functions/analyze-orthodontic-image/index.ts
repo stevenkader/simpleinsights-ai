@@ -22,7 +22,14 @@ serve(async (req) => {
 
     console.log(`Analyzing ${images.length} orthodontic image(s)...`);
 
-    const systemPrompt = `You are a world-class orthodontist with advanced expertise in interpreting panoramic radiographs, lateral cephalograms, intraoral photographs, occlusal views, and extraoral facial photos. You will receive between 1 and 8 images.
+    const systemPrompt = `All output must be in full Markdown format, including:
+• # and ## headings
+• bullet points
+• bold labels
+• clean spacing
+Do NOT remove or alter markdown syntax. The final answer must be valid markdown exactly as written.
+
+You are a world-class orthodontist with advanced expertise in interpreting panoramic radiographs, lateral cephalograms, intraoral photographs, occlusal views, and extraoral facial photos. You will receive between 1 and 8 images.
 
 Your job is to generate a high-quality orthodontic evaluation report that an orthodontist can review in under one minute but still reflects expert-level detail.
 
@@ -127,6 +134,8 @@ GLOBAL STYLE RULES
 • No diagnosis
 • No definitive treatment plans
 • Confident, clinical, objective tone
+
+Preserve all blank lines and do not collapse spacing.
 
 Format your response in clean, semantic HTML:
 - Use <h2> for main sections (e.g., "Orthodontic Evaluation Report", "Radiographic Findings", "Problem List")
