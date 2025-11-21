@@ -1,16 +1,57 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const OrthodonticAnalytics = () => {
   const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
-    fetchStats();
+    checkAuth();
   }, []);
+
+  const checkAuth = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      navigate("/auth");
+      return;
+    }
+
+    // Check if user has admin role
+    const { data: roles, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', session.user.id)
+      .eq('role', 'admin')
+      .single();
+
+    if (error || !roles) {
+      toast({
+        title: "Access Denied",
+        description: "You need admin privileges to access this page",
+        variant: "destructive",
+      });
+      navigate("/");
+      return;
+    }
+
+    setIsAdmin(true);
+    fetchStats();
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/auth");
+  };
 
   const fetchStats = async () => {
     setIsLoading(true);
@@ -50,13 +91,15 @@ const OrthodonticAnalytics = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || !isAdmin) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navigation />
         <main className="flex-1 container py-8">
           <Card>
-            <CardContent className="py-12 text-center">Loading statistics...</CardContent>
+            <CardContent className="py-12 text-center">
+              {isLoading ? "Loading..." : "Checking permissions..."}
+            </CardContent>
           </Card>
         </main>
         <Footer />
@@ -69,13 +112,20 @@ const OrthodonticAnalytics = () => {
       <Navigation />
       <main className="flex-1 container py-8 md:py-12">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8 text-center">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              Orthodontic Analyzer Usage Statistics
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Internal analytics dashboard
-            </p>
+          <div className="mb-8">
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold mb-2">
+                  Orthodontic Analyzer Usage Statistics
+                </h1>
+                <p className="text-lg text-muted-foreground">
+                  Internal analytics dashboard
+                </p>
+              </div>
+              <Button onClick={handleLogout} variant="outline">
+                Logout
+              </Button>
+            </div>
           </div>
 
           <div className="space-y-6">
