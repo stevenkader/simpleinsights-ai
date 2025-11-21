@@ -1,7 +1,13 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+// Create Supabase client with service role for logging
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,6 +19,8 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const sessionId = crypto.randomUUID();
+
   try {
     const { images } = await req.json();
 
@@ -21,6 +29,13 @@ serve(async (req) => {
     }
 
     console.log(`Analyzing ${images.length} orthodontic image(s)...`);
+
+    // Log upload event
+    await supabase.from('orthodontic_usage_logs').insert({
+      event_type: 'upload',
+      session_id: sessionId,
+      metadata: { image_count: images.length }
+    });
 
     const systemPrompt = `All output must be in full Markdown format, including:
 • # and ## headings
@@ -204,6 +219,13 @@ Format your response in clean, semantic HTML:
 
     console.log('Analysis complete');
 
+    // Log successful analysis
+    await supabase.from('orthodontic_usage_logs').insert({
+      event_type: 'analysis_success',
+      session_id: sessionId,
+      metadata: { image_count: images.length }
+    });
+
     return new Response(
       JSON.stringify({ analysis: cleanedAnalysis }),
       {
@@ -212,6 +234,15 @@ Format your response in clean, semantic HTML:
     );
   } catch (error) {
     console.error('Error in analyze-orthodontic-image function:', error);
+    
+    // Log error event
+    await supabase.from('orthodontic_usage_logs').insert({
+      event_type: 'analysis_error',
+      session_id: sessionId,
+      error_message: error.message,
+      metadata: { error_stack: error.stack }
+    });
+
     return new Response(
       JSON.stringify({ error: error.message }),
       {
