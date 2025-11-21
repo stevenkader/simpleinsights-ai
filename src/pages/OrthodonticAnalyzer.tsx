@@ -4,11 +4,12 @@ import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Upload, Scan, RotateCcw } from "lucide-react";
+import { Upload, Scan, RotateCcw, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ExportButton from "@/components/legal-assistant/results/ExportButton";
 import { generatePDF } from "@/utils/pdf-export";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 // Generate or retrieve session ID for usage tracking
 const getSessionId = () => {
@@ -41,6 +42,8 @@ const OrthodonticAnalyzer = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
+  const [showPdfDialog, setShowPdfDialog] = useState(false);
+  const [pdfSuccess, setPdfSuccess] = useState(false);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const treatmentPlanRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -182,6 +185,9 @@ const OrthodonticAnalyzer = () => {
     }
 
     setIsPdfGenerating(true);
+    setShowPdfDialog(true);
+    setPdfSuccess(false);
+    
     try {
       // Prepare images array with captions for PDF
       const pdfImages = selectedImages.map((imgSrc, index) => {
@@ -203,15 +209,13 @@ const OrthodonticAnalyzer = () => {
       });
 
       if (success) {
-        toast({
-          title: "PDF Generated",
-          description: "Your treatment plan has been downloaded",
-        });
+        setPdfSuccess(true);
       } else {
         throw new Error("PDF generation failed");
       }
     } catch (error) {
       console.error("Error generating PDF:", error);
+      setShowPdfDialog(false);
       toast({
         title: "Export failed",
         description: "There was an error generating the PDF. Please try again.",
@@ -385,6 +389,53 @@ const OrthodonticAnalyzer = () => {
         </div>
       </main>
       <Footer />
+      
+      {/* PDF Generation Dialog */}
+      <Dialog open={showPdfDialog} onOpenChange={(open) => {
+        if (!open && pdfSuccess) {
+          setShowPdfDialog(false);
+          setPdfSuccess(false);
+          setIsPdfGenerating(false);
+        }
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">
+              {pdfSuccess ? "PDF Downloaded" : "Generating PDF"}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {!pdfSuccess ? (
+            <div className="flex flex-col items-center justify-center py-8">
+              <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+              <DialogDescription className="text-center">
+                Please wait while we generate your treatment plan PDF...
+              </DialogDescription>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                <svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <DialogDescription className="text-center mb-6">
+                Your treatment plan PDF has been successfully downloaded!
+              </DialogDescription>
+              <Button 
+                onClick={() => {
+                  setShowPdfDialog(false);
+                  setPdfSuccess(false);
+                  setIsPdfGenerating(false);
+                }}
+                className="w-full"
+              >
+                OK
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
