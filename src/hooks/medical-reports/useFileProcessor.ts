@@ -2,6 +2,7 @@
 import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { API_BASE_URL } from "@/config/api";
+import { validatePdfFile } from "@/utils/fileValidation";
 
 export const useFileProcessor = () => {
   const [response, setResponse] = useState<string>("");
@@ -58,6 +59,18 @@ export const useFileProcessor = () => {
     setResponse("");
     
     try {
+      // Validate file
+      const validation = await validatePdfFile(file);
+      if (!validation.valid) {
+        toast({
+          title: "Invalid file",
+          description: validation.error,
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("file", file);
       

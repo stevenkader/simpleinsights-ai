@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ExportButton from "@/components/legal-assistant/results/ExportButton";
 import { generatePDF } from "@/utils/pdf-export";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { validateImageFile } from "@/utils/fileValidation";
 
 // Generate or retrieve session ID for usage tracking
 const getSessionId = () => {
@@ -48,7 +49,7 @@ const OrthodonticAnalyzer = () => {
   const treatmentPlanRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
@@ -62,16 +63,17 @@ const OrthodonticAnalyzer = () => {
       return;
     }
 
-    const validTypes = ['image/jpeg', 'image/png', 'image/heic', 'application/pdf'];
-    const invalidFiles = files.filter(file => !validTypes.includes(file.type));
-    
-    if (invalidFiles.length > 0) {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload only JPG, PNG, HEIC, or PDF files",
-        variant: "destructive",
-      });
-      return;
+    // Validate each file
+    for (const file of files) {
+      const validation = await validateImageFile(file);
+      if (!validation.valid) {
+        toast({
+          title: "Invalid file",
+          description: validation.error || "Invalid image file",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     // Read all files and add them to state
