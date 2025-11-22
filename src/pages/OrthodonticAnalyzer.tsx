@@ -343,6 +343,16 @@ const OrthodonticAnalyzer = () => {
                     </Button>
                   </>
                 )}
+                
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  asChild
+                >
+                  <a href="mailto:steven@jaredco.com?subject=Orthodontic Analyzer feedback">
+                    Email Beta Test Feedback
+                  </a>
+                </Button>
               </CardContent>
             </Card>
 
