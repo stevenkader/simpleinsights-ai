@@ -11,6 +11,7 @@ import ExportButton from "@/components/legal-assistant/results/ExportButton";
 import { generatePDF } from "@/utils/pdf-export";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { validateImageFile } from "@/utils/fileValidation";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 // Generate or retrieve session ID for usage tracking
 const getSessionId = () => {
@@ -383,7 +384,7 @@ const OrthodonticAnalyzer = () => {
                     prose-ul:my-3 prose-ol:my-3 prose-li:my-1.5
                     prose-h2:text-2xl prose-h3:text-xl prose-h2:mt-6 prose-h2:mb-3 prose-h3:mt-4 prose-h3:mb-2
                     max-w-none dark:prose-invert overflow-y-auto max-h-[600px]">
-                    <div dangerouslySetInnerHTML={{ __html: treatmentPlan }} />
+                    <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(treatmentPlan) }} />
                   </div>
                 )}
               </CardContent>
