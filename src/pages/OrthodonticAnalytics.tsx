@@ -74,7 +74,9 @@ const OrthodonticAnalytics = () => {
           daily[date] = { uploads: 0, analyses: 0, successes: 0, errors: 0 };
         }
         if (log.event_type === 'upload') daily[date].uploads++;
-        if (log.event_type === 'analysis_start') daily[date].analyses++;
+        if (log.event_type === 'analysis_start' || log.event_type === 'analysis_success' || log.event_type === 'analysis_error') {
+          daily[date].analyses++;
+        }
         if (log.event_type === 'analysis_success') daily[date].successes++;
         if (log.event_type === 'analysis_error') daily[date].errors++;
       });
