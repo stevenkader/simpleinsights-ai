@@ -81,10 +81,13 @@ const OrthodonticAnalytics = () => {
         if (log.event_type === 'analysis_error') daily[date].errors++;
       });
 
+      const errorLogs = data?.filter(log => log.event_type === 'analysis_error' && log.error_message) || [];
+
       setStats({
         total: data?.length || 0,
         daily,
-        recentLogs: data?.slice(0, 10) || []
+        recentLogs: data?.slice(0, 10) || [],
+        errorLogs: errorLogs.slice(0, 20) // Last 20 errors
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -202,6 +205,36 @@ const OrthodonticAnalytics = () => {
                     <div className="text-sm text-muted-foreground">Successful</div>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Error Logs</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {stats.errorLogs?.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-8">No errors recorded</p>
+                ) : (
+                  <div className="space-y-4">
+                    {stats.errorLogs?.map((log: any) => (
+                      <div key={log.id} className="border-l-4 border-red-600 pl-4 py-2 bg-muted/30 rounded-r">
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-sm font-medium text-red-600">Error</span>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(log.created_at).toLocaleString()}
+                          </span>
+                        </div>
+                        <p className="text-sm text-foreground mb-1">{log.error_message}</p>
+                        {log.session_id && (
+                          <p className="text-xs text-muted-foreground font-mono">
+                            Session: {log.session_id}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
