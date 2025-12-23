@@ -27,12 +27,34 @@ const MedicalReports = () => {
   } = useFileProcessor();
 
   const handleDemoProcess = () => {
+    setIsLoading(true);
+    setResponse("");
+    setProgress(0);
+    
     toast({
       title: "Using demo file",
       description: "Processing demo-contract-medical001.pdf",
     });
     
+    // Simulate progress animation
+    let currentProgress = 0;
+    const progressInterval = setInterval(() => {
+      if (currentProgress < 60) {
+        currentProgress += 2;
+      } else if (currentProgress < 90) {
+        currentProgress += 1;
+      } else if (currentProgress < 99) {
+        currentProgress += 0.5;
+      }
+      setProgress(Math.min(Math.round(currentProgress), 99));
+      
+      if (currentProgress >= 99) {
+        clearInterval(progressInterval);
+      }
+    }, 100);
+    
     setTimeout(() => {
+      clearInterval(progressInterval);
       setProgress(100);
       setTimeout(() => {
         setResponse(demoMedicalReport);
