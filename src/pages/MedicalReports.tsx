@@ -21,6 +21,10 @@ const MedicalReports = () => {
   const [progressDemoValue, setProgressDemoValue] = useState(0);
   const progressDemoIntervalRef = useRef<number | null>(null);
 
+  useEffect(() => {
+    console.info("[progress-demo] value", progressDemoValue, "running", progressDemoRunning);
+  }, [progressDemoValue, progressDemoRunning]);
+
   const { toast } = useToast();
   const {
     response,
@@ -36,6 +40,8 @@ const MedicalReports = () => {
   } = useFileProcessor();
 
   const startProgressDemo = () => {
+    console.info("[progress-demo] start");
+
     // Reset + start a simple animated progress so we can verify the UI works.
     if (progressDemoIntervalRef.current) {
       window.clearInterval(progressDemoIntervalRef.current);
@@ -47,13 +53,8 @@ const MedicalReports = () => {
 
     const intervalId = window.setInterval(() => {
       setProgressDemoValue((prev) => {
-        if (prev >= 100) {
-          window.clearInterval(intervalId);
-          progressDemoIntervalRef.current = null;
-          setProgressDemoRunning(false);
-          return 100;
-        }
-        return Math.min(prev + 5, 100);
+        const next = prev >= 100 ? 100 : Math.min(prev + 5, 100);
+        return next;
       });
     }, 200);
 
@@ -61,6 +62,8 @@ const MedicalReports = () => {
   };
 
   const stopProgressDemo = () => {
+    console.info("[progress-demo] stop");
+
     if (progressDemoIntervalRef.current) {
       window.clearInterval(progressDemoIntervalRef.current);
       progressDemoIntervalRef.current = null;
@@ -142,10 +145,19 @@ const MedicalReports = () => {
                    </Button>
                  </div>
                </CardHeader>
-               <CardContent>
-                 <Progress value={progressDemoValue} />
-                 <p className="mt-2 text-sm text-muted-foreground">{progressDemoValue}%</p>
-               </CardContent>
+                <CardContent>
+                  <Progress value={progressDemoValue} />
+
+                  {/* Plain HTML progress bar (to isolate Radix/Tailwind issues) */}
+                  <div className="mt-4 h-3 w-full rounded-full bg-secondary overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-primary transition-[width]"
+                      style={{ width: `${progressDemoValue}%` }}
+                    />
+                  </div>
+
+                  <p className="mt-2 text-sm text-muted-foreground">{progressDemoValue}%</p>
+                </CardContent>
              </Card>
            </section>
 
