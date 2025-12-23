@@ -6,7 +6,7 @@ import DocumentUploader from "@/components/document-uploader/DocumentUploader";
 import PrivacyNotice from "@/components/legal-assistant/PrivacyNotice";
 import DemoSection from "@/components/medical-reports/DemoSection";
 import { useFileProcessor } from "@/hooks/medical-reports/useFileProcessor";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { demoMedicalReport } from "@/components/medical-reports/data/demoContent";
 import { useToast } from "@/hooks/use-toast";
 
@@ -20,7 +20,6 @@ const MedicalReports = () => {
     progress,
     handleFileChange,
     processFile,
-    resetProgress,
     setProgress,
     setResponse,
     setIsLoading
@@ -62,12 +61,6 @@ const MedicalReports = () => {
       }, 500);
     }, 3000);
   };
-
-  useEffect(() => {
-    return () => {
-      resetProgress();
-    };
-  }, [resetProgress]);
 
   return (
     <div className="min-h-screen flex flex-col">
