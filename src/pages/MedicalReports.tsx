@@ -114,13 +114,14 @@ const MedicalReports = () => {
 
   useEffect(() => {
     return () => {
-      resetProgress();
+      // Cleanup only on unmount. (Do not depend on resetProgress here; it can change identity and
+      // accidentally trigger cleanups that stop the demo interval.)
       if (progressDemoIntervalRef.current) {
         window.clearInterval(progressDemoIntervalRef.current);
         progressDemoIntervalRef.current = null;
       }
     };
-  }, [resetProgress]);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
