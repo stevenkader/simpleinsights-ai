@@ -58,7 +58,11 @@ export const useFileProcessor = () => {
   const processFile = async (file: File) => {
     setIsLoading(true);
     setResponse("");
-    
+    resetProgress();
+
+    // Start progress immediately so the UI never appears stuck at 0%
+    simulateProgress();
+
     try {
       // Validate file
       const validation = await validatePdfFile(file);
@@ -68,17 +72,16 @@ export const useFileProcessor = () => {
           description: validation.error,
           variant: "destructive",
         });
+        resetProgress();
         setIsLoading(false);
         return;
       }
 
       const formData = new FormData();
       formData.append("file", file);
-      
-      simulateProgress();
-      
+
       console.log("Sending file to Lovable Cloud edge function...");
-      
+
       // Call the Lovable Cloud edge function directly
       const fetchResponse = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/process-medical-report`,
