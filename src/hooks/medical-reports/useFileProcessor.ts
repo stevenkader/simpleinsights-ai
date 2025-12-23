@@ -82,7 +82,7 @@ export const useFileProcessor = () => {
       console.log("Sending file to Lovable Cloud edge function...");
       
       // Call the Lovable Cloud edge function directly
-      const response = await fetch(
+      const fetchResponse = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/process-medical-report`,
         {
           method: "POST",
@@ -93,21 +93,21 @@ export const useFileProcessor = () => {
         }
       );
       
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
-        console.error("Processing failed:", response.status, errorData);
+      if (!fetchResponse.ok) {
+        const errorData = await fetchResponse.json().catch(() => ({ error: "Unknown error" }));
+        console.error("Processing failed:", fetchResponse.status, errorData);
         
-        if (response.status === 429) {
+        if (fetchResponse.status === 429) {
           throw new Error("Rate limit exceeded. Please wait a moment and try again.");
         }
-        if (response.status === 402) {
+        if (fetchResponse.status === 402) {
           throw new Error("Service temporarily unavailable. Please try again later.");
         }
         
-        throw new Error(errorData.error || `Processing failed (${response.status})`);
+        throw new Error(errorData.error || `Processing failed (${fetchResponse.status})`);
       }
       
-      const data = await response.json();
+      const data = await fetchResponse.json();
       console.log("Processing complete, response length:", data.html?.length || 0);
       
       if (!data.html) {
