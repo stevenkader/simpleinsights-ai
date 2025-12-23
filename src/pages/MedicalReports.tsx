@@ -6,12 +6,21 @@ import DocumentUploader from "@/components/document-uploader/DocumentUploader";
 import PrivacyNotice from "@/components/legal-assistant/PrivacyNotice";
 import DemoSection from "@/components/medical-reports/DemoSection";
 import { useFileProcessor } from "@/hooks/medical-reports/useFileProcessor";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { demoMedicalReport } from "@/components/medical-reports/data/demoContent";
 import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 const MedicalReports = () => {
   const [showDemoDialog, setShowDemoDialog] = useState<boolean>(false);
+
+  // Isolated progress bar demo (no processing)
+  const [progressDemoRunning, setProgressDemoRunning] = useState(false);
+  const [progressDemoValue, setProgressDemoValue] = useState(0);
+  const progressDemoIntervalRef = useRef<number | null>(null);
+
   const { toast } = useToast();
   const {
     response,
@@ -25,6 +34,39 @@ const MedicalReports = () => {
     setResponse,
     setIsLoading
   } = useFileProcessor();
+
+  const startProgressDemo = () => {
+    // Reset + start a simple animated progress so we can verify the UI works.
+    if (progressDemoIntervalRef.current) {
+      window.clearInterval(progressDemoIntervalRef.current);
+      progressDemoIntervalRef.current = null;
+    }
+
+    setProgressDemoValue(0);
+    setProgressDemoRunning(true);
+
+    const intervalId = window.setInterval(() => {
+      setProgressDemoValue((prev) => {
+        if (prev >= 100) {
+          window.clearInterval(intervalId);
+          progressDemoIntervalRef.current = null;
+          setProgressDemoRunning(false);
+          return 100;
+        }
+        return Math.min(prev + 5, 100);
+      });
+    }, 200);
+
+    progressDemoIntervalRef.current = intervalId;
+  };
+
+  const stopProgressDemo = () => {
+    if (progressDemoIntervalRef.current) {
+      window.clearInterval(progressDemoIntervalRef.current);
+      progressDemoIntervalRef.current = null;
+    }
+    setProgressDemoRunning(false);
+  };
 
   const handleDemoProcess = () => {
     setIsLoading(true);
@@ -66,6 +108,10 @@ const MedicalReports = () => {
   useEffect(() => {
     return () => {
       resetProgress();
+      if (progressDemoIntervalRef.current) {
+        window.clearInterval(progressDemoIntervalRef.current);
+        progressDemoIntervalRef.current = null;
+      }
     };
   }, [resetProgress]);
 
@@ -81,9 +127,29 @@ const MedicalReports = () => {
             <p className="text-lg text-muted-foreground">
               Upload any medical document to receive an easy-to-understand summary and personalized insights tailored to your health context—empowering you to take control of your healthcare journey.
             </p>
-          </div>
+           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
+           <section aria-label="Progress bar demo" className="mb-8">
+             <Card>
+               <CardHeader className="flex flex-row items-center justify-between gap-4">
+                 <CardTitle className="text-base">Progress Bar (UI Test)</CardTitle>
+                 <div className="flex items-center gap-2">
+                   <Button type="button" variant="outline" onClick={startProgressDemo} disabled={progressDemoRunning}>
+                     Start
+                   </Button>
+                   <Button type="button" variant="ghost" onClick={stopProgressDemo} disabled={!progressDemoRunning}>
+                     Stop
+                   </Button>
+                 </div>
+               </CardHeader>
+               <CardContent>
+                 <Progress value={progressDemoValue} />
+                 <p className="mt-2 text-sm text-muted-foreground">{progressDemoValue}%</p>
+               </CardContent>
+             </Card>
+           </section>
+
+           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <DemoSection 
               showDemoDialog={showDemoDialog}
               setShowDemoDialog={setShowDemoDialog}
