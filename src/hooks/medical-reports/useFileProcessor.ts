@@ -2,7 +2,6 @@
 import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { validatePdfFile } from "@/utils/fileValidation";
-import { supabase } from "@/integrations/supabase/client";
 
 export const useFileProcessor = () => {
   const [response, setResponse] = useState<string>("");
@@ -10,44 +9,43 @@ export const useFileProcessor = () => {
   const [progress, setProgress] = useState<number>(0);
   const [fileReference, setFileReference] = useState<string>("");
   const { toast } = useToast();
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const progressIntervalRef = useRef<number | null>(null);
 
   const resetProgress = () => {
     setProgress(0);
-    if (progressIntervalRef.current) {
-      clearInterval(progressIntervalRef.current);
+    if (progressIntervalRef.current !== null) {
+      window.clearInterval(progressIntervalRef.current);
       progressIntervalRef.current = null;
     }
   };
 
   const simulateProgress = () => {
-    if (progressIntervalRef.current) {
-      clearInterval(progressIntervalRef.current);
+    if (progressIntervalRef.current !== null) {
+      window.clearInterval(progressIntervalRef.current);
       progressIntervalRef.current = null;
     }
-    
-    setProgress(0);
-    let i = 0;
-    
-    // Slower progress for large context AI processing
-    const interval = setInterval(() => {
-      if (i < 40) {
-        i += 1.5;
-      } else if (i < 70) {
-        i += 0.8;
+
+    // Make it obvious to the user immediately that work started
+    setProgress(1);
+    let i = 1;
+
+    // Time-based simulated progress while the request is in-flight
+    const interval = window.setInterval(() => {
+      if (i < 60) {
+        i += 2;
       } else if (i < 90) {
-        i += 0.4;
+        i += 1;
       } else if (i < 99) {
-        i += 0.2;
+        i += 0.5;
       }
-      
+
       setProgress(Math.min(Math.round(i), 99));
-      
+
       if (i >= 99) {
-        clearInterval(interval);
+        window.clearInterval(interval);
       }
-    }, 800);
-    
+    }, 600);
+
     progressIntervalRef.current = interval;
     return interval;
   };
@@ -116,8 +114,8 @@ export const useFileProcessor = () => {
       
       setProgress(100);
       
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
+      if (progressIntervalRef.current !== null) {
+        window.clearInterval(progressIntervalRef.current);
         progressIntervalRef.current = null;
       }
       
