@@ -1,8 +1,8 @@
 
 import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { API_BASE_URL } from "@/config/api";
 import { validatePdfFile } from "@/utils/fileValidation";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useFileProcessor = () => {
   const [response, setResponse] = useState<string>("");
@@ -29,13 +29,16 @@ export const useFileProcessor = () => {
     setProgress(0);
     let i = 0;
     
+    // Slower progress for large context AI processing
     const interval = setInterval(() => {
-      if (i < 60) {
-        i += 2;
+      if (i < 40) {
+        i += 1.5;
+      } else if (i < 70) {
+        i += 0.8;
       } else if (i < 90) {
-        i += 1;
+        i += 0.4;
       } else if (i < 99) {
-        i += 0.5;
+        i += 0.2;
       }
       
       setProgress(Math.min(Math.round(i), 99));
@@ -43,7 +46,7 @@ export const useFileProcessor = () => {
       if (i >= 99) {
         clearInterval(interval);
       }
-    }, 600);
+    }, 800);
     
     progressIntervalRef.current = interval;
     return interval;
@@ -76,73 +79,40 @@ export const useFileProcessor = () => {
       
       simulateProgress();
       
-      let uploadResponse;
-      try {
-        uploadResponse = await fetch(`${API_BASE_URL}/upload-temp-file`, {
-          method: "POST",
-          body: formData
-        });
-      } catch (networkError) {
-        console.error("Network error during upload:", networkError);
-        throw new Error("Unable to connect to the server. Please check your internet connection.");
-      }
+      console.log("Sending file to Lovable Cloud edge function...");
       
-      if (!uploadResponse.ok) {
-        const errorText = await uploadResponse.text().catch(() => "Unknown error");
-        console.error("Upload failed:", uploadResponse.status, errorText);
-        throw new Error(`Upload failed (${uploadResponse.status}): ${errorText}`);
-      }
-      
-      const fileRef = await uploadResponse.text();
-      console.log("File uploaded, reference:", fileRef);
-      
-      if (fileRef === "max_tokens") {
-        resetProgress();
-        toast({
-          title: "File too large",
-          description: "The file is too large to process. Please try a smaller file.",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-      
-      if (fileRef === "error") {
-        resetProgress();
-        toast({
-          title: "Upload failed",
-          description: "The file could not be uploaded to the server.",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-      
-      setFileReference(fileRef);
-      localStorage.setItem("fileReference", fileRef);
-      
-      let processResponse;
-      try {
-        processResponse = await fetch(`${API_BASE_URL}/upload-medical01`, {
+      // Call the Lovable Cloud edge function directly
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/process-medical-report`,
+        {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({ fileReference: fileRef }),
-        });
-      } catch (networkError) {
-        console.error("Network error during processing:", networkError);
-        throw new Error("Lost connection to server during processing.");
+          body: formData,
+        }
+      );
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+        console.error("Processing failed:", response.status, errorData);
+        
+        if (response.status === 429) {
+          throw new Error("Rate limit exceeded. Please wait a moment and try again.");
+        }
+        if (response.status === 402) {
+          throw new Error("Service temporarily unavailable. Please try again later.");
+        }
+        
+        throw new Error(errorData.error || `Processing failed (${response.status})`);
       }
       
-      if (!processResponse.ok) {
-        const errorText = await processResponse.text().catch(() => "Unknown error");
-        console.error("Processing failed:", processResponse.status, errorText);
-        throw new Error(`Processing failed (${processResponse.status}): ${errorText}`);
-      }
+      const data = await response.json();
+      console.log("Processing complete, response length:", data.html?.length || 0);
       
-      const resultHtml = await processResponse.text();
-      console.log("Processing complete, response length:", resultHtml.length);
+      if (!data.html) {
+        throw new Error("No analysis result received from the server.");
+      }
       
       setProgress(100);
       
@@ -152,7 +122,7 @@ export const useFileProcessor = () => {
       }
       
       setTimeout(() => {
-        setResponse(resultHtml);
+        setResponse(data.html);
         setIsLoading(false);
       }, 500);
       
@@ -177,7 +147,6 @@ export const useFileProcessor = () => {
     handleFileChange,
     processFile,
     resetProgress,
-    // Export the setter functions so they can be used in the MedicalReports component
     setProgress,
     setResponse,
     setIsLoading
