@@ -60,8 +60,11 @@ export const useFileProcessor = () => {
     setResponse("");
     resetProgress();
 
-    // Start progress immediately so the UI never appears stuck at 0%
-    simulateProgress();
+    // Ensure the progress UI renders first, then start simulated progress
+    setProgress(1);
+    window.setTimeout(() => {
+      simulateProgress();
+    }, 0);
 
     try {
       // Validate file
@@ -82,7 +85,10 @@ export const useFileProcessor = () => {
 
       console.log("Sending file to Lovable Cloud edge function...");
 
-      // Call the Lovable Cloud edge function directly
+      // Call the Lovable Cloud edge function directly (with timeout)
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 120_000);
+
       const fetchResponse = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/process-medical-report`,
         {
@@ -91,8 +97,9 @@ export const useFileProcessor = () => {
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
           body: formData,
+          signal: controller.signal,
         }
-      );
+      ).finally(() => window.clearTimeout(timeoutId));
       
       if (!fetchResponse.ok) {
         const errorData = await fetchResponse.json().catch(() => ({ error: "Unknown error" }));
@@ -130,7 +137,14 @@ export const useFileProcessor = () => {
     } catch (error) {
       console.error("Error processing file:", error);
       resetProgress();
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+
+      const errorMessage =
+        error instanceof DOMException && error.name === "AbortError"
+          ? "Processing timed out. Please try again."
+          : error instanceof Error
+            ? error.message
+            : "Unknown error occurred";
+
       toast({
         title: "Processing failed",
         description: errorMessage,
