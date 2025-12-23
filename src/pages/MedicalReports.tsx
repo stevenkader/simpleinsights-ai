@@ -13,6 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
+const BUILD_MARK = "progress-demo-v2";
+
 const MedicalReports = () => {
   const [showDemoDialog, setShowDemoDialog] = useState<boolean>(false);
 
@@ -40,7 +42,11 @@ const MedicalReports = () => {
   } = useFileProcessor();
 
   const startProgressDemo = () => {
-    console.info("[progress-demo] start");
+    toast({
+      title: "Progress demo started",
+      description: "If the % stays at 0, the click handler may not be firing or the page isn't updating.",
+    });
+    console.info("[progress-demo] start", BUILD_MARK);
 
     // Reset + start a simple animated progress so we can verify the UI works.
     if (progressDemoIntervalRef.current) {
@@ -48,21 +54,19 @@ const MedicalReports = () => {
       progressDemoIntervalRef.current = null;
     }
 
-    setProgressDemoValue(0);
+    setProgressDemoValue(1);
     setProgressDemoRunning(true);
 
     const intervalId = window.setInterval(() => {
-      setProgressDemoValue((prev) => {
-        const next = prev >= 100 ? 100 : Math.min(prev + 5, 100);
-        return next;
-      });
+      setProgressDemoValue((prev) => Math.min(prev + 5, 100));
     }, 200);
 
     progressDemoIntervalRef.current = intervalId;
   };
 
   const stopProgressDemo = () => {
-    console.info("[progress-demo] stop");
+    toast({ title: "Progress demo stopped" });
+    console.info("[progress-demo] stop", BUILD_MARK);
 
     if (progressDemoIntervalRef.current) {
       window.clearInterval(progressDemoIntervalRef.current);
@@ -135,12 +139,27 @@ const MedicalReports = () => {
            <section aria-label="Progress bar demo" className="mb-8">
              <Card>
                <CardHeader className="flex flex-row items-center justify-between gap-4">
-                 <CardTitle className="text-base">Progress Bar (UI Test)</CardTitle>
+                 <div className="space-y-1">
+                   <CardTitle className="text-base">Progress Bar (UI Test)</CardTitle>
+                   <p className="text-xs text-muted-foreground">Debug: {BUILD_MARK}</p>
+                 </div>
                  <div className="flex items-center gap-2">
-                   <Button type="button" variant="outline" onClick={startProgressDemo} disabled={progressDemoRunning}>
+                   <Button
+                     type="button"
+                     variant="outline"
+                     onPointerDown={() => console.info("[progress-demo] pointerDown start")}
+                     onClick={startProgressDemo}
+                     disabled={progressDemoRunning}
+                   >
                      Start
                    </Button>
-                   <Button type="button" variant="ghost" onClick={stopProgressDemo} disabled={!progressDemoRunning}>
+                   <Button
+                     type="button"
+                     variant="ghost"
+                     onPointerDown={() => console.info("[progress-demo] pointerDown stop")}
+                     onClick={stopProgressDemo}
+                     disabled={!progressDemoRunning}
+                   >
                      Stop
                    </Button>
                  </div>
