@@ -6,28 +6,14 @@ import DocumentUploader from "@/components/document-uploader/DocumentUploader";
 import PrivacyNotice from "@/components/legal-assistant/PrivacyNotice";
 import DemoSection from "@/components/medical-reports/DemoSection";
 import { useFileProcessor } from "@/hooks/medical-reports/useFileProcessor";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { demoMedicalReport } from "@/components/medical-reports/data/demoContent";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-
-const BUILD_MARK = "progress-demo-v2";
 
 const MedicalReports = () => {
   const [showDemoDialog, setShowDemoDialog] = useState<boolean>(false);
-
-  // Isolated progress bar demo (no processing)
-  const [progressDemoRunning, setProgressDemoRunning] = useState(false);
-  const [progressDemoValue, setProgressDemoValue] = useState(0);
-  const progressDemoIntervalRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    console.info("[progress-demo] value", progressDemoValue, "running", progressDemoRunning);
-  }, [progressDemoValue, progressDemoRunning]);
-
   const { toast } = useToast();
+  
   const {
     response,
     isLoading,
@@ -35,45 +21,10 @@ const MedicalReports = () => {
     handleFileChange,
     processFile,
     resetProgress,
-    // Now these setter functions are properly imported from the hook
     setProgress,
     setResponse,
     setIsLoading
   } = useFileProcessor();
-
-  const startProgressDemo = () => {
-    toast({
-      title: "Progress demo started",
-      description: "If the % stays at 0, the click handler may not be firing or the page isn't updating.",
-    });
-    console.info("[progress-demo] start", BUILD_MARK);
-
-    // Reset + start a simple animated progress so we can verify the UI works.
-    if (progressDemoIntervalRef.current) {
-      window.clearInterval(progressDemoIntervalRef.current);
-      progressDemoIntervalRef.current = null;
-    }
-
-    setProgressDemoValue(1);
-    setProgressDemoRunning(true);
-
-    const intervalId = window.setInterval(() => {
-      setProgressDemoValue((prev) => Math.min(prev + 5, 100));
-    }, 200);
-
-    progressDemoIntervalRef.current = intervalId;
-  };
-
-  const stopProgressDemo = () => {
-    toast({ title: "Progress demo stopped" });
-    console.info("[progress-demo] stop", BUILD_MARK);
-
-    if (progressDemoIntervalRef.current) {
-      window.clearInterval(progressDemoIntervalRef.current);
-      progressDemoIntervalRef.current = null;
-    }
-    setProgressDemoRunning(false);
-  };
 
   const handleDemoProcess = () => {
     setIsLoading(true);
@@ -114,14 +65,9 @@ const MedicalReports = () => {
 
   useEffect(() => {
     return () => {
-      // Cleanup only on unmount. (Do not depend on resetProgress here; it can change identity and
-      // accidentally trigger cleanups that stop the demo interval.)
-      if (progressDemoIntervalRef.current) {
-        window.clearInterval(progressDemoIntervalRef.current);
-        progressDemoIntervalRef.current = null;
-      }
+      resetProgress();
     };
-  }, []);
+  }, [resetProgress]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -135,53 +81,9 @@ const MedicalReports = () => {
             <p className="text-lg text-muted-foreground">
               Upload any medical document to receive an easy-to-understand summary and personalized insights tailored to your health context—empowering you to take control of your healthcare journey.
             </p>
-           </div>
+          </div>
 
-           <section aria-label="Progress bar demo" className="mb-8">
-             <Card>
-               <CardHeader className="flex flex-row items-center justify-between gap-4">
-                 <div className="space-y-1">
-                   <CardTitle className="text-base">Progress Bar (UI Test)</CardTitle>
-                   <p className="text-xs text-muted-foreground">Debug: {BUILD_MARK}</p>
-                 </div>
-                 <div className="flex items-center gap-2">
-                   <Button
-                     type="button"
-                     variant="outline"
-                     onPointerDown={() => console.info("[progress-demo] pointerDown start")}
-                     onClick={startProgressDemo}
-                     disabled={progressDemoRunning}
-                   >
-                     Start
-                   </Button>
-                   <Button
-                     type="button"
-                     variant="ghost"
-                     onPointerDown={() => console.info("[progress-demo] pointerDown stop")}
-                     onClick={stopProgressDemo}
-                     disabled={!progressDemoRunning}
-                   >
-                     Stop
-                   </Button>
-                 </div>
-               </CardHeader>
-                <CardContent>
-                  <Progress value={progressDemoValue} />
-
-                  {/* Plain HTML progress bar (to isolate Radix/Tailwind issues) */}
-                  <div className="mt-4 h-3 w-full rounded-full bg-secondary overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-primary transition-[width]"
-                      style={{ width: `${progressDemoValue}%` }}
-                    />
-                  </div>
-
-                  <p className="mt-2 text-sm text-muted-foreground">{progressDemoValue}%</p>
-                </CardContent>
-             </Card>
-           </section>
-
-           <div className="grid md:grid-cols-2 gap-8 mb-8">
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
             <DemoSection 
               showDemoDialog={showDemoDialog}
               setShowDemoDialog={setShowDemoDialog}
