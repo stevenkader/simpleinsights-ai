@@ -76,16 +76,25 @@ export const useFileProcessor = () => {
       
       simulateProgress();
       
-      const uploadResponse = await fetch(`${API_BASE_URL}/upload-temp-file`, {
-        method: "POST",
-        body: formData
-      });
+      let uploadResponse;
+      try {
+        uploadResponse = await fetch(`${API_BASE_URL}/upload-temp-file`, {
+          method: "POST",
+          body: formData
+        });
+      } catch (networkError) {
+        console.error("Network error during upload:", networkError);
+        throw new Error("Unable to connect to the server. Please check your internet connection.");
+      }
       
       if (!uploadResponse.ok) {
-        throw new Error(`HTTP error! Status: ${uploadResponse.status}`);
+        const errorText = await uploadResponse.text().catch(() => "Unknown error");
+        console.error("Upload failed:", uploadResponse.status, errorText);
+        throw new Error(`Upload failed (${uploadResponse.status}): ${errorText}`);
       }
       
       const fileRef = await uploadResponse.text();
+      console.log("File uploaded, reference:", fileRef);
       
       if (fileRef === "max_tokens") {
         resetProgress();
@@ -102,7 +111,7 @@ export const useFileProcessor = () => {
         resetProgress();
         toast({
           title: "Upload failed",
-          description: "The file could not be uploaded.",
+          description: "The file could not be uploaded to the server.",
           variant: "destructive",
         });
         setIsLoading(false);
@@ -112,19 +121,28 @@ export const useFileProcessor = () => {
       setFileReference(fileRef);
       localStorage.setItem("fileReference", fileRef);
       
-      const processResponse = await fetch(`${API_BASE_URL}/upload-medical01`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ fileReference: fileRef }),
-      });
+      let processResponse;
+      try {
+        processResponse = await fetch(`${API_BASE_URL}/upload-medical01`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ fileReference: fileRef }),
+        });
+      } catch (networkError) {
+        console.error("Network error during processing:", networkError);
+        throw new Error("Lost connection to server during processing.");
+      }
       
       if (!processResponse.ok) {
-        throw new Error(`HTTP error! Status: ${processResponse.status}`);
+        const errorText = await processResponse.text().catch(() => "Unknown error");
+        console.error("Processing failed:", processResponse.status, errorText);
+        throw new Error(`Processing failed (${processResponse.status}): ${errorText}`);
       }
       
       const resultHtml = await processResponse.text();
+      console.log("Processing complete, response length:", resultHtml.length);
       
       setProgress(100);
       
@@ -141,9 +159,10 @@ export const useFileProcessor = () => {
     } catch (error) {
       console.error("Error processing file:", error);
       resetProgress();
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       toast({
         title: "Processing failed",
-        description: "There was an error processing your file. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
       setIsLoading(false);
