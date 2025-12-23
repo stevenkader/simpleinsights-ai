@@ -72,8 +72,7 @@ const MedicalReports = () => {
               isLoading={isLoading}
               onProcessFile={processFile}
               onFileChange={handleFileChange}
-              title="Upload Your Medical Report"
-              description="Upload your medical report PDF (lab results, radiology reports, discharge summaries, etc.) for a clear, easy-to-understand analysis."
+              title="Get Plain English Translation"
               acceptedFileTypes={[".pdf"]}
             />
           </div>

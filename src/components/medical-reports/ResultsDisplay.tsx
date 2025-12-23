@@ -5,7 +5,6 @@ import { Download, Loader } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { generatePDF } from "@/utils/pdf-export";
-import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 interface ResultsDisplayProps {
   response: string;
@@ -131,7 +130,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                   prose-ul:my-2 prose-ol:my-2 prose-li:my-1
                   prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
                   max-w-none dark:prose-invert"
-                dangerouslySetInnerHTML={{ __html: sanitizeHtml(response) }}
+                dangerouslySetInnerHTML={{ __html: response }}
               />
             </CardContent>
           </Card>

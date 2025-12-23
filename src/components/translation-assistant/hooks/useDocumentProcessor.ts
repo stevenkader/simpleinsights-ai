@@ -4,7 +4,6 @@ import { useToast } from "@/hooks/use-toast";
 import { API_BASE_URL, API_ENDPOINTS } from "@/config/api";
 import { simulateProgress, resetProgress } from "../utils/progressUtils";
 import { demoTranslationContent } from "../data/demoContent";
-import { validatePdfFile } from "@/utils/fileValidation";
 
 interface UseDocumentProcessorReturn {
   response: string;
@@ -35,18 +34,6 @@ export const useDocumentProcessor = (): UseDocumentProcessorReturn => {
     setResponse("");
     
     try {
-      // Validate file
-      const validation = await validatePdfFile(file);
-      if (!validation.valid) {
-        toast({
-          title: "Invalid file",
-          description: validation.error,
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-
       const formData = new FormData();
       formData.append("file", file);
       

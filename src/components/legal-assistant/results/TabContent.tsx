@@ -1,6 +1,5 @@
 
 import React from "react";
-import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 interface TabContentProps {
   content: string;
@@ -28,7 +27,7 @@ const TabContent: React.FC<TabContentProps> = ({
             prose-ul:my-2 prose-ol:my-2 prose-li:my-1
             prose-h2:text-xl prose-h3:text-lg prose-h2:mt-4 prose-h3:mt-3
             max-w-none dark:prose-invert"
-          dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
+          dangerouslySetInnerHTML={{ __html: content }}
         />
       ) : (
         <p className="text-muted-foreground text-center py-6">
