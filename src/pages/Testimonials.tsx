@@ -13,7 +13,7 @@ const Testimonials = () => {
       name: "Sarah Johnson",
       role: "Corporate Lawyer",
       avatar: "SJ",
-      quote: "SimpleInsights.ai has transformed the way I review contracts. What used to take hours now takes minutes, allowing me to focus on more strategic aspects of my work.",
+      quote: "AI Power Tools has transformed the way I review contracts. What used to take hours now takes minutes, allowing me to focus on more strategic aspects of my work.",
     },
     {
       id: 2,
@@ -34,7 +34,7 @@ const Testimonials = () => {
       name: "James Wilson",
       role: "Small Business Owner",
       avatar: "JW",
-      quote: "I used to avoid complex legal documents because I found them intimidating. With SimpleInsights.ai, I can finally understand what I'm signing and make informed decisions for my business.",
+      quote: "I used to avoid complex legal documents because I found them intimidating. With AI Power Tools, I can finally understand what I'm signing and make informed decisions for my business.",
     },
     {
       id: 5,
@@ -48,15 +48,15 @@ const Testimonials = () => {
       name: "Michael Okonkwo",
       role: "Compliance Officer",
       avatar: "MO",
-      quote: "In the financial industry, staying compliant is critical. SimpleInsights.ai helps me quickly review regulatory documents and identify compliance requirements, saving me countless hours.",
+      quote: "In the financial industry, staying compliant is critical. AI Power Tools helps me quickly review regulatory documents and identify compliance requirements, saving me countless hours.",
     },
   ];
 
   return (
     <>
       <Helmet>
-        <title>Testimonials - SimpleInsights.ai</title>
-        <meta name="description" content="See what our customers are saying about SimpleInsights.ai" />
+        <title>Testimonials - AI Power Tools</title>
+        <meta name="description" content="See what our customers are saying about AI Power Tools" />
       </Helmet>
       
       <Navigation />
@@ -66,7 +66,7 @@ const Testimonials = () => {
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Customer Testimonials</h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Discover how SimpleInsights.ai is helping professionals across industries simplify complex documents and improve their productivity.
+              Discover how AI Power Tools is helping professionals across industries simplify complex documents and improve their productivity.
             </p>
           </div>
           

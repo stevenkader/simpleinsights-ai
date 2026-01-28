@@ -17,7 +17,7 @@ const Terms = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
               <p>
-                Welcome to SimpleInsights.ai. These Terms of Service ("Terms") govern your use of our website, services, and applications (collectively, the "Services"). By accessing or using our Services, you agree to be bound by these Terms.
+                Welcome to AI Power Tools. These Terms of Service ("Terms") govern your use of our website, services, and applications (collectively, the "Services"). By accessing or using our Services, you agree to be bound by these Terms.
               </p>
               <p>
                 Please read these Terms carefully. If you do not agree to all of these Terms, you may not access or use our Services.
@@ -67,7 +67,7 @@ const Terms = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">4. Intellectual Property</h2>
               <p>
-                Our Services and its original content, features, and functionality are owned by SimpleInsights.ai and are protected by international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
+                Our Services and its original content, features, and functionality are owned by AI Power Tools and are protected by international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
               </p>
               <p>
                 You retain all rights to your data. By uploading or sharing data through our Services, you grant us a worldwide, non-exclusive, royalty-free license to use, copy, process, and display your data for the purpose of providing and improving our Services.
@@ -87,7 +87,7 @@ const Terms = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">6. Limitation of Liability</h2>
               <p>
-                In no event shall SimpleInsights.ai, its officers, directors, employees, or agents be liable for any indirect, punitive, incidental, special, or consequential damages arising out of or in any way connected with the use of our Services.
+                In no event shall AI Power Tools, its officers, directors, employees, or agents be liable for any indirect, punitive, incidental, special, or consequential damages arising out of or in any way connected with the use of our Services.
               </p>
             </section>
             

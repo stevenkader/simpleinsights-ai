@@ -16,7 +16,7 @@ const Contact = () => {
           <div className="mt-8">
             <h2 className="text-2xl font-semibold mb-4">Get in Touch</h2>
             <p className="text-muted-foreground mb-6">
-              Have questions about how SimpleInsights.ai can help you understand complex documents? 
+              Have questions about how AI Power Tools can help you understand complex documents? 
               Want to share feedback or just say hello? We'd love to hear from you!
             </p>
             
@@ -36,7 +36,7 @@ const Contact = () => {
             
             <Card className="mt-8 border-primary/20">
               <CardContent className="pt-6">
-                <h3 className="font-medium mb-2">About SimpleInsights.ai</h3>
+                <h3 className="font-medium mb-2">About AI Power Tools</h3>
                 <p className="text-sm text-muted-foreground">
                   Our mission is to help people understand complex documents without the headache. 
                   We're committed to making information accessible to everyone, completely free of charge.
@@ -46,7 +46,7 @@ const Contact = () => {
           </div>
           
           <div className="mt-16 bg-muted/50 rounded-lg p-6">
-            <h2 className="text-2xl font-semibold mb-4">How SimpleInsights.ai Works</h2>
+            <h2 className="text-2xl font-semibold mb-4">How AI Power Tools Works</h2>
             <div className="grid sm:grid-cols-3 gap-6 text-center">
               <div className="p-4">
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
