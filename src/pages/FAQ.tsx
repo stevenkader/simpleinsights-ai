@@ -9,20 +9,20 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 // FAQ data to use in both the visible content and structured data
 const faqData = [
   {
-    question: "What is SimpleInsights.ai?",
-    answer: "SimpleInsights.ai is a platform that transforms complex documents into easily understandable insights. Our AI-powered tools help you analyze legal documents, medical reports, and translate content between languages."
+    question: "What is AI Power Tools?",
+    answer: "AI Power Tools is a platform that transforms complex documents into easily understandable insights. Our AI-powered tools help you analyze legal documents, medical reports, and translate content between languages."
   },
   {
     question: "How does the Legal Assistant feature work?",
     answer: "Our Legal Assistant uses advanced AI to analyze legal documents, contracts, and agreements. Simply upload your document, and our system will extract key information, identify potential issues, and provide a plain-language summary of the most important aspects."
   },
   {
-    question: "Is my data secure when using SimpleInsights.ai?",
+    question: "Is my data secure when using AI Power Tools?",
     answer: "Yes, we take data security very seriously. All document uploads are encrypted, and we don't store your documents longer than necessary for processing. Our system is designed with privacy in mind, and we adhere to strict data protection standards. For more details, please review our Privacy Policy."
   },
   {
-    question: "Can I use SimpleInsights.ai for professional work?",
-    answer: "Yes, SimpleInsights.ai is designed for both personal and professional use. However, we recommend that professionals use our insights as a supplementary tool rather than a replacement for expert judgment. Our AI provides valuable analysis, but critical decisions should always involve human expertise."
+    question: "Can I use AI Power Tools for professional work?",
+    answer: "Yes, AI Power Tools is designed for both personal and professional use. However, we recommend that professionals use our insights as a supplementary tool rather than a replacement for expert judgment. Our AI provides valuable analysis, but critical decisions should always involve human expertise."
   },
   {
     question: "How accurate is the Translation Assistant?",
@@ -60,8 +60,8 @@ const FAQ = () => {
   return (
     <>
       <Helmet>
-        <title>Frequently Asked Questions - SimpleInsights.ai</title>
-        <meta name="description" content="Find answers to common questions about SimpleInsights.ai services, including legal document analysis, medical report interpretation, and translation assistance." />
+        <title>Frequently Asked Questions - AI Power Tools</title>
+        <meta name="description" content="Find answers to common questions about AI Power Tools services, including legal document analysis, medical report interpretation, and translation assistance." />
         <link rel="canonical" href="https://simpleinsights.ai/faq" />
         <script type="application/ld+json">
           {JSON.stringify(faqSchema)}
@@ -77,7 +77,7 @@ const FAQ = () => {
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h1>
             <p className="text-muted-foreground text-lg">
-              Find answers to the most common questions about SimpleInsights.ai
+              Find answers to the most common questions about AI Power Tools
             </p>
           </div>
           

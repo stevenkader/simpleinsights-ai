@@ -17,7 +17,7 @@ const Privacy = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
               <p>
-                SimpleInsights.ai ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our free services.
+                AI Power Tools ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our free services.
               </p>
               <p>
                 Please read this Privacy Policy carefully. By accessing or using our services, you acknowledge that you have read, understood, and agree to be bound by all the terms of this Privacy Policy.
@@ -69,7 +69,7 @@ const Privacy = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4">Our Free Service Commitment</h2>
               <p>
-                SimpleInsights.ai is committed to providing our service completely free of charge to individual users. We do not sell your personal data to third parties to monetize our service.
+                AI Power Tools is committed to providing our service completely free of charge to individual users. We do not sell your personal data to third parties to monetize our service.
               </p>
               <p>
                 To maintain our free service, we may display non-personalized ads or seek voluntary donations from users who find our service valuable, but these are completely optional and do not affect your access to our core features.
